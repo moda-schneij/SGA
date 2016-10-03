@@ -1,0 +1,92 @@
+//colors
+
+$white: #fff;
+$black: #000;
+
+//base
+$modern-plum: #a50069;
+$warm-brown: #493b31;
+$modern-yellow: #ffe92c;
+$modern-aqua: #0c9c9e;
+$button-aqua: #7accc4;
+$button-aqua-hover: #0c9c9e;
+$dark-aqua: #0e5952;
+$lighter-yellow: #fef9ce; //not sure what the formula is - might require blend modes
+
+//tints & percentages
+$modern-plum-light: tint($modern_plum, 50%); //#d27fb4
+$light-plum: #f6e6f0;
+$modern-yellow-light: lighten($modern_yellow, 14.2%); //#fff174
+$modern-aqua-light: #e3f2f0; //not sure what the forumula is - might require blend modes
+$lighter-yellow: #fef9ce; //not sure what the formula is - might require blend modes
+
+//warm-brown percentages
+$warm-brown-90: tint($warm-brown, 10%); //#5b4e45
+$warm-brown-80: tint($warm-brown, 20%); //#6d625a
+$warm-brown-70: tint($warm-brown, 30%); //#7f756e
+$warm-brown-60: tint($warm-brown, 40%); //#918983
+$warm-brown-50: tint($warm-brown, 50%); //#a49d98
+$warm-brown-40: tint($warm-brown, 60%); //#b6b0ac
+$warm-brown-30: tint($warm-brown, 70%); //#c8c4c1
+$warm-brown-20: tint($warm-brown, 80%); //#dad7d5
+$warm-brown-10: tint($warm-brown, 90%); //#ecebea
+
+$warm-brown-light: $warm-brown-50; //#a49d98
+
+//menus
+$menu-current: #e2dfde;
+$menu-default: $warm-brown-10;
+//$button-disabled is also menu-disabled
+
+//top nav
+
+//objects/modules/components (generic)
+$copyright: #cb74a0;
+$editpane-bg: #f0edeb;
+$navutil-bg: #6E5D52;
+$border-body: #bbb4a3;
+
+//buttons
+$button-aqua: #7accc4;
+$button-aqua-hover: #0c9c9e;
+$button-box-border: #b9b1a9;
+$button-hover: mix($modern_plum, #050305, 60%);
+$button-disabled: #e0a6cb;
+$prim-btn-bg-tap: #650141;
+$inact-prim-btn-bg: #e1abce;
+$sec-btn-bg: #f2d9e9;
+$sec-btn-disabled-border: #d6d2cf;
+$secondary-button-border: #b9b1a9;
+
+//links
+$link-default: #0098aa;
+
+//inputs
+$placeholder: #a39c97;
+
+//messages background colors
+$success-bg: #e3f2f0;
+
+//tables
+$zebra-stripe: #e3ddda;
+$table-borders: #f0edeb; //until we hear otherwise, this is not one of our latest aquas, and may be deprecated
+$table-headers: #d7d1cd;
+
+//tabs
+$tab-background-unselected: $table-borders;
+//$tab-border: #dad3ce;
+$tab-borders: $table-borders;
+
+//dropdowns
+$dropdown-hover: #650141;
+$dropdown-background-selected: #e2e0de;
+$dropdown-border: #c4b5af;
+
+//text
+$default-text-shadow-color: rgba(black, 1);
+$default-text-shadow-blur: 1px;
+$default-text-shadow-v-offset: 1px;
+$default-text-bottom-margin: 0.75em;
+
+//dialogs
+$dialog-border-color: #b0006e;

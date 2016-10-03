@@ -1,0 +1,47 @@
+<div class="container container-branding" id="branding">
+  <img id="logo-main" src="../../assets/images/moda.svg" alt="Moda logo">
+  <header class="container container-app-header" id="app-header">
+    <div class="container container-navbar" id="navbar">
+      <div class="app-name">
+        <a ng-if="header.isloggedin" ng-href="" ng-click="header.appName.action()">{{::header.appName.title}}
+          <span ng-if="header.groupor"> - Oregon</span>
+          <span ng-if="header.groupak"> - Alaska</span>
+        </a>
+        <span ng-if="!header.isloggedin">{{::header.appName.title}}</span>
+      </div>
+      <nav class="nav nav-util">
+        <ul class="nav-items" ng-if="header.isloggedin && header.inprogress">
+          <li class="nav-item" ng-repeat="item in header.navUtil">
+            <a class="nav-item-link" ng-link="['{{::item.name}}']">{{::item.title}}</a>
+          </li>
+        </ul>
+      </nav>
+    </div> <!-- /containter-navbar -->
+    <nav class="nav nav-logged-in" ng-if="header.isloggedin">
+      <ul class="nav-items">
+        <li class="nav-item">
+          <p class="greeting" ng-bind="'Welcome, ' + header.user"></p>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item-link" href="" ng-click="header.returnToSER()">Back to SpeedERates</a>
+        </li>
+        <li class="nav-item" ng-if="header.deletableApp">
+          <ui-select name="appactions" id="app-actions" class="nav-item-link nav-item-select" search-enabled="false" ng-model="$ctrl.appAction" theme="select2" ng-model-options="{debounce: {'default': 0}}" on-select="header.menuAction($item, $model)">
+            <ui-select-match placeholder="Application actions">
+              Application actions
+            </ui-select-match>
+            <ui-select-choices repeat="actionItem in header.actionItems | filter: $select.search track by $index">
+              <span bind-html-compile="actionItem.value | highlight: $select.search"></span>
+            </ui-select-choices>
+          </ui-select>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item-link" href="" ng-click="header.logout()">Log out</a>
+        </li>
+      </ul>
+    </nav> <!-- /nav-logged-in -->
+  </header>
+</div> <!-- /containter-branding -->
+<div id="subhead">
+  <h1 ng-class="{'hide': !header.showtitle}" class="heading heading-page">{{header.inprogress ? header.pagetitle : 'Small group application - Enrollment'}}</h1><!-- bind page title -->
+</div>

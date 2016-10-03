@@ -1,0 +1,22 @@
+<div ng-if="!$ctrl.serContext">
+  <form name="$ctrl.loginForm" novalidate class="form-styled" ng-submit="$ctrl.login($event)" ng-keyup="$ctrl.checkLoginForm()">
+    <ul class="form-container no-width">
+      <li class="form-row">
+        <label for="username">Username</label>
+        <input type="text" autocomplete="off" value="username" id="username" name="username" ng-model="$ctrl.user.username" required>
+      </li>
+      <li class="form-row">
+        <label for="password">Password</label>
+        <input type="password" autocomplete="off" value="password" id="password" name="password" ng-model="$ctrl.user.password" required>
+      </li>
+      <li class="form-row">
+        <label for="appid">Application ID</label>
+        <input type="text" autocomplete="off" value="appid" id="appid" name="appid" ng-model="$ctrl.appid">
+      </li>
+      <li class="form-row buttons">
+        <span class="output-label"></span>
+        <input type="submit" value="Login" class="button" ng-disabled="$ctrl.loginForm.$invalid">
+      </li>
+    </ul>
+  </form>
+</div>

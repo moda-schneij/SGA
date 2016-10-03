@@ -1,0 +1,50 @@
+//custom SASS functions here
+
+@import "compass/css3/font-face";
+
+//utility to strip any units, used in Gumby font-size mixin
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+
+// Fonts in rems with px fallback
+
+@mixin font-size($size, $is-important: false) {
+  $size: if(unitless($size), $size, $size / 1px);
+
+  @if $is-important {
+    font-size: $size + px !important;
+    font-size: ($size / strip-units($base-font-size)) + rem !important;
+  } @else {
+    font-size: $size + px;
+    font-size: ($size / strip-units($base-font-size)) + rem;
+  }
+}
+
+@function prepend($files, $prefix) {
+  $returnFiles: '';
+  @if (type-of($files) == string) {
+    $newFile: #{$prefix}#{$file};
+    @return $newFile;
+  }
+  @each $file in $files {
+    $i: #{index($files, $file)};
+    $newFile: #{$prefix}#{$file};
+    @if ($i == '1') {
+      $returnFiles: #{$newFile};
+    }
+    @else {
+      $returnFiles: #{$returnFiles} #{$newFile};
+    }
+  }
+  @return $returnFiles;
+}
+
+@mixin rel-font-face($path-prefix, $name, $font-files, $eot: false, $weight: false, $style: false) {
+  $font-files: prepend($font-files, $path-prefix);
+  @if variable-exists($eot) {
+    $eot: prepend($eot, $path-prefix);
+  }
+  @include debug($font-files);
+  @include font-face($name, font-files($font-files), $eot, $weight, $style);
+}

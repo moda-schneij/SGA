@@ -1,0 +1,62 @@
+[{
+  "path": "/groupsize",
+  "name": "GroupSize",
+  "component": "groupSizeFormComponent",
+  "useAsDefault": true,
+  "data": {
+    "order": 1,
+    "loginRequired": true,
+    "title": "Group size determination",
+    "linkTitle": "Group size determination",
+    "addToMenu": true
+  }
+},
+{
+  "path": "/planselect",
+  "name": "PlanSelect",
+  "component": "planSelectFormComponent",
+  "data": {
+    "order": 2,
+    "loginRequired": true,
+    "title": "Types of coverage",
+    "linkTitle": "Types of coverage",
+    "addToMenu": true
+  }
+},
+{
+  "path": "/groupinfo",
+  "name": "GroupInfo",
+  "component": "groupInfoFormComponent",
+  "data": {
+    "order": 3,
+    "loginRequired": true,
+    "title": "Group information",
+    "linkTitle": "Group information",
+    "addToMenu": true
+  }
+},
+{
+  "path": "/cobra",
+  "name": "Cobra",
+  "component": "cobraFormComponent",
+  "data": {
+    "order": 4,
+    "loginRequired": true,
+    "title": "COBRA and OR continuation",
+    "linkTitle": "COBRA and OR continuation",
+    "addToMenu": true
+  }
+},
+{
+  "path": "/agent_sales",
+  "name": "AgentSales",
+  "component": "agentSalesFormComponent",
+  "data": {
+    "order": 5,
+    "loginRequired": true,
+    "title": "Payment and sales information",
+    "linkTitle": "Payment and sales information",
+    "addToMenu": true,
+    "submitView": true
+  }
+}]

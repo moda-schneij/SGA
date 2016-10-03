@@ -1,0 +1,122 @@
+<ng-form novalidate class="form-styled" name="$ctrl.planselectform">
+  <!-- The plan selection form -->
+  <fieldset>
+    <legend>Plan selection</legend>
+    <ul class="form-container" ng-if="$ctrl.rules.maxMed > 0 && $ctrl.showMedical">
+      <li class="form-row">
+        <label for="medicalplans" ng-class="{'required': !$ctrl.appCtrl.rules.groupPlanRules.dentalOnlyAllowed || $ctrl.noPlansSelected}">Indicate your chosen SpeedeRates medical plan<span ng-if="$ctrl.rules.maxMed > 1">s</span></label>
+        <ui-select multiple name="medicalplans" id="medicalplans" class="input-styled" ng-required="!$ctrl.appCtrl.rules.groupPlanRules.dentalOnlyAllowed || $ctrl.noPlansSelected" ng-model="$ctrl.plans.medical.selected" theme="select2" close-on-select="{{$ctrl.rules.maxMed < 2}}" on-select="$ctrl.onSelectPlan($item, {selected: true})" on-remove="$ctrl.onSelectPlan($item, {selected: false})" limit="$ctrl.plans.medical.selected.length === $ctrl.rules.maxMed" style="width: 400px;" title="Choose plans">
+            <ui-select-match placeholder="--{{$ctrl.placeholders.medical}}--">
+                {{$item.planName}}
+            </ui-select-match>
+            <ui-select-choices
+            ui-disable-choice="$ctrl.plans.medical.selected.length === $ctrl.rules.maxMed || plan.selected" repeat="plan in $ctrl.appdata.groupPlan.categories.medical.plans track by plan.uniqueId">
+                <pretty-select-checkbox>
+                    <pretty-checkbox name="selectedmedplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.medical.selected.length === $ctrl.rules.maxMed || plan.selected" ng-class="{'disabled': $ctrl.plans.medical.selected.length === $ctrl.rules.maxMed || plan.selected}"></pretty-checkbox>
+                    <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
+                </pretty-select-checkbox>
+            </ui-select-choices>
+        </ui-select>
+      </li>
+      <!-- Network selection for AK or OR group with AK members -->
+      <li class="form-row" ng-if="($ctrl.appCtrl.groupAK || $ctrl.groupHasAKMembers) && ($ctrl.rules.maxMed > 0 && $ctrl.showMedical) && $ctrl.appCtrl.anyPlanSelected.medical">
+        <span class="output-label required">The group will utilize the following Network<span ng-if="!$ctrl.appCtrl.groupAK"> for Alaska enrollees</span></span>
+        <!-- TODO: needs a real implementation with an enum from the back end -->
+        <div class="container-pretty-checkable container-pretty-checkable-vertical">
+          <pretty-radio ng-repeat="network in $ctrl.akMedNetworks track by network.displayName" name="aknetwork" id="{{network.id}}" ng-model="$ctrl.appCtrl.appdata.alaskaNetworkSelection" value="network.value" label="network.displayName" ng-model-options="{updateOn: 'default'}" required></pretty-radio> 
+        </div>
+      </li>
+      <!-- Vision Rider -->
+      <li class="form-row" ng-if="$ctrl.showVisionRider">
+        <label for="selectvision">Do you want a vision plan rider?</label>
+        <div class="container-pretty-checkbox">
+          <pretty-checkbox name="selectvision" id="selectvision" ng-model="$ctrl.plans.medical.riders.vis.add" label="false" ng-model-options="{updateOn: 'default'}" ng-change="$ctrl.onChangePlanOption($ctrl.plans.medical.riders.vis)"></pretty-checkbox>
+        </div>
+      </li>
+      <li class="form-row" ng-if="$ctrl.showVisionRider && $ctrl.plans.medical.riders.vis.add">
+        <label for="visionplans">Indicate your chosen SpeedeRates vision plan<span ng-if="$ctrl.rules.maxVis > 1">s</span></label>
+        <ui-select multiple name="visionplans" id="visionplans" class="input-styled" ng-model="$ctrl.plans.medical.riders.vis.selected" theme="select2" close-on-select="{{::$ctrl.rules.maxVis < 2}}" on-select="$ctrl.onSelectPlan($item, {selected: true})" on-remove="$ctrl.onSelectPlan($item, {selected: false})" limit="$ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis" style="width: 400px;" title="Choose plans">
+            <ui-select-match placeholder="--Select--">
+                {{$item.planName}}
+            </ui-select-match>
+            <ui-select-choices
+            ui-disable-choice="$ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis || plan.selected" repeat="plan in ($ctrl.appdata.groupPlan.categories.medical.riders | filter: {planType: 'VIS'}) track by plan.uniqueId">
+                <pretty-select-checkbox>
+                    <pretty-checkbox name="selectedvisionplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis || plan.selected" ng-class="{'disabled': $ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis || plan.selected}"></pretty-checkbox>
+                    <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
+                </pretty-select-checkbox>
+            </ui-select-choices>
+        </ui-select>
+      </li>
+      <!-- Hearing Aid Rider -->
+      <li class="form-row" ng-if="$ctrl.showHearingRider">
+        <label for="selecthe">Do you want a hearing aid plan rider?</label>
+        <div class="container-pretty-checkbox">
+          <pretty-checkbox name="selecthe" id="selecthe" ng-model="$ctrl.plans.medical.riders.he.add" label="false" ng-model-options="{updateOn: 'default'}" ng-change="$ctrl.onChangePlanOption($ctrl.plans.medical.riders.he)"></pretty-checkbox>
+        </div>
+      </li>
+      <li class="form-row" ng-if="$ctrl.showHearingRider && $ctrl.plans.medical.riders.he.add">
+        <label for="visionplans">Indicate your chosen SpeedeRates hearing aid plan<span ng-if="$ctrl.rules.maxHe > 1">s</span></label>
+        <ui-select multiple name="visionplans" id="visionplans" class="input-styled" ng-model="$ctrl.plans.medical.riders.he.selected" theme="select2" close-on-select="{{::$ctrl.rules.maxHe < 2}}" on-select="$ctrl.onSelectPlan($item, {selected: true})" on-remove="$ctrl.onSelectPlan($item, {selected: false})" limit="$ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe" style="width: 400px;" title="Choose plans">
+            <ui-select-match placeholder="--Select--">
+                {{$item.planName}}
+            </ui-select-match>
+            <ui-select-choices
+            ui-disable-choice="$ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe || plan.selected" repeat="plan in ($ctrl.appdata.groupPlan.categories.medical.riders | filter: {planType: 'HE'}) track by plan.uniqueId">
+                <pretty-select-checkbox>
+                    <pretty-checkbox name="selectedvisionplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe || plan.selected" ng-class="{'disabled': $ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe || plan.selected}"></pretty-checkbox>
+                    <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
+                </pretty-select-checkbox>
+            </ui-select-choices>
+        </ui-select>
+      </li>
+    </ul>
+    <!-- Dental plans -->
+    <ul class="form-container" ng-if="$ctrl.showDental">
+      <li class="form-row" ng-if="$ctrl.rules.maxDen > 0">
+        <label for="dentalplans" ng-class="{'required': $ctrl.noPlansSelected}">Indicate your chosen SpeedeRates dental plan<span ng-if="$ctrl.rules.maxDen > 1">s</span></label>
+        <ui-select multiple name="dentalplans" id="dentalplans" class="input-styled" ng-model="$ctrl.plans.dental.selected" ng-required="$ctrl.noPlansSelected" theme="select2" close-on-select="{{::$ctrl.rules.maxDen < 2}}" on-select="$ctrl.onSelectPlan($item, {selected: true})" on-remove="$ctrl.onSelectPlan($item, {selected: false})" limit="$ctrl.plans.dental.selected.length === $ctrl.rules.maxDen" style="width: 400px;" title="Choose plans">
+            <ui-select-match placeholder="--{{$ctrl.placeholders.dental}}--">
+                {{$item.planName}}
+            </ui-select-match>
+            <ui-select-choices
+            ui-disable-choice="$ctrl.plans.dental.selected.length === $ctrl.rules.maxDen || plan.selected" repeat="plan in $ctrl.appdata.groupPlan.categories.dental.plans | filter: {planId: '!WDG'} track by plan.uniqueId">
+                <pretty-select-checkbox>
+                    <pretty-checkbox name="selecteddenplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.dental.selected.length === $ctrl.rules.maxDen || plan.selected" ng-class="{'disabled': $ctrl.plans.dental.selected.length === $ctrl.rules.maxMed || plan.selected}"></pretty-checkbox>
+                    <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
+                </pretty-select-checkbox>
+            </ui-select-choices>
+        </ui-select>
+      </li>
+      <!-- Direct option dental -->
+      <li class="form-row" ng-repeat="plan in $ctrl.plans.dental.selected track by plan.uniqueId" ng-if="$ctrl.showDirectOption"><!--ng-repeat should have length of 1-->
+        <span class="output-label">Your Direct option dental plan</span>
+        <span class="output-value" ng-bind="::$ctrl.directOptionPlanName"></span>
+      </li>
+      <!-- Ortho rider -->
+      <li class="form-row" checkbox-row ng-if="$ctrl.showOrthoRider">
+        <label for="selectortho">Do you want an orthodontia plan rider?</label>
+        <div class="container-pretty-checkbox">
+          <pretty-checkbox name="selectortho" id="selectortho" ng-model="$ctrl.plans.dental.riders.orth.add" label="false" ng-model-options="{updateOn: 'default'}" ng-change="$ctrl.onChangePlanOption($ctrl.plans.dental.riders.orth)"></pretty-checkbox>
+        </div>
+      </li>
+      <li class="form-row" ng-if="$ctrl.showOrthoRider && $ctrl.plans.dental.riders.orth.add">
+        <label for="orthoplans">Indicate your chosen SpeedeRates orthodontia plan<span ng-if="$ctrl.rules.maxOrth > 1">s</span></label>
+        <ui-select multiple name="orthoplans" id="orthoplans" class="input-styled" ng-model="$ctrl.plans.dental.riders.orth.selected" theme="select2" close-on-select="{{::$ctrl.rules.maxOrth < 2}}" on-select="$ctrl.onSelectPlan($item, {selected: true})" on-remove="$ctrl.onSelectPlan($item, {selected: false})" limit="$ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth" style="width: 400px;" title="Choose plans">
+            <ui-select-match placeholder="--Select--">
+                {{$item.planName}}
+            </ui-select-match>
+            <ui-select-choices
+            ui-disable-choice="$ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth || plan.selected" repeat="plan in ($ctrl.appdata.groupPlan.categories.dental.riders | filter: !$select.selected) track by plan.uniqueId">
+                <pretty-select-checkbox>
+                    <pretty-checkbox name="selectedvisionplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth || plan.selected" ng-class="{'disabled': $ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth || plan.selected}"></pretty-checkbox>
+                    <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
+                </pretty-select-checkbox>
+            </ui-select-choices>
+        </ui-select>
+      </li>
+    </ul>
+  </fieldset>
+</ng-form>
+
+<div ng-include="$ctrl.ratesTableUrl"></div>

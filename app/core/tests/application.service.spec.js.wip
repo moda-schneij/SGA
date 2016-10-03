@@ -1,0 +1,179 @@
+'use strict';
+
+const helpers = require('../../../test.helper');
+const ngModule = helpers.module;
+const inject = helpers.inject;
+const localStorage = helpers.localStorage;
+const sessionStorage = helpers.sessionStorage;
+const path = require('path');
+const testJson = path.join(__dirname, 'application.payload.json');
+const fs = require('fs');
+
+/* eslint-disable no-sync, key-spacing, comma-spacing */
+
+const appObj = fs.readFileSync(testJson);
+
+/* eslint-enable no-sync, key-spacing, comma-spacing */
+
+require('../storage.service');
+require('../application.service');
+require('../data.service');
+require('../constants.service');
+require('../sgApp.constants');
+
+const expect = require('chai').expect;
+const assert = require('chai').assert;
+
+describe('Services: ', function() {
+
+  // load the service's module
+  var API_URL, ApplicationSvc, DataSvc, ConstantsSvc, UrlSvc, $httpBackend, $window, $timeout, $q,
+    API_PATHS, createApplicationUrl, getApplicationUrl, mockAuthenticationSvc,
+    mockCookies, mockResource;
+
+  var mockUrlSvc = {};
+
+  var mockStorageSvc = {
+    getSessionStore: function(key) {
+      return appObj;
+    }
+  };
+
+  var mockDataSvc = {};
+
+  var mockUserSvc = {
+    getIsLoggedIn: function() {
+      return true;
+    }
+  };
+
+  const idsObj = {
+    quoteId: '90006',
+    appId: '123456789'
+  };
+
+  beforeEach(function() {
+    ngModule('sgAppConstants');
+    ngModule('sgAppConstantsSvc', function ($provide) {
+      $provide.value('$cookies', mockCookies);
+    });
+    ngModule('sgAppStorageSvc');
+    ngModule('sgAppDataSvc', function($provide) {
+      $provide.value('$resource', mockResource);
+    });
+    ngModule('sgAppApplicationSvc', function ($provide) {
+      $provide.value('AuthenticationSvc', mockAuthenticationSvc);
+      $provide.value('UrlSvc', mockUrlSvc);
+      $provide.value('UserSvc', mockUserSvc);
+    });
+  });
+
+  beforeEach(function() {
+
+    inject(function(_ApplicationSvc_, _API_URL_, _API_PATHS_, _ConstantsSvc_, _$httpBackend_, _$window_, _$timeout_, _$q_, _DataSvc_) {
+      ApplicationSvc = _ApplicationSvc_;
+      API_URL = _API_URL_;
+      API_PATHS = _API_PATHS_;
+      ConstantsSvc = _ConstantsSvc_;
+      $httpBackend = _$httpBackend_;
+      $window = _$window_;
+      $timeout = _$timeout_;
+      $q = _$q_;
+      DataSvc = _DataSvc_;
+    })
+
+    createApplicationUrl = API_URL + API_PATHS.createApplication + idsObj.quoteId;
+    getApplicationUrl = API_URL + API_PATHS.getApplication + idsObj.appId;
+
+    mockDataSvc.application.get = function(appId) {
+      var deferred = $q.defer();
+      $timeout(function() {
+        deferred.resolve(appObj);
+      }, 0);
+      return deferred.promise;
+    };
+
+    mockDataSvc.application.create = function(quoteId) {
+      var deferred = $q.defer();
+      $timeout(function() {
+        deferred.resolve(appObj);
+      }, 0);
+      return deferred.promise;
+    };
+
+    $window.localStorage = localStorage;
+    $window.sessionStorage = sessionStorage;
+
+  });
+
+  /*beforeEach(
+    inject(function(_ApplicationSvc_, _API_URL_, _API_PATHS_, _ConstantsSvc_, _$httpBackend_, _$window_, _$timeout_, _$q_, _DataSvc_) {
+      ApplicationSvc = _ApplicationSvc_;
+      API_URL = _API_URL_;
+      API_PATHS = _API_PATHS_;
+      ConstantsSvc = _ConstantsSvc_;
+      $httpBackend = _$httpBackend_;
+      $window = _$window_;
+      $timeout = _$timeout_;
+      $q = _$q_;
+      DataSvc = _DataSvc_;
+    })
+  );*/
+
+  describe('ApplicationSvc: ', function() {
+
+    //TODO - I need to set a mock URL with a query string for this test to work
+
+    describe('Creates a new application: ', function() {
+      beforeEach(function() {
+        mockUrlSvc.getQuoteIdFromUrl = function() {
+          return idsObj.quotedId;
+        };
+        mockUrlSvc.getAppIdFromUrl = function() {
+          return null;
+        };
+        $httpBackend.when('GET', createApplicationUrl)
+          .respond(appObj);
+      });
+      it('Should call the Data Service using a quote ID to request a new application', function() {
+        //$httpBackend.expectGET(createApplicationUrl);
+        ApplicationSvc.getInitialApplication().then(function() {
+          expect(true).to.be.false;
+        });
+        $httpBackend.flush();
+
+        //expect(getObjVal).to.deep.equal(specObjVal);
+      });
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+    });
+
+    describe('Gets an existing application: ', function() {
+      beforeEach(function() {
+        mockUrlSvc.getQuoteIdFromUrl = function() {
+          return null;
+        };
+        mockUrlSvc.getAppIdFromUrl = function() {
+          return idsObj.appId;
+        };
+        $httpBackend.when('GET', getApplicationUrl)
+          .respond(appObj);
+      });
+      it('Should call the Data Service using an application id to get an existing application', function() {
+        //$httpBackend.expectGET(getApplicationUrl);
+        ApplicationSvc.getInitialApplication().then(function() {
+          expect(true).to.be.false;
+        });
+        $httpBackend.flush();
+      });
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+    });
+
+  });
+
+});

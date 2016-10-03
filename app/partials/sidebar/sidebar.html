@@ -1,0 +1,7 @@
+<section class="section section-sidebar" ng-repeat="section in sidebar.sections track by $index">
+  <h3>{{section.title}}</h3>
+  <dl class="multiline">
+    <dt ng-repeat-start="item in section.content track by $index" ng-bind="item.name"></dt>
+    <dd ng-repeat-end ng-bind="item.value"></dd>
+  </dl>
+</section>

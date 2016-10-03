@@ -1,0 +1,76 @@
+//Definition lists
+
+%inline-multiline-dl {
+  /*Thanks Lea Verou! (multiline def lists: http://lea.verou.me/2012/02/flexible-multiline-definition-lists-with-2-lines-of-css/)*/
+    dt {
+      font-family: $omnes-med;
+      //display: inline-block;
+      &:after {
+        content: ': ';
+      }
+    }
+    dt,
+    dd {
+      display: inline;
+      line-height: 1.5em;
+      margin: 0;
+    }
+}
+
+%multiline-dl {
+  @extend %inline-multiline-dl;
+  dd {
+    word-break: break-word;
+    &:after {
+      //inline style added to head until this can be fixed in SASS
+      //content: unquote("\"") + unquote(str-insert("A", "\\", 1)) + unquote("\"");
+      white-space: pre;
+    }
+  }
+}
+
+%inline-dl {
+  @extend %inline-multiline-dl;
+  dt {
+    &:before {
+      content: ' | ';
+      font-family: $omnes-reg;
+      white-space: pre;
+
+    }
+    &:first-child {
+      &:before {
+        content: '';
+      }
+    }
+  }
+}
+
+dl {
+  &.multiline {
+    @extend %multiline-dl;
+  }
+  &.inline {
+    @extend %inline-dl;
+  }
+}
+
+.row {
+  > .columns {
+    > dl {
+      margin: 0;
+    }
+  }
+}
+
+//dl.multiline dd+dt {
+//  margin-top: 0.143em;
+  /*2px/14px - match ULs*/
+  /*IE 8- hack for off positioning of dts 2+*/
+//  position/*\**/
+//  : relative\9;
+//  left/*\**/
+//  : -0.214em\9;
+  /*3px*/
+  /*end IE 8- hack*/
+//}

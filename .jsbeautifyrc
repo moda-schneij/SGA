@@ -1,0 +1,16 @@
+{
+  // For sublime or any IDE using prettify, these are project-level settings
+  "html": {
+    "indent_size": 2, // Indentation size
+  },
+  "css": {
+    "indent_size": 2, // Indentation size
+  },
+  "scss": {
+    "indent_size": 2, // Indentation size
+  },
+  "js": {
+    "indent_size": 2, // Indentation size
+    "space_after_anon_function": true, // Should the space before an anonymous function's parens be added, "function()" vs "function ()"
+  }
+}

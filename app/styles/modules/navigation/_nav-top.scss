@@ -1,0 +1,142 @@
+/*
+* Top Nav Bar
+*/
+
+.container-app-header {
+  float: left;
+  width: $row-max-width - (($logo-horiz-margin * 2) + $logo-width);
+  .nav {
+    width: 100%;
+    * {
+      @include font-size($med);
+    }
+  }
+  .nav-items {
+    height: 1em;
+  }
+  .nav-item-link, .greeting {
+    line-height: inherit;
+    position: relative;
+    @include rem(padding, 0 10px);
+    @include rem(top, -3px);
+  }
+  .nav-item {
+    float: left;
+    height: 13/15 * 1em;
+    padding-bottom: 0;
+    &:first-child {
+      border: 0 none;
+      .nav-item-link {
+        padding-left: 0;
+      }
+    }
+  }
+}
+
+.container-navbar {
+  position: relative;
+  @include rem(min-height, 70px);
+  border-bottom: 1px solid $border-body;
+}
+
+/*
+* Logged-in Nav
+*/
+
+.nav-logged-in {
+  @include pie-clearfix;
+  @include rem(margin-top, 10px);
+  .nav-items {
+    float: right;
+  }
+  .nav-item {
+    border-left: 1px solid $warm-brown;
+    * {
+      font-family: $omnes-med;
+    }
+  }
+}
+
+/*
+* Utility Nav
+*/
+
+.nav-util {
+  position: absolute;
+  @include rem(bottom, 9px);
+  @include rem(left, 14px);
+  
+  .nav-item {
+    border-left: 1px solid $warm-brown;
+  }
+  .nav-items {
+    margin-bottom: 0;
+  }
+  .nav-item-link {
+    color: $link-default;
+    text-decoration: none;
+    &:hover {
+      color: $modern-aqua;
+      text-decoration: underline;
+    }
+  }
+}
+
+/*
+* App Name (and home link)
+*/
+
+.app-name {
+  background-color: $modern-yellow-light;
+  line-height: 1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  @include border-bottom-left-radius(5px);
+  @include font-size($med);
+  @include rem(padding, 8px 12px 6px);
+  & * {
+    color: $modern-plum;
+    font-family: $omnes-med;
+  }
+}
+
+/*
+* Actions dropdown
+*/
+
+.nav-item-select {
+  box-sizing: content-box;
+  .select2-choice {
+    padding: 0;
+  }
+  &.select2-container {
+    .select2-choice {
+      span {
+        color: $modern-plum-light;
+      }
+      .select2-arrow {
+        background: none !important;
+        b {
+          background-color: transparent !important;
+        }
+      }
+    }
+  }
+  .select2-default,
+  .ui-select-match {
+    border: 0 none;
+  }
+  .select2-drop-active,
+  .ui-select-match {
+    border-radius: 0 !important;
+  }
+  .ui-select-dropdown {
+    border-top: 0 none;
+  }
+}
+
+.nav-item-select-link {
+  color: $modern-plum;
+  text-decoration: underline;
+}

@@ -1,0 +1,11 @@
+<div ng-repeat="msgType in $ctrl.messageTypes" id="{{msgType.id}}" class="ui-messages ui-messages-{{msgType.iconType}} ui-widget grow-down" role="{{msgType.role}}" aria-live="{{msgType.ariaLive}}" ng-show="$ctrl.parentctrl['{{msgType.displayVal}}']">
+  <span class="ui-messages-icon ui-messages-icon-close" ng-click="$ctrl.hideMessages(msgType.displayVal)"></span>
+  <div class="ui-messages-{{msgType.iconType}}-content ui-corner-all">  
+    <span class="ui-messages-icon ui-messages-icon-message-type ui-messages-icon-{{msgType.iconType}}"></span>
+    <ul class="ui-messages-list ui-messages-list-{{msgType.iconType}}" ng-init="thisMsgType = msgType.type">
+      <li class="ui-messages-item ui-messages-item-{{msgType.iconType}}" ng-repeat="message in $ctrl.parentctrl[thisMsgType] track by $index">
+        <span class="ui-messages-detail ui-messages-detail-{{msgType.iconType}}">{{message}}</span>
+      </li>
+    </ul>
+  </div>
+</div>

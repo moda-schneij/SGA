@@ -1,0 +1,34 @@
+a {
+  &.disabled {
+    &:hover {
+      cursor: default;
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+  &.with-icon.pdf, &.with-icon.xls {
+    //position: relative;
+    padding: 0 21px 0 0;
+    &:after {
+      content: "";
+      position: absolute;
+      background-repeat: no-repeat;
+      margin-left: 5px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+  &.with-icon.pdf {
+    &:after {
+      background-image: url(../assets/images/pdf.gif);
+    }
+  }
+  &.with-icon.xls {
+    &:after {
+
+    }
+  }
+}
+#content a {
+  font-family: $omnes-med;
+}
