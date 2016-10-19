@@ -7,7 +7,7 @@
  * # GroupinfoComponent
  * Service of the Small Group Application app
  */
- 
+
 import angular from 'angular';
 import sgAppRoot from '../../../root/sgApp.component.root'; //this service is defined on the root module and injected there
 
@@ -23,8 +23,8 @@ class GroupinfoComponentSvc {
   }
 
   /*************************************
-  ** Create controller computed props **
-  *************************************/
+   ** Create controller computed props **
+   *************************************/
 
   setComputedProps(vm) {
     //Computed properties
@@ -112,34 +112,35 @@ class GroupinfoComponentSvc {
         denPremiumDepContribution: {
           amount: this.UtilsSvc.toFixedTwo(groupRules.denPremiumDepContribution.minContribDol)
         }
-      }    
+      }
     };
     vm.employerContributions = {};
     //temporary vm object for holding employer contribution values
     angular.copy(empContribsObj, vm.employerContributions);
   }
-  
+
   clearPrimaryAddress(vm) {
-	  
-	  const primAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'PRIM')[0];
+
+    const primAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'PRIM')[0];
 
     if (this.UtilsSvc.notNullOrEmptyObj(primAddress)) {
       Object.keys(primAddress)
         .filter((key) => key !== 'addressType')
         .forEach((key) => {
-        	primAddress[key] = '';
+          primAddress[key] = '';
         });
     }
   }
 
   clearBillingAddress(vm) {
-    
-	  if(vm.ctrl.appCtrl.groupOR && vm.ctrl.appCtrl.effDate.getFullYear() !== 2016){
-		  const billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[1];
-	  }else{
-		  const billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[0];  
-	  }
-	  
+    let billAddress = null;
+
+    if (vm.appCtrl.groupOR && !(/2016/).test(vm.appCtrl.effDate.getFullYear())) {
+      billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[1];
+    } else {
+      billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[0];
+    }
+
     if (this.UtilsSvc.notNullOrEmptyObj(billAddress)) {
       Object.keys(billAddress)
         .filter((key) => key !== 'addressType')
@@ -220,7 +221,7 @@ function zeroContributions(vm, callback) {
     appdata.denPremiumEmpContribution = empDenZero;
     appdata.denPremiumDepContribution = depDenZero;
   }
-  angular.isFunction(callback) && callback({callback: true});
+  angular.isFunction(callback) && callback({ callback: true });
 }
 
 export default angular

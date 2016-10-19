@@ -49,8 +49,8 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
   vm.quoteId = $rootRouter.currentInstruction.component.routeData.data.quoteId;
 
   /***************
-  ** NAICS section
-  ***************/
+   ** NAICS section
+   ***************/
 
   vm.noNAICSResults = false;
   vm.searchingNAICS = false;
@@ -91,9 +91,9 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
     if (!isOpen) {
       vm.naicsList = []; //reset the list
       if (vm.groupinfoform.groupcodes.modified) {
-        if (angular.isArray(vm.groupinfoform.groupcodes.modifiedModels) && 
+        if (angular.isArray(vm.groupinfoform.groupcodes.modifiedModels) &&
           vm.groupinfoform.groupcodes.modifiedModels
-          .filter((modelCtrl) => (/naics/i).test(modelCtrl.$name) && 
+          .filter((modelCtrl) => (/naics/i).test(modelCtrl.$name) &&
             angular.isObject(modelCtrl.$modelValue))
           .length > 0) {
           $log.debug('the NAICS code has changed');
@@ -125,7 +125,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
 
   //toggle reset of domestic partner type dropdown
   vm.onDpCoverageSelect = function() {
-	$log.debug('triggered onDpCoverageSelect : ' + vm.appCtrl.appdata.domesticPartner);
+    $log.debug('triggered onDpCoverageSelect : ' + vm.appCtrl.appdata.domesticPartner);
     if ((vm.appCtrl.appdata.domesticPartner === 'N' || !vm.appCtrl.appdata.domesticPartner) && vm.appCtrl.groupOR) {
       vm.groupinfoform.eligibilityform.dpselect.$setPristine();
       vm.groupinfoform.eligibilityform.dpselect.$setUntouched();
@@ -163,17 +163,17 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
     if (angular.isArray(vm.appCtrl.appdata.group.address)) {
       if (vm.appCtrl.appdata.group.billingAddressSame) {
         vm.appCtrl.appdata.group.billingName = angular.copy(vm.appCtrl.appdata.group.employerLegalName);
-        
-        if(vm.ctrl.appCtrl.groupOR && vm.ctrl.appCtrl.effDate.getFullYear() !== 2016){
-        	const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[1]);
-	        primAddrCopy.addressType = 'BILL';
-	        vm.appCtrl.appdata.group.address[2] = primAddrCopy;
-        }else{
-	        const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
-	        primAddrCopy.addressType = 'BILL';
-	        vm.appCtrl.appdata.group.address[1] = primAddrCopy;
+
+        if (vm.ctrl.appCtrl.groupOR && vm.ctrl.appCtrl.effDate.getFullYear() !== 2016) {
+          const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[1]);
+          primAddrCopy.addressType = 'BILL';
+          vm.appCtrl.appdata.group.address[2] = primAddrCopy;
+        } else {
+          const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
+          primAddrCopy.addressType = 'BILL';
+          vm.appCtrl.appdata.group.address[1] = primAddrCopy;
         }
-        
+
       } else {
         GroupinfoComponentSvc.clearBillingAddress(vm);
       }
@@ -232,7 +232,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
     const originalSave = vm.appCtrl.saveAppData;
     const originalNext = vm.appCtrl.next;
     const originalPrev = vm.appCtrl.prev;
-    if (vm.appCtrl.statesArray){
+    if (vm.appCtrl.statesArray) {
       const states = vm.appCtrl.statesArray;
       states.map(function(stateObj) {
         stateObj.available = true;
@@ -240,7 +240,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
       });
     }
 
-    
+
     deregisterAppDataWatch = $rootScope.$watchCollection(function() {
       return vm.appCtrl.appdata;
     }, function(newVal) {
@@ -251,7 +251,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
         GroupinfoComponentSvc.checkHasOtherPlans(vm);
         GroupinfoComponentSvc.updateViewValues(vm);
         GroupinfoComponentSvc.restoreNAICS(vm);
-        
+
         deregisterAppDataWatch();
         vm.appCtrl.setRouteReady();
 
