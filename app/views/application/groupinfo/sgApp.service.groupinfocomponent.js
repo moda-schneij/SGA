@@ -46,6 +46,7 @@ class GroupinfoComponentSvc {
         code: vm.appCtrl.appdata.group.naicsCode
       };
     }
+    vm.primaryAddressSame = false;
   }
 
   checkHasOtherPlans(vm) { //onInit, set booleans based on whether there are values for other plans in the data
@@ -117,9 +118,28 @@ class GroupinfoComponentSvc {
     //temporary vm object for holding employer contribution values
     angular.copy(empContribsObj, vm.employerContributions);
   }
+  
+  clearPrimaryAddress(vm) {
+	  
+	  const primAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'PRIM')[0];
+
+    if (this.UtilsSvc.notNullOrEmptyObj(primAddress)) {
+      Object.keys(primAddress)
+        .filter((key) => key !== 'addressType')
+        .forEach((key) => {
+        	primAddress[key] = '';
+        });
+    }
+  }
 
   clearBillingAddress(vm) {
-    const billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[0];
+    
+	  if(vm.ctrl.appCtrl.groupOR && vm.ctrl.appCtrl.effDate.getFullYear() !== 2016){
+		  const billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[1];
+	  }else{
+		  const billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[0];  
+	  }
+	  
     if (this.UtilsSvc.notNullOrEmptyObj(billAddress)) {
       Object.keys(billAddress)
         .filter((key) => key !== 'addressType')

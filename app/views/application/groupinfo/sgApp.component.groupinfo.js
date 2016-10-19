@@ -125,7 +125,8 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
 
   //toggle reset of domestic partner type dropdown
   vm.onDpCoverageSelect = function() {
-    if (!vm.appCtrl.appdata.domesticPartner && vm.appCtrl.groupOR) {
+	$log.debug('triggered onDpCoverageSelect : ' + vm.appCtrl.appdata.domesticPartner);
+    if ((vm.appCtrl.appdata.domesticPartner === 'N' || !vm.appCtrl.appdata.domesticPartner) && vm.appCtrl.groupOR) {
       vm.groupinfoform.eligibilityform.dpselect.$setPristine();
       vm.groupinfoform.eligibilityform.dpselect.$setUntouched();
     }
@@ -144,15 +145,35 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
   /*****************************
    ** End Prior coverage section
    *****************************/
+  //copy or update primary address
+  vm.copyPrimaryAddress = () => {
+    if (angular.isArray(vm.appCtrl.appdata.group.address)) {
+      if (vm.primaryAddressSame) {
+        const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
+        primAddrCopy.addressType = 'PRIM';
+        vm.appCtrl.appdata.group.address[1] = primAddrCopy;
+      } else {
+        GroupinfoComponentSvc.clearPrimaryAddress(vm);
+      }
+    }
+  };
 
   //copy or update primary address or contact to billing
   vm.copyBillingAddress = () => {
     if (angular.isArray(vm.appCtrl.appdata.group.address)) {
       if (vm.appCtrl.appdata.group.billingAddressSame) {
         vm.appCtrl.appdata.group.billingName = angular.copy(vm.appCtrl.appdata.group.employerLegalName);
-        const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
-        primAddrCopy.addressType = 'BILL';
-        vm.appCtrl.appdata.group.address[1] = primAddrCopy;
+        
+        if(vm.ctrl.appCtrl.groupOR && vm.ctrl.appCtrl.effDate.getFullYear() !== 2016){
+        	const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[1]);
+	        primAddrCopy.addressType = 'BILL';
+	        vm.appCtrl.appdata.group.address[2] = primAddrCopy;
+        }else{
+	        const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
+	        primAddrCopy.addressType = 'BILL';
+	        vm.appCtrl.appdata.group.address[1] = primAddrCopy;
+        }
+        
       } else {
         GroupinfoComponentSvc.clearBillingAddress(vm);
       }

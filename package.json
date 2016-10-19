@@ -27,7 +27,7 @@
     "build-prod": "npm run lint-app & npm run build-core",
     "build-ser": "cross-env NODE_ENV=ser webpack",
     "build-local-ser": "npm run prebuild && npm run build-ser && npm run postbuild",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --hot --inline --progress --colors --history-api-fallback --machine_name"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --hot --inline --progress --colors --history-api-fallback"
   },
   "repository": {
     "type": "git",

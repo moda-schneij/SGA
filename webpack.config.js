@@ -19,10 +19,17 @@ const _process = global.process;
 const _console = global.console;
 const TARGET = _process.env.npm_lifecycle_event;
 const argv = require('minimist')(_process.argv.slice(2));
-const MACHINE_NAME = argv.machine_name;
-const PORT_NUMBER = argv.port_number;
+const MACHINE_NAME = argv.machine;
+const PORTS = {
+  WS: argv.wsport,
+  APP: argv.appport,
+  SER: argv.serport
+};
 const hasMachineName = !!MACHINE_NAME;
-const hasPortNumber = !!PORT_NUMBER; 
+const hasWSPort = !!PORTS.WS;
+const hasAppPort = !!PORTS.APP;
+const hasSERPort = !!PORTS.SER;
+
 const isIpAddress = ipMatch.test(MACHINE_NAME);
 const isLocalhost = localhostMatch.test(MACHINE_NAME);
 
@@ -30,10 +37,18 @@ _console.log('here be my args');
 _console.log(argv);
 _console.log('here be my machine name');
 _console.log(MACHINE_NAME);
-_console.log('here be my port number');
-_console.log(PORT_NUMBER);
-_console.log('I have entered a port number');
-_console.log(hasPortNumber);
+_console.log('here be my app port number');
+_console.log(PORTS.APP);
+_console.log('here be my web service port number');
+_console.log(PORTS.WS);
+_console.log('here be my SpeedE port number');
+_console.log(PORTS.SER);
+_console.log('I have entered an app port number');
+_console.log(hasAppPort);
+_console.log('I have entered a SpeedE port number');
+_console.log(hasSERPort);
+_console.log('I have entered a web service port number');
+_console.log(hasWSPort);
 _console.log('I have entered a machine name');
 _console.log(hasMachineName);
 
@@ -41,9 +56,9 @@ _console.log(hasMachineName);
 const prodEnvRegEx = /production/;
 const serEnvRegEx = /(ser|production)/;
 
-const WEB_PORT = hasPortNumber ? PORT_NUMBER : config.get('WEB_PORT') ? config.get('WEB_PORT') : '9090';
-const WS_PORT = hasPortNumber ? PORT_NUMBER : config.get('WS_PORT') ? config.get('WS_PORT') : '80';
-const SER_PORT = hasPortNumber ? PORT_NUMBER : config.get('SER_PORT') ? config.get('SER_PORT') : '80';
+const WEB_PORT = hasAppPort ? PORTS.APP : config.get('WEB_PORT') ? config.get('WEB_PORT') : '9090';
+const WS_PORT = hasWSPort ? PORTS.WS : config.get('WS_PORT') ? config.get('WS_PORT') : '80';
+const SER_PORT = hasSERPort ? PORTS.SER : config.get('SER_PORT') ? config.get('SER_PORT') : '80';
 const WEB_HOST = hasMachineName && (isIpAddress | isLocalhost) ? MACHINE_NAME : hasMachineName ? MACHINE_NAME + '.pdx.odshp.com' : config.get('WEB_HOST') ? config.get('WEB_HOST') : '0.0.0.0';
 const WEB_PROTOCOL = config.get('WEB_PROTOCOL') || 'http://';
 const NODE_ENV = config.util.getEnv('NODE_ENV');

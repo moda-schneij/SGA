@@ -157,6 +157,7 @@ class ApplicationComponentSvc {
     const denEnrollments = appdata.groupPlan.categories.dental.enrollments;
     vm.groupOR = vm.appdata.group.clientState === 'OR';
     vm.groupAK = vm.appdata.group.clientState === 'AK';
+    vm.effDate = new Date(vm.appdata.effectiveDate);
     vm.denExceedsMed = appdata.totalEmpAndCobraMedEnrolling < appdata.totalEmpAndCobraDenEnrolling;
     vm.denOnlyEmployees = appdata.totalEmpAndCobraDenEnrolling - appdata.totalEmpAndCobraMedEnrolling;
     vm.groupName = this.UtilsSvc.notNullOrEmpty(appdata.group.facetsOutputName) ?

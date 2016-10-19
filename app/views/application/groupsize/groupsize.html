@@ -54,8 +54,12 @@
         <span class="output-label" ng-if="$ctrl.appCtrl.groupOR">Expected employees (plan effective date)</span>
         <span class="output-value" ng-if="$ctrl.appCtrl.groupOR" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
 
-        <label for="aveEmplExpYear" class="required" ng-if="$ctrl.appCtrl.groupAK"> Eligible Employees on the date coverage is to take effect</label>
-        <input ng-if="$ctrl.appCtrl.groupAK" type="text" class="input-num" name="aveEmplExpYear" id="akgroupcount" ng-model="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage" max-value="50" min-value="0" model-integer required>
+        <label for="aveEmplExpYear" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() !== 2016"> Number of eligible employees</label>
+		<span class="output-value" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() !== 2016" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
+
+        <label for="aveEmplExpYear" class="required" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016"> Eligible Employees on the date coverage is to take effect</label>
+        <input ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016" type="text" class="input-num" name="aveEmplExpYear" id="akgroupcount" ng-model="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage" max-value="50" min-value="0" model-integer required>
+
       </li>
       <li class="form-row" ng-if="$ctrl.appCtrl.groupOR">
         <span class="output-label">Previous year full-time employees</span>
@@ -71,17 +75,43 @@
     </ul>
     <ng-form name="additionalcounts" check-form-empty>
       <ul class="form-container">
-        <li class="form-row" ng-show="$ctrl.appCtrl.groupOR">
+        <li class="form-row" ng-if="$ctrl.appCtrl.groupOR">
           <label for="cobraeligibility" class="required">COBRA determination employee count
             <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.cobraElig">
           </label>
           <input type="text" class="input-num" name="cobraeligibility" id="cobraeligibility" ng-model="$ctrl.appCtrl.appdata.orCobraCount" max-value="50" min-value="0" model-integer required>
         </li>
-        <li class="form-row" ng-show="$ctrl.appCtrl.groupAK">
+        <li class="form-row" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016">
           <label for="akgroupcount" class="required">Current group count
             <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.akGroupCount">
           </label>
           <input type="text" class="input-num" name="akgroupcount" id="akgroupcount" ng-model="$ctrl.appCtrl.appdata.alaskaEmpCurrYearCount" max-value="50" min-value="0" model-integer required>
+        </li>
+        <li class="form-row" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() !== 2016">
+          <label>Employees employed during current calendar year
+          <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.akEmpCurrentCalYear"></span>
+          </label>
+          <span class="output-value" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
+        </li>
+        <li class="form-row" ng-if="$ctrl.appCtrl.effDate.getFullYear() !== 2016">
+          <label for="medsecpayer" class="required">
+             To determine if your group is subject to Medicare Secondary Payer provision, 
+             do you have 20 or more employees for each working day in each 20 or more calendar
+             weeks in the current calendar year or the preceding calendar year?
+          </label>
+          <div class="container-pretty-radio">    
+            <pretty-radio name="medsecpayer" id="medsecpayerYes" ng-model="$ctrl.appCtrl.appdata.medicareSecondPayer" value="'Y'" label="'Yes'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+            <pretty-radio name="medsecpayer" id="medsecpayerNo" ng-model="$ctrl.appCtrl.appdata.medicareSecondPayer" value="'N'" label="'No'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+          </div>
+        </li>
+        <li class="form-row" ng-if="$ctrl.appCtrl.effDate.getFullYear() !== 2016">
+          <label for="controlledgroup" class="required">
+             Is this a controlled group?
+          </label>
+          <div class="container-pretty-radio">    
+            <pretty-radio name="controlledgroup" id="controlledgroupYes" ng-model="$ctrl.appCtrl.appdata.controlledGroup" value="'Y'" label="'Yes'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+            <pretty-radio name="controlledgroup" id="controlledgroupNo" ng-model="$ctrl.appCtrl.appdata.controlledGroup" value="'N'" label="'No'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+          </div>
         </li>
       </ul>
     </ng-form>

@@ -48,16 +48,16 @@ installation
         npm install
 ```
 
-working
--------
+working locally
+---------------
 
-* to run your project locally
+* to run your project locally, use the following command with optional params for your machine name (just the machine name, and not the domain stuff) and ports for the dev SGA application (appport; default 9090), SpeedE (serport; default 9080), and the SGA web service (wsport; default 9080).
 
 ```bash
-        npm start [ -- (your machine name)]
+        npm start [ -- (--machine=your machine name) (--appport=desired port) (--serport=desired port) (--wsport=desired port)]
 ```
 
-(If no machine name is specified, you will need to change the IP from "0.0.0.0" to "localhost", "127.0.0.1", your IPV4, or "[your machine name].pdx.odshp.com", and keep port 9090)
+(If no machine name is specified, you will need to change the IP from "0.0.0.0" to "localhost", "127.0.0.1", your IPV4, or "[your machine name].pdx.odshp.com", and keep port 9090 or whatever you specified in "appport")
 
 * All code changes should be made within the "app" folder, except for the template (index.html), which lives above the app folder
 
@@ -69,15 +69,14 @@ building and deploying
 
 ```bash
         npm run build (production)
-        npm run build-ser (for local copying of the client over to a SpeedERates WAR)
+        npm run build-ser (for local copying of the client over to a SpeedERates WAR, optional machine name and ports also accepted and parsed)
 ```
-
-See Gemfile and config.rb for various required gems, which should be handled by bundle install
 
 troubleshooting
 ----------------
 
-TODO
+* npm install before anything else.
+* be careful not to specify a port that's already being listened to for your appport (eg, 9080, if that's what websphere's already using)
 
 helpful links
 -----------------

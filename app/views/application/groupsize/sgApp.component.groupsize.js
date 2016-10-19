@@ -78,6 +78,11 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     akGroupCount: angular.extend(angular.copy(vm.defaultTipsoConfig), {
       content: `<p>On average, how many employees does the employer reasonably expect to employ on a
         typical business day in the current calendar year?</p>`
+    }),
+    akEmpCurrentCalYear: angular.extend(angular.copy(vm.defaultTipsoConfig), {
+        content: `<p>If an employer was not in existence through the preceding calendar year, what is 
+         the average number of employees does the employer reasonably expect to be employed on business 
+         day in the current calendar year?</p>`
     })
   };
 
