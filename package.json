@@ -11,7 +11,7 @@
     "setdev": "export NODE_ENV=development|| set NODE_ENV=development&& ",
     "setprod": "export NODE_ENV=production|| set NODE_ENV=production&& ",
     "settest": "export NODE_ENV=test|| set NODE_ENV=test&& ",
-    "test": "mocha './app/**/*.spec.js' --compilers js:babel-core/register",
+    "test": "mocha \"./app/**/*.spec.js\" --compilers js:babel-core/register",
     "eslint": "eslint",
     "lint-app": "npm run eslint './app/**/*.js' -- --ignore-pattern '**/*.spec.js' --ignore-pattern '**/index.js' --quiet",
     "lint-tests": "npm run eslint './app/**/*.spec.js' -- --config mocha/test --env mocha:true --plugin chai --plugin mocha --rule mocha/no-exclusive-tests:2",
