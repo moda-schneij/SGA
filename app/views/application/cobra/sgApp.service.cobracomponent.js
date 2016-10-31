@@ -50,13 +50,13 @@ class CobraComponentSvc {
     });
     Object.defineProperty(vm, 'cobraEligible', {
       get: () => { 
-        const orCobraCount = this.UtilsSvc.isNumberOrNumString(vm.appCtrl.appdata.orCobraCount) ? 
-          parseInt(vm.appCtrl.appdata.orCobraCount, 10) : 0;
+        const cobraCount = this.UtilsSvc.isNumberOrNumString(vm.appCtrl.appdata.cobraCount) ? 
+          parseInt(vm.appCtrl.appdata.cobraCount, 10) : 0;
         const cobraORMin = this.UtilsSvc.isNumberOrNumString(this.RulesSvc.rules.groupRules.cobraORMinEmployees) &&  
           this.RulesSvc.rules && this.RulesSvc.rules.groupRules && this.RulesSvc.rules.groupRules.cobraORMinEmployees ? 
           parseInt(this.RulesSvc.rules.groupRules.cobraORMinEmployees, 10) : null;
         return vm.appCtrl.groupOR ? (angular.isNumber(cobraORMin) ? 
-          (orCobraCount >= cobraORMin) : false) : 
+          (cobraCount >= cobraORMin) : false) : 
           this.RulesSvc.rules.groupRules.cobraEligible;
       },
       enumerable: true,

@@ -133,13 +133,7 @@ class GroupinfoComponentSvc {
   }
 
   clearBillingAddress(vm) {
-    let billAddress = null;
-
-    if (vm.appCtrl.groupOR && !(/2016/).test(vm.appCtrl.effDate.getFullYear())) {
-      billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[1];
-    } else {
-      billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[0];
-    }
+    const billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[0];
 
     if (this.UtilsSvc.notNullOrEmptyObj(billAddress)) {
       Object.keys(billAddress)
@@ -150,6 +144,22 @@ class GroupinfoComponentSvc {
       //also clear billing name
       vm.appCtrl.appdata.group.billingName = '';
     }
+  }
+  
+  copyBillingAddress(vm) {
+      let primAddrCopy = null;
+  
+      vm.appCtrl.appdata.group.billingName = angular.copy(vm.appCtrl.appdata.group.employerLegalName);
+
+      if (!(/2016/).test(vm.appCtrl.effDate.getFullYear())) {
+        primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[1]);
+        primAddrCopy.addressType = 'BILL';
+        vm.appCtrl.appdata.group.address[2] = primAddrCopy;
+      } else {
+        primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
+        primAddrCopy.addressType = 'BILL';
+        vm.appCtrl.appdata.group.address[1] = primAddrCopy;
+      }
   }
 
   clearBillingContact(vm) {

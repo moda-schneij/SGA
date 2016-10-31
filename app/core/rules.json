@@ -24,12 +24,12 @@
   },
   "addressRules": {
     "address1": {
-      "maxLength": 40,
+      "maxLength": 64,
       "minLength": 1,
       "required": true
     },
     "address2": {
-      "maxLength": 40,
+      "maxLength": 16,
       "minLength": 0,
       "required": false
     },

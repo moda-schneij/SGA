@@ -54,9 +54,6 @@
         <span class="output-label" ng-if="$ctrl.appCtrl.groupOR">Expected employees (plan effective date)</span>
         <span class="output-value" ng-if="$ctrl.appCtrl.groupOR" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
 
-        <label for="aveEmplExpYear" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() !== 2016"> Number of eligible employees</label>
-		<span class="output-value" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() !== 2016" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
-
         <label for="aveEmplExpYear" class="required" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016"> Eligible Employees on the date coverage is to take effect</label>
         <input ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016" type="text" class="input-num" name="aveEmplExpYear" id="akgroupcount" ng-model="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage" max-value="50" min-value="0" model-integer required>
 
@@ -75,11 +72,11 @@
     </ul>
     <ng-form name="additionalcounts" check-form-empty>
       <ul class="form-container">
-        <li class="form-row" ng-if="$ctrl.appCtrl.groupOR">
+        <li class="form-row" ng-if="$ctrl.appCtrl.groupOR || ($ctrl.appCtrl.groupAK &&  $ctrl.appCtrl.effDate.getFullYear() !== 2016)">
           <label for="cobraeligibility" class="required">COBRA determination employee count
             <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.cobraElig">
           </label>
-          <input type="text" class="input-num" name="cobraeligibility" id="cobraeligibility" ng-model="$ctrl.appCtrl.appdata.orCobraCount" max-value="50" min-value="0" model-integer required>
+          <input type="text" class="input-num" name="cobraeligibility" id="cobraeligibility" ng-model="$ctrl.appCtrl.appdata.cobraCount" max-value="50" min-value="0" model-integer required>
         </li>
         <li class="form-row" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016">
           <label for="akgroupcount" class="required">Current group count
