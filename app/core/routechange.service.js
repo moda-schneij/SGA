@@ -9,11 +9,10 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppRouteChangeSvc';
 let routeOnStartWatch;
 let routeOnSuccess;
 
-class RouteChangeSvc {
+export default class RouteChangeSvc {
 
   /*@ngInject*/
   constructor($location, $log, $rootScope, $rootRouter) {
@@ -54,7 +53,3 @@ class RouteChangeSvc {
 function routeOnSuccessCB(e) {
   this.$log.debug(e);
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('RouteChangeSvc', RouteChangeSvc);

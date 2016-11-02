@@ -10,17 +10,16 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppApplicationSvc';
 //DUMMYING in RULES object: TODO - remove when implemented
 //const rulesObj = require('json!./rules.json');
-const mockData = require('json!./sgaData.json');
+//const mockData = require('json!./sgaData.json');
 const failedCheckinMessage = require('!html!./templates/failedcheckin.html');
 //DUMMYING in RULES object: TODO - remove when implemented
 
-class ApplicationSvc {
+export default class ApplicationSvc {
 
   /*@ngInject*/
-  constructor($q, $log, DialogSvc, SpinnerControlSvc, UtilsSvc, StorageSvc, AuthenticationSvc, DataSvc, UserSvc, ConstantsSvc, RulesSvc, OptionsSvc, STORAGE_KEYS, FAKE_APPID, FAKE_QUOTEID, DIALOGS) {
+  constructor($q, $log, DialogSvc, SpinnerControlSvc, UtilsSvc, StorageSvc, AuthenticationSvc, DataSvc, UserSvc, ConstantsSvc, RulesSvc, OptionsSvc, STORAGE_KEYS, FAKE_APPID, DIALOGS) {
     this.$q = $q;
     this.$log = $log;
     this.DialogSvc = DialogSvc;
@@ -34,7 +33,6 @@ class ApplicationSvc {
     this.OptionsSvc = OptionsSvc;
     this.SER_CONTEXT = ConstantsSvc.SER_CONTEXT;
     this.FAKE_APPID = FAKE_APPID;
-    this.FAKE_QUOTEID = FAKE_QUOTEID;
     this.DIALOGS = DIALOGS;
     this.EIN_KEY = STORAGE_KEYS.EIN_KEY;
     this.QUOTEID_KEY = STORAGE_KEYS.QUOTEID_KEY;
@@ -525,7 +523,3 @@ function populateSection(returnArr, sectionObj) {
   });
   returnArr.push(section);
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('ApplicationSvc', ApplicationSvc);

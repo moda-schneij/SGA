@@ -6,12 +6,15 @@ const inject = helpers.inject;
 const localStorage = helpers.localStorage;
 const sessionStorage = helpers.sessionStorage;
 const path = require('path');
-const testJson = path.join(__dirname, 'application.payload.json');
 const fs = require('fs');
+//const testJson = path.join(__dirname, 'application.payload.json');
+
+//const appObj = require('json!' + testJson);
+const appObj = require('json!./application.payload.json');
 
 /* eslint-disable no-sync, key-spacing, comma-spacing */
 
-const appObj = fs.readFileSync(testJson);
+//const appObj = JSON.parse(fs.readFileSync(path.join(__dirname, 'application.payload.json'), 'utf8'));
 
 /* eslint-enable no-sync, key-spacing, comma-spacing */
 
@@ -52,7 +55,24 @@ describe('Services: ', function() {
     appId: '123456789'
   };
 
+  // beforeEach(function() {
+  //   ngModule('sgAppConstants');
+  //   ngModule('sgAppConstantsSvc', function ($provide) {
+  //     $provide.value('$cookies', mockCookies);
+  //   });
+  //   ngModule('sgAppStorageSvc');
+  //   ngModule('sgAppDataSvc', function($provide) {
+  //     $provide.value('$resource', mockResource);
+  //   });
+  //   ngModule('sgAppApplicationSvc', function ($provide) {
+  //     $provide.value('AuthenticationSvc', mockAuthenticationSvc);
+  //     $provide.value('UrlSvc', mockUrlSvc);
+  //     $provide.value('UserSvc', mockUserSvc);
+  //   });
+  // });
+
   beforeEach(function() {
+
     ngModule('sgAppConstants');
     ngModule('sgAppConstantsSvc', function ($provide) {
       $provide.value('$cookies', mockCookies);
@@ -66,9 +86,6 @@ describe('Services: ', function() {
       $provide.value('UrlSvc', mockUrlSvc);
       $provide.value('UserSvc', mockUserSvc);
     });
-  });
-
-  beforeEach(function() {
 
     inject(function(_ApplicationSvc_, _API_URL_, _API_PATHS_, _ConstantsSvc_, _$httpBackend_, _$window_, _$timeout_, _$q_, _DataSvc_) {
       ApplicationSvc = _ApplicationSvc_;

@@ -4,15 +4,14 @@
  * @ngdoc function
  * @name smallGroupApplication.service:dialogs
  * @description
- * # Dialogs
+ * # Dialog
  * Service of the Small Group Application app
  */
  
 import angular from 'angular';
-const moduleName = 'sgAppDialogSvc';
 const _template = './app/core/templates/dialog.html';
 
-class DialogSvc {
+export default class DialogSvc {
 
   /*@ngInject*/
   constructor($injector, $rootScope) {
@@ -64,7 +63,3 @@ function transformData(data, type) {
 
   return returnData;
 }
-
-export default angular
-  .module(moduleName, ['ngDialog'])
-  .service('DialogSvc', DialogSvc);

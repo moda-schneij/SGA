@@ -10,12 +10,11 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppOptionsSvc';
 //DUMMYING in extra options object: TODO - remove when implemented
 const mockOptionsObj = require('json!./mockOptions.json');
 //DUMMYING in extra options object: TODO - remove when implemented
 
-class OptionsSvc {
+export default class OptionsSvc {
 
   /*@ngInject*/
   constructor(StorageSvc, $log, STORAGE_KEYS) {
@@ -36,7 +35,3 @@ class OptionsSvc {
   }
 
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('OptionsSvc', OptionsSvc);

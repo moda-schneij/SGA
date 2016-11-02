@@ -8,13 +8,11 @@
  * Service of the Small Group Application app
  */
 
-const moduleName = 'sgAppContentSvc';
-
 //this is a service for communicating with SpeedERates through a hidden iframe using postMessage
 //the iframe is in the root component - could also be in the template
 //it is always there so we can pass tokens, login, and logout from SGA
 
-class ContentSvc {
+export default class ContentSvc {
   
   /*@ngInject*/
   constructor ($log, StorageSvc, DataSvc, $q, STORAGE_KEYS) {
@@ -47,7 +45,3 @@ class ContentSvc {
   }
   
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('ContentSvc', ContentSvc);

@@ -31,19 +31,19 @@ import ngTipsoDirective from './directives/ngtipso.directive';
 import percentageFilter from './filters/percentage.filter';
 import prettySelectCheckboxDirective from './directives/prettyselectcheckbox.directive';
 import setCurrentNavDirective from './directives/setcurrentnav.directive';
-import sgAppApplicationSvc from './application.service';
-import sgAppAuthInterceptorSvc from './authinterceptor.service';
-import sgAppAuthenticationSvc from './authentication.service';
-import sgAppCachingSvc from './caching.service';
-import sgAppConstants from './sgApp.constants';
-import sgAppConstantsSvc from './constants.service';
-import sgAppContentSvc from './content.service';
-import sgAppDataSvc from './data.service';
-import sgAppDialogSvc from './dialog.service';
-import sgAppMessagesSvc from './messages.service';
-import sgAppOptionsSvc from './options.service';
-import sgAppRouteChangeSvc from './routechange.service';
-import sgAppRulesSvc from './rules.service';
+import ApplicationSvc from './application.service';
+import AuthInterceptorSvc from './authinterceptor.service';
+import AuthenticationSvc from './authentication.service';
+import CachingSvc from './caching.service';
+import sgaConstants from './sgApp.constants';
+import ConstantsSvc from './constants.service';
+import ContentSvc from './content.service';
+import DataSvc from './data.service';
+import DialogSvc from './dialog.service';
+import MessagesSvc from './messages.service';
+import OptionsSvc from './options.service';
+import RouteChangeSvc from './routechange.service';
+import RulesSvc from './rules.service';
 import sgAppSpinnerCtrlSvc from './spinner-control.service';
 import sgAppStorageSvc from './storage.service';
 import sgAppTimeoutSvc from './timeout.service';
@@ -75,20 +75,7 @@ export default angular
     ngTipsoDirective.name,
     percentageFilter.name,
     prettySelectCheckboxDirective.name,
-    setCurrentNavDirective.name, 
-    sgAppApplicationSvc.name,
-    sgAppAuthInterceptorSvc.name,
-    sgAppAuthenticationSvc.name,
-    sgAppCachingSvc.name,
-    sgAppConstants.name,
-    sgAppConstantsSvc.name,
-    sgAppContentSvc.name,
-    sgAppDataSvc.name,
-    sgAppDialogSvc.name,
-    sgAppMessagesSvc.name,
-    sgAppOptionsSvc.name,
-    sgAppRouteChangeSvc.name,
-    sgAppRulesSvc.name,
+    setCurrentNavDirective.name,
     sgAppSpinnerCtrlSvc.name,
     sgAppStorageSvc.name,
     sgAppTimeoutSvc.name,
@@ -99,6 +86,19 @@ export default angular
     sgAppXdMessagingSvc.name,
     textToNumModelDirective.name
   ])
+  .constant(sgaConstants)
+  .service(ApplicationSvc.name, ApplicationSvc)
+  .service(AuthenticationSvc.name, AuthenticationSvc)
+  .service(AuthInterceptorSvc.name, AuthInterceptorSvc)
+  .service(CachingSvc.name, CachingSvc)
+  .service(ConstantsSvc.name, ConstantsSvc)
+  .service(ContentSvc.name, ContentSvc)
+  .service(DataSvc.name, DataSvc)
+  .service(DialogSvc.name, DialogSvc)
+  .service(MessagesSvc.name, MessagesSvc)
+  .service(OptionsSvc.name, OptionsSvc)
+  .service(RouteChangeSvc.name, RouteChangeSvc)
+  .service(RulesSvc.name, RulesSvc)
   .filter('html', htmlFilterFn);
 
 /*@ngInject*/

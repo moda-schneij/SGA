@@ -9,12 +9,11 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppRulesSvc';
 //DUMMYING in RULES object: TODO - remove when implemented
 const mockRulesObj = require('json!./rules.json');
 //DUMMYING in RULES object: TODO - remove when implemented
 
-class RulesSvc {
+export default class RulesSvc {
 
   /*@ngInject*/
   constructor(StorageSvc, $log, STORAGE_KEYS) {
@@ -41,9 +40,4 @@ class RulesSvc {
     }
     //FAKE
   }
-
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('RulesSvc', RulesSvc);

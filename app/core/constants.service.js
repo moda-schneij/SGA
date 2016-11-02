@@ -11,7 +11,6 @@
  //an injectable service for providing constants that take angular dependencies
 
 import angular from 'angular';
-const moduleName = 'sgAppConstantsSvc';
 
 //these are globals defined by webpack DefinePlugin, set by the build type from package.json
 /* eslint-disable no-undef */
@@ -26,7 +25,7 @@ const PROD = __PROD__ || false;
 
 /* eslint-enable no-undef */
 
-class ConstantsSvc {
+export default class ConstantsSvc {
 
   /*@ngInject*/
   constructor($log, $location, $window, $cookies, StorageSvc, SER_LOGIN_PATH, SER_APPNAME, SGA_PATH, API_ROOT_PATH, STG3_URL, STORAGE_KEYS) {
@@ -104,7 +103,3 @@ class ConstantsSvc {
     }
   }
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('ConstantsSvc', ConstantsSvc);

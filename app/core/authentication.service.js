@@ -9,11 +9,10 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppAuthenticationSvc';
 const failedCheckinMessage = require('!html!./templates/failedcheckin.html');
 let messageToPost = {};
 
-class AuthenticationSvc {
+export default class AuthenticationSvc {
 
   /*@ngInject*/
   constructor($log, $q, $timeout, $window, $cookies, $location, $rootScope, DataSvc, UtilsSvc, DialogSvc, StorageSvc, TokenSvc, SpinnerControlSvc, UserSvc, XdMessagingSvc, MessagesSvc, STORAGE_KEYS, REFERRER_COOKIE, ConstantsSvc) {
@@ -269,6 +268,3 @@ function clearReferrerCookie() {
     path: '/'
   });
 }
-
-export default angular.module(moduleName, [])
-  .service('AuthenticationSvc', AuthenticationSvc);

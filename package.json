@@ -11,12 +11,14 @@
     "setdev": "export NODE_ENV=development|| set NODE_ENV=development&& ",
     "setprod": "export NODE_ENV=production|| set NODE_ENV=production&& ",
     "settest": "export NODE_ENV=test|| set NODE_ENV=test&& ",
-    "test": "mocha \"./app/**/*.spec.js\" --compilers js:babel-core/register",
+    "test": "mocha-webpack",
     "eslint": "eslint",
     "lint-app": "npm run eslint './app/**/*.js' -- --ignore-pattern '**/*.spec.js' --ignore-pattern '**/index.js' --quiet",
     "lint-tests": "npm run eslint './app/**/*.spec.js' -- --config mocha/test --env mocha:true --plugin chai --plugin mocha --rule mocha/no-exclusive-tests:2",
     "prebuild": "npm run lint-app && npm run test",
     "pretest": "npm run lint-tests",
+    "posttest": "npm run clean-mocha_webpack",
+    "clean-mocha_webpack": "node clean-mocha_webpack",
     "clean-node_modules": "node clean-node_modules",
     "postbuild": "npm run clean-node_modules",
     "env": "env",
@@ -89,6 +91,7 @@
     "localStorage": "^1.0.3",
     "minimist": "^1.2.0",
     "mocha": "^2.4.5",
+    "mocha-webpack": "^0.7.0",
     "modularscale-sass": "^2.1.1",
     "ng-annotate-loader": "^0.1.0",
     "ngtemplate-loader": "^1.3.1",
@@ -106,7 +109,8 @@
     "url-loader": "git+https://github.com/webpack/url-loader.git",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1",
-    "webpack-merge": "^0.10.0"
+    "webpack-merge": "^0.10.0",
+    "webpack-node-externals": "^1.5.4"
   },
   "dependencies": {
     "angular": "^1.5.8",

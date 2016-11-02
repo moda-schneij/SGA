@@ -9,10 +9,8 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppDataSvc';
 
-
-class DataSvc {
+export default class DataSvc {
 
   /*@ngInject*/
   constructor($http, $log, $q, FileSaver, Blob, UserSvc, ConstantsSvc, StorageSvc, $resource, $timeout, $rootScope, API_PATHS, STORAGE_KEYS) {
@@ -247,7 +245,3 @@ function retrieveApplication(paramsObj) {
     return this.$http.get(reqUrl);
   }
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('DataSvc', DataSvc);

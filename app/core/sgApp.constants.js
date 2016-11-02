@@ -14,7 +14,6 @@ var MODA = window.MODA || {};
 MODA.SGA = MODA.SGA || {};
 
 import angular from 'angular';
-const moduleName = 'sgAppConstants';
 
 const sgaConstants = (function(){
   //reusable constant parts here
@@ -97,6 +96,4 @@ const sgaConstants = (function(){
   };
 }());
 
-export default angular
-  .module(moduleName, [])
-  .constant(sgaConstants);
+export default sgaConstants;

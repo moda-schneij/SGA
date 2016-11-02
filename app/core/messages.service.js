@@ -9,9 +9,8 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppMessagesSvc';
 
-class MessagesSvc {
+export default class MessagesSvc {
 
   /*@ngInject*/
   constructor($log, $q, $rootScope, SpinnerControlSvc, MESSAGE_TYPES) {
@@ -141,7 +140,3 @@ function register(messages) {
 
   self.$rootScope.$broadcast('updateMessages', dataObj);
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('MessagesSvc', MessagesSvc);

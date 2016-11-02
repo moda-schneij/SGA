@@ -9,9 +9,8 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppCachingSvc';
 
-class CachingSvc {
+export default class CachingSvc {
 
   /*@ngInject*/
   constructor(StorageSvc, DataSvc, $q, $log, STORAGE_KEYS, $timeout) {
@@ -97,7 +96,3 @@ class CachingSvc {
   }
 
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('CachingSvc', CachingSvc);
