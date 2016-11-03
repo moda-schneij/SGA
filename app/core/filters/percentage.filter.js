@@ -2,13 +2,12 @@
 
 /**
  * @ngdoc overview
- * @name modelPercentageDirective
+ * @name percentageFilter
  * @description
  * Percentage filter of the Small Group Application app.
  */
 
 import angular from 'angular';
-import sgAppCore from '../sgApp.core';
 
 export default angular.module('percentageFilter', [])
   .filter('percentage', percentageFilterFn);

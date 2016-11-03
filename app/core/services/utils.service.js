@@ -9,10 +9,9 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppUtilsSvc';
 const _isEmpty = require('lodash/isEmpty');
 
-class UtilsSvc {
+export default class UtilsSvc {
 
   /*@ngInject*/
   constructor($log) {
@@ -163,7 +162,3 @@ class UtilsSvc {
   }
   
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('UtilsSvc', UtilsSvc);

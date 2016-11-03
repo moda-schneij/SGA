@@ -8,8 +8,7 @@
  * For adding a styled checkbox in the select options of an angular ui-select component
  */
 
-// import angular from 'angular';
-import sgAppCore from '../sgApp.core';
+import angular from 'angular';
 
 export default angular.module('prettySelectCheckboxDirective', [])
   .directive('prettySelectCheckbox', prettySelectCheckboxDirectiveFn);

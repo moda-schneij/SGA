@@ -8,9 +8,7 @@
  * Service of the Small Group Application app
  */
 
-const moduleName = 'sgAppSpinnerCtrlSvc';
-
-class SpinnerControlSvc{
+export default class SpinnerControlSvc{
 
   /*@ngInject*/
   constructor(usSpinnerService, $injector) {
@@ -65,6 +63,3 @@ function controlSpin(option) {
     }
   }  
 }
-
-export default angular.module(moduleName, ['angularSpinner'])
-  .service('SpinnerControlSvc', SpinnerControlSvc);

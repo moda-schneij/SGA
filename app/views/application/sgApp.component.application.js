@@ -66,9 +66,11 @@ function ApplicationCtrl(SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, Ap
     ApplicationComponentSvc.configNav(vm); //set up nav buttons
   });
 
+  //I don't know what this is about (below) - looks like it may be cruft
   vm.$routerCanActivate = (val) => val;
   vm.$routerCanActivate(false);
 
+  vm.navigating = false; //toggled during navigate method and on $routeChangeSuccess
   vm.serUrl = ConstantsSvc.SER_URL;
   vm.submitView = false;
   vm.confirmEnroll = false; //to be toggled when the application is in status "C" to enable enroll
@@ -253,6 +255,8 @@ function ApplicationCtrl(SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, Ap
         vm.rootCtrl.appdata = vm.appdata;
       }
     });
+
+    $scope.$on('$routeChangeSuccess', () => { vm.navigating = false; });
 
   };
 

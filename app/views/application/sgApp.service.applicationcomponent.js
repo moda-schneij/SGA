@@ -184,12 +184,15 @@ class ApplicationComponentSvc {
   //retrive the name of the next step to continue with
   getNextStep(vm) {
     //hacky and bad way of getting the final route name - there ought to be a better way. not even sure if this will throw an error at any point
-    const routeEntries = angular.isFunction(vm.$router.registry._rules.entries) && Array.from(vm.$router.registry._rules.entries())
+    const routeEntries = angular.isFunction(vm.$router.registry._rules.entries) && 
+      Array.from(vm.$router.registry._rules.entries())
       .filter((entry) => entry[0] && entry[0] === 'applicationComponent')[0][1];
-    const finalRouteName = routeEntries && angular.isArray(routeEntries.rules) && routeEntries.rules[routeEntries.rules.length - 1]._routeName;
+    const finalRouteName = routeEntries && angular.isArray(routeEntries.rules) && 
+      routeEntries.rules[routeEntries.rules.length - 1]._routeName;
     const sgaClientVal = vm.appdata.sgaClient ? angular.fromJson(vm.appdata.sgaClient) : {};
     //if this is an in-progress app, go back to last completed or saved step, otherwise to the end of the application form
-    return vm.appdata.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalRouteName) ? finalRouteName : null; //should be a route name as a string or undefined
+    return vm.appdata.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalRouteName) ? 
+      finalRouteName : null; //should be a route name as a string or undefined
   }
 
   returnToLastStep(vm) {
@@ -208,6 +211,7 @@ class ApplicationComponentSvc {
   }
 
   navigate(vm, config) {
+    vm.navigating = true; //this is toggled by $routeChangeSuccess in the component controller
     const forward = config.direction === 'forward';
     const nextRouteId = vm.$router.currentInstruction.component.routeData.data.order - (forward ? 0 : 2);
     const nextRouteName = routeConfig[nextRouteId].name;
@@ -215,6 +219,8 @@ class ApplicationComponentSvc {
       vm.$router.navigate([nextRouteName]);
       this.MessagesSvc.clearAll();
       this.configNav(vm);
+    } else {
+      vm.navigating = false; 
     }
   }
 

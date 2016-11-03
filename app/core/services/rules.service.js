@@ -10,7 +10,7 @@
 
 import angular from 'angular';
 //DUMMYING in RULES object: TODO - remove when implemented
-const mockRulesObj = require('json!./rules.json');
+const mockRulesObj = require('json!../rules.json');
 //DUMMYING in RULES object: TODO - remove when implemented
 
 export default class RulesSvc {

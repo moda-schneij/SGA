@@ -7,8 +7,7 @@
  * BindInputVal directive of the Small Group Application app.
  */
 
-// import angular from 'angular';
-import sgAppCore from '../sgApp.core';
+import angular from 'angular';
 
 export default angular.module('bindInputValDirective', [])
   .directive('bindInputVal', bindInputValDirectiveFn);

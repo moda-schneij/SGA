@@ -9,7 +9,7 @@
  */
 
 import angular from 'angular';
-const failedCheckinMessage = require('!html!./templates/failedcheckin.html');
+const failedCheckinMessage = require('!html!../templates/failedcheckin.html');
 let messageToPost = {};
 
 export default class AuthenticationSvc {

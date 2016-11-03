@@ -9,9 +9,8 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppStorageSvc';
 
-class StorageSvc {
+export default class StorageSvc {
 
   /*@ngInject*/
   constructor($window, $log) {
@@ -166,7 +165,3 @@ function clearAllStores() {
   this.$window.localStorage.clear();
   this.$window.sessionStorage.clear();
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('StorageSvc', StorageSvc);

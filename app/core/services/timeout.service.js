@@ -11,9 +11,8 @@
 //All the global stuff that need to happen on route change start and success
 
 import angular from 'angular';
-const moduleName = 'sgAppTimeoutSvc';
 
-class TimeoutSvc {
+export default class TimeoutSvc {
 
   /*@ngInject*/
   constructor($log, $timeout, $interval, AuthenticationSvc, DataSvc, DialogSvc, ngDialog, ApplicationSvc, $rootScope, TIMEOUT_MINS) {
@@ -130,7 +129,3 @@ function updateTime(timeObj, intervalFn, timeoutDialog) {
   }
   return timeObj; //return the updated time object every second for the timer in the modal
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('TimeoutSvc', TimeoutSvc);

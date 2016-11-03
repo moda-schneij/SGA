@@ -55,7 +55,11 @@ class CobraComponentSvc {
         const cobraORMin = this.UtilsSvc.isNumberOrNumString(this.RulesSvc.rules.groupRules.cobraORMinEmployees) &&  
           this.RulesSvc.rules && this.RulesSvc.rules.groupRules && this.RulesSvc.rules.groupRules.cobraORMinEmployees ? 
           parseInt(this.RulesSvc.rules.groupRules.cobraORMinEmployees, 10) : null;
-        return vm.appCtrl.groupOR ? (angular.isNumber(cobraORMin) ? 
+        //logic comment
+        //if group is OR *or* AK with effDate after 2016, then ...
+        //if there's a min number set for OR Cobra elig, return true only if empl count is GTE that minimum, otherwise false ...
+        //otherwise the value of cobraEligible from the rules object
+        return (vm.appCtrl.groupOR || (vm.appCtrl.groupAK && !(/2016/).test(vm.appCtrl.effDate.getFullYear()))) ? (angular.isNumber(cobraORMin) ? 
           (cobraCount >= cobraORMin) : false) : 
           this.RulesSvc.rules.groupRules.cobraEligible;
       },

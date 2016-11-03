@@ -9,7 +9,6 @@
  */
  
 import angular from 'angular';
-import sgAppCore from '../sgApp.core';
 
 export default angular.module('modaTabsDirective', [])
   .directive('tabsContainer', tabsContainerDirectiveFn)

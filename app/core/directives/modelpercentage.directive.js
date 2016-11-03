@@ -8,7 +8,6 @@
  */
 
 import angular from 'angular';
-import sgAppCore from '../sgApp.core';
 
 export default angular.module('modelPercentageDirective', [])
   .directive('modelPercentage', modelPercentageDirectiveFn);

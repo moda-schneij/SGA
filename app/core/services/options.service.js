@@ -11,7 +11,7 @@
 
 import angular from 'angular';
 //DUMMYING in extra options object: TODO - remove when implemented
-const mockOptionsObj = require('json!./mockOptions.json');
+const mockOptionsObj = require('json!../mockOptions.json');
 //DUMMYING in extra options object: TODO - remove when implemented
 
 export default class OptionsSvc {

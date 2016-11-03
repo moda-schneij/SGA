@@ -101,7 +101,7 @@ function parseResponseToken(responseHeaders) {
       token = responseHeaders[header] ? responseHeaders[header] : '';
       this.$log.debug('Token in parseResponseToken is:: ' + token);
       this.TokenSvc.setToken(token); //add the token to localStorage, to be retrieved for the next request using getToken
-      $timeout(() => {
+      this.$timeout(() => {
         const isLoggedIn = this.UserSvc.getIsLoggedIn();
         if (isLoggedIn) {
           TimeoutSvc.setUserTimeout(); //update the app timeout

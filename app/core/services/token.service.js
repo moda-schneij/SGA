@@ -9,9 +9,8 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppTokenSvc';
 
-class TokenSvc {
+export default class TokenSvc {
 
   /*@ngInject*/
   constructor(StorageSvc, STORAGE_KEYS, SpinnerControlSvc, UserSvc, $log, $window) {
@@ -45,8 +44,4 @@ class TokenSvc {
   }
   
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('TokenSvc', TokenSvc);
 

@@ -9,7 +9,7 @@
     <input type="button" class="button button-next" name="back" ng-click="$ctrl.prev()" ng-if="$ctrl.hasPrevRoute && $ctrl.inProgressApp" value="Go back">
     <!--disable Continue if this form is invalid -->
     <input type="button" class="button button-next" name="forward" moda-please-wait ng-click="$ctrl.next()" ng-class="{'disabled': $ctrl.applicationform.$invalid}" ng-disabled="$ctrl.applicationform.$invalid" ng-if="$ctrl.hasNextRoute && $ctrl.inProgressApp" value="Continue">
-    <input type="submit" class="button button-submit" name="complete" moda-please-wait ng-click="$ctrl.submitApp()" ng-class="{'disabled': $ctrl.applicationform.$invalid}" ng-if="!$ctrl.hasNextRoute && $ctrl.inProgressApp" ng-disabled="$ctrl.applicationform.$invalid" value="Submit">
+    <input type="submit" class="button button-submit" name="complete" moda-please-wait ng-click="$ctrl.submitApp()" ng-class="{'disabled': $ctrl.applicationform.$invalid}" ng-if="!$ctrl.hasNextRoute && $ctrl.inProgressApp && !$ctrl.navigating" ng-disabled="$ctrl.applicationform.$invalid" value="Submit">
     <input type="submit" class="button button-submit" name="enroll" moda-please-wait ng-click="$ctrl.enrollApp()" ng-class="{'disabled': $ctrl.applicationform.$invalid || !$ctrl.confirmEnroll}" ng-if="!$ctrl.hasNextRoute && $ctrl.completedApp" ng-disabled="$ctrl.applicationform.$invalid || !$ctrl.confirmEnroll" value="Enroll to Facets">
   </div>
 </ng-form>

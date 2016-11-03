@@ -18,10 +18,10 @@ const appObj = require('json!./application.payload.json');
 
 /* eslint-enable no-sync, key-spacing, comma-spacing */
 
-require('../storage.service');
-require('../application.service');
-require('../data.service');
-require('../constants.service');
+require('../services/storage.service');
+require('../services/application.service');
+require('../services/data.service');
+require('../services/constants.service');
 require('../sgApp.constants');
 
 const expect = require('chai').expect;

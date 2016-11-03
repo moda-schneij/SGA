@@ -8,13 +8,11 @@
  * Service of the Small Group Application app
  */
 
-const moduleName = 'sgAppXdMessagingSvc';
-
 //this is a service for communicating with SpeedERates through a hidden iframe using postMessage
 //the iframe is in the root component - could also be in the template
 //it is always there so we can pass tokens, login, and logout from SGA
 
-class XdMessagingSvc {
+export default class XdMessagingSvc {
   
   /*@ngInject*/
   constructor ($log, ConstantsSvc, $window, SpinnerControlSvc, UserSvc, TokenSvc) {
@@ -73,7 +71,3 @@ class XdMessagingSvc {
   }
   
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('XdMessagingSvc', XdMessagingSvc);

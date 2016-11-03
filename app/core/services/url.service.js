@@ -9,9 +9,8 @@
  */
 
 import angular from 'angular';
-const moduleName = 'sgAppUrlSvc';
 
-class UrlSvc {
+export default class UrlSvc {
 
   /*@ngInject*/
   constructor($location, $log) {
@@ -78,9 +77,4 @@ class UrlSvc {
     }
     return protocol + returnUrl;
   }
-
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('UrlSvc', UrlSvc);

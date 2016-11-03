@@ -8,12 +8,7 @@
  * Service of the Small Group Application app
  */
 
-//an injectable service for providing constants that take angular dependencies
-
-import angular from 'angular';
-const moduleName = 'sgAppUserSvc';
-
-class UserSvc {
+export default class UserSvc {
 
   /*@ngInject*/
   constructor(StorageSvc, ConstantsSvc, DialogSvc, STORAGE_KEYS, $log, $q, $rootScope, $rootRouter) {
@@ -70,7 +65,3 @@ function confirmSuccess() {
 function confirmError(e) {
   this.$log.error(e);
 }
-
-export default angular
-  .module(moduleName, [])
-  .service('UserSvc', UserSvc);
