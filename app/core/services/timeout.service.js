@@ -97,7 +97,7 @@ function warnTimeout(timeObj) {
   
   timeoutDialog.then(
     (value) => {
-      this.DataSvc.ping(); //refresh the token on click of continue button -> resets the timeout
+      this.DataSvc.ping().error(() => this.ApplicationSvc.checkin()); //refresh the token on click of continue button -> resets the timeout
     },
     () => {
       if (!this.$rootScope.timeObj.expired) { //this runs automatically if I don't prevent it from doing so timeout closes the dialog

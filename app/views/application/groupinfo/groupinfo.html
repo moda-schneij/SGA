@@ -110,12 +110,6 @@
           <span class="output-label">Zip code</span>
           <span class="output-value" ng-bind="::$ctrl.appCtrl.appdata.group.address[0].zip"></span>
         </li>
-        <li class="form-row">
-          <label for="physicalbilling">Is the group's billing information the same?</label>
-          <div class="container-pretty-checkbox">
-            <pretty-checkbox name="physicalbilling" ng-model="$ctrl.appCtrl.appdata.group.billingAddressSame" ng-change="$ctrl.copyToBillingAddress()" label="false" ng-model-options="{updateOn: 'default'}"></pretty-checkbox>
-          </div>
-        </li>
       </ul>
     </ng-form>
     
@@ -185,6 +179,15 @@
     </ng-form>
     <!--Group admin contact-->
     <ng-form novalidate name="admincontact" check-form-empty>
+		<ul class="address address-billing form-container">
+		<li class="form-row">
+          <label for="physicalbilling">Is the group's billing information the same?</label>
+          <div class="container-pretty-checkbox">
+            <pretty-checkbox name="physicalbilling" ng-model="$ctrl.appCtrl.appdata.group.billingAddressSame" ng-change="$ctrl.copyToBillingAddress()" label="false" ng-model-options="{updateOn: 'default'}"></pretty-checkbox>
+          </div>
+        </li>
+      </ul>
+
       <h3 class="section-fieldset">Group administrator contact</h3>
       <ul class="form-container">
         <li class="form-row">

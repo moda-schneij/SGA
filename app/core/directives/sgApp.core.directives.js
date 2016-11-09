@@ -34,14 +34,12 @@ import textToNumModelDirective from './texttonummodel.directive';
 
 export default angular
   .module('sgAppCoreDirectives', [
-    bindInputValDirective.name,
     bindTrustedHtmlDirective.name,
     checkFormEmptyDirective.name,
     formOnChangeDirective.name,
     modaDisableAllInputsDirective.name,
     modaMessagesDirective.name,
     modaPleaseWaitDirective.name,
-    modaScrollToTopDirective.name,
     modaTabsDirective.name,
     modaUiSelectContainerDirective.name,
     modelCurrencyDirective.name,
@@ -53,4 +51,6 @@ export default angular
     prettySelectCheckboxDirective.name,
     setCurrentNavDirective.name,
     textToNumModelDirective.name
-  ]);
+  ])
+  .directive('bindInputVal', bindInputValDirective)
+  .directive('scrollToTop', modaScrollToTopDirective);
