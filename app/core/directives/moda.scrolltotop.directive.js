@@ -11,15 +11,16 @@
 import angular from 'angular';
 
 class ModaScrollToTopDirective {
-  constructor() {
+  constructor($log, $window, $timeout) {
     this.restrict = 'A';
-    //this.scrollUp = this.scrollUp.bind(this);
-    this.controller = ModaScrollToTopController;
+    this.$log = $log;
+    this.$window = $window;
+    this.$timeout = $timeout;
   }
 
-  link($scope, $elem, $attrs, ctrl) {
+  link($scope, $elem, $attrs) {
     const routeChangeWatcher = $scope.$on('$routeChangeSuccess', () => {
-      ctrl.$timeout(this.scrollUp.bind(ctrl), 500);
+      this.$timeout(this.scrollUp.bind(this), 500);
     });
     $scope.$on('$destroy', routeChangeWatcher);
   }
@@ -34,17 +35,9 @@ class ModaScrollToTopDirective {
     }
   }
 
-  static directiveFactory() {
-    return new ModaScrollToTopDirective();
-  }
-}
-
-class ModaScrollToTopController {
-  /*@ngInject*/
-  constructor($log, $window, $timeout) {
-    this.$log = $log;
-    this.$window = $window;
-    this.$timeout = $timeout;
+  static directiveFactory($log, $window, $timeout) {
+    'ngInject';
+    return new ModaScrollToTopDirective($log, $window, $timeout);
   }
 }
 

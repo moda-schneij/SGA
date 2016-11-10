@@ -10,12 +10,13 @@
 import angular from 'angular';
 
 class BindInputValDirective {
-  constructor() {
+  constructor($parse, UtilsSvc) {
     this.restrict = 'A';
     this.require = ['?ngModel', '?ngValue'];
-    this.controller = BindInputValController;
+    this.$parse = $parse;
+    this.UtilsSvc = UtilsSvc;
   }
-  link($scope, $elem, $attrs, ctrl) {
+  link($scope, $elem, $attrs) {
     const bindOpt = this.$parse($attrs.bindInputVal)($scope);
     const parseAsFloat = bindOpt && bindOpt.parse && (/float/i).test(bindOpt.parse);
     const parseAsInt = bindOpt && bindOpt.parse && (/int/i).test(bindOpt.parse);
@@ -31,16 +32,9 @@ class BindInputValDirective {
       $model.assign($scope, valToBind);
     });
   }
-  static directiveFactory() {
-    return new BindInputValDirective();
-  }
-}
-
-class BindInputValController {
-  /*@ngInject*/
-  constructor($parse, UtilsSvc) {
-    this.$parse = $parse;
-    this.UtilsSvc = UtilsSvc;
+  static directiveFactory($parse, UtilsSvc) {
+    'ngInject';
+    return new BindInputValDirective($parse, UtilsSvc);
   }
 }
 

@@ -34,9 +34,6 @@ import textToNumModelDirective from './texttonummodel.directive';
 
 export default angular
   .module('sgAppCoreDirectives', [
-    bindTrustedHtmlDirective.name,
-    checkFormEmptyDirective.name,
-    formOnChangeDirective.name,
     modaDisableAllInputsDirective.name,
     modaMessagesDirective.name,
     modaPleaseWaitDirective.name,
@@ -53,4 +50,7 @@ export default angular
     textToNumModelDirective.name
   ])
   .directive('bindInputVal', bindInputValDirective)
+  .directive('bindTrustedHtml', bindTrustedHtmlDirective)
+  .directive('checkFormEmpty', checkFormEmptyDirective)
+  .directive('formOnChange', formOnChangeDirective)
   .directive('scrollToTop', modaScrollToTopDirective);

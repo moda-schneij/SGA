@@ -9,20 +9,21 @@
 
 import angular from 'angular';
 
-export default angular.module('bindTrustedHtmlDirective', [])
-  .directive('bindTrustedHtml', bindTrustedHtmlDirectiveFn);
-
-/*@ngInject*/
-function bindTrustedHtmlDirectiveFn($log) {
-  return {
-    restrict: 'A',
-    link: function ($scope, $element, $attrs) {
-      const el = $element[0];
-      $scope.$watch(function() {
-        return $attrs.bindTrustedHtml;
-      }, function(newVal, oldVal) {
-        $element.html(newVal);
-      });
-    }
+class BindTrustedHtmlDirective {
+  constructor() {
+    this.restrict = 'A';
+  }
+  link($scope, $element, $attrs) {
+    const el = $element[0];
+    $scope.$watch(function() {
+      return $attrs.bindTrustedHtml;
+    }, function(newVal, oldVal) {
+      $element.html(newVal);
+    });
+  }
+  static directiveFactory() {
+    return new bindTrustedHtmlDirective();
   }
 }
+
+export default BindTrustedHtmlDirective.directiveFactory;
