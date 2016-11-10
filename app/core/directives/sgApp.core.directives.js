@@ -16,7 +16,7 @@ import bindInputValDirective from './bindinputval.directive';
 import bindTrustedHtmlDirective from './bindtrustedhtml.directive';
 import checkFormEmptyDirective from './checkformempty.directive';
 import formOnChangeDirective from './formonchange.directive';
-import modaDisableAllInputsDirective from './moda.disableallinputs.directive';
+import disableAllInputsDirective from './moda.disableallinputs.directive';
 import modaMessagesDirective from './moda.messages.directive';
 import modaPleaseWaitDirective from './moda.pleasewait.directive';
 import modaScrollToTopDirective from './moda.scrolltotop.directive';
@@ -34,7 +34,6 @@ import textToNumModelDirective from './texttonummodel.directive';
 
 export default angular
   .module('sgAppCoreDirectives', [
-    modaDisableAllInputsDirective.name,
     modaMessagesDirective.name,
     modaPleaseWaitDirective.name,
     modaTabsDirective.name,
@@ -52,5 +51,6 @@ export default angular
   .directive('bindInputVal', bindInputValDirective)
   .directive('bindTrustedHtml', bindTrustedHtmlDirective)
   .directive('checkFormEmpty', checkFormEmptyDirective)
+  .directive('disableAllInputs', disableAllInputsDirective)
   .directive('formOnChange', formOnChangeDirective)
   .directive('scrollToTop', modaScrollToTopDirective);

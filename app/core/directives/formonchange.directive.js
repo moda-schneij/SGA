@@ -17,7 +17,7 @@ class FormOnChangeDirective {
     this.$log = $log;
   }
   link($scope, $element, $attrs, $controller) {
-    const cb = $parse($attrs.formOnChange);
+    const cb = this.$parse($attrs.formOnChange);
     $element.on('change select input', function(){
       this.$log.debug($controller);
       cb($scope);

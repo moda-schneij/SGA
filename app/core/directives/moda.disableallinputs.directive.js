@@ -10,32 +10,25 @@
 
 import angular from 'angular';
 
-export default angular.module('modaDisableAllInputsDirective', [])
-  .directive('disableAllInputs', disableAllInputsDirectiveFn);
-
-/*@ngInject*/
-function disableAllInputsDirectiveFn($log, $timeout, $rootScope) {
-  const dDO = {
-    restrict: 'A',
-    require: ['?form', '?ngForm'],
-    scope: {
+class DisableAllInputsDirective {
+  constructor($log, $rootScope) {
+    this.restrict = 'A';
+    this.require = ['?form', '?ngForm'];
+    this.scope = {
       disableAllInputs: '=' //evaluated value of the directive attribute
-    },
-    link: disableAllInputsLinkFn
+    };
+    this.$log = $log;
   }
-  return dDO;
-
-  function disableAllInputsLinkFn($scope, $elem, $attrs, ngModelCtrl) {
-    
+  link($scope, $elem, $attrs, ngModelCtrl) {
     const deregisterWatch = $scope.$watch(() => $scope.disableAllInputs, (disableVal) => {
       let $inputs;
       let $containedEls;
       if (angular.isDefined(disableVal) && typeof disableVal === 'boolean') {
-        $log.debug(disableVal);
+        this.$log.debug(disableVal);
         deregisterWatch();
         if (disableVal) {
           $scope.$evalAsync(() => {
-            $log.debug(ngModelCtrl);
+            this.$log.debug(ngModelCtrl);
             $inputs = angular.element($elem
               .querySelectorAll('input, textarea, .prettycheckbox, .prettyradio, .ui-select-container, .numpicker-button'));
             $containedEls = $inputs.find('*');
@@ -67,4 +60,10 @@ function disableAllInputsDirectiveFn($log, $timeout, $rootScope) {
       });
     });
   }
+  static directiveFactory($log) {
+    'ngInject';
+    return new DisableAllInputsDirective($log);
+  }
 }
+
+export default DisableAllInputsDirective.directiveFactory;
