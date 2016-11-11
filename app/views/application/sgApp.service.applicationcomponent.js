@@ -214,7 +214,7 @@ class ApplicationComponentSvc {
     vm.navigating = true; //this is toggled by $routeChangeSuccess in the component controller
     const forward = config.direction === 'forward';
     const nextRouteId = vm.$router.currentInstruction.component.routeData.data.order - (forward ? 0 : 2);
-    const nextRouteName = routeConfig[nextRouteId].name;
+    const nextRouteName = routeConfig[nextRouteId] && routeConfig[nextRouteId].name ? routeConfig[nextRouteId].name : null;
     if (nextRouteName) {
       vm.$router.navigate([nextRouteName]);
       this.MessagesSvc.clearAll();

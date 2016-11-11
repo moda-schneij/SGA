@@ -119,8 +119,8 @@ function configFn($httpProvider, $locationProvider, $sceDelegateProvider, usSpin
   uiSelectConfig.theme = 'select2';
   uiSelectConfig.resetSearchInput = true;
   //decorate the number picker directive
-  /*@ngInject*/
   $provide.decorator('hNumberDirective', ($delegate, $timeout, $log, $parse) => {
+    'ngInject';
     const directive = $delegate[0];
     directive.scope.ctrl = '='; //this is the vm passed to the numpicker
     const compile = directive.compile;
@@ -139,10 +139,9 @@ function configFn($httpProvider, $locationProvider, $sceDelegateProvider, usSpin
         .addClass('numpicker-number')
         .wrapInner('<input name="" ng-model="ctrl.dummy" class="numpicker-value"></input>');
 
-      return function($scope, $elem, $attrs) {
+      return function($scope, $elem, $attrs, ngModelCtrl) {
         link.apply(this, arguments);
         const _val = $scope.value ? $scope.value : 0;
-        const vm = $scope.ctrl; //to test later for existence
         const $input = $elem.find('.numpicker-value');
         $input.attr('name', $attrs.name)
           .attr('ng-model', $attrs.value)
@@ -151,11 +150,15 @@ function configFn($httpProvider, $locationProvider, $sceDelegateProvider, usSpin
           () => $scope.value,
           (newVal, oldVal) => {
             const _newVal = newVal ? newVal : 0;
+            const vm = $scope.ctrl; //to test later for existence
             $input.val(_newVal);
             if (newVal !== oldVal && angular.isDefined(vm)) {
               angular.forEach(vm, (val, key) => {
                 if (angular.isObject(val) && val.hasOwnProperty('$setDirty') && angular.isFunction(val.$setDirty)) {
                   val.$setDirty();
+                  if (angular.isFunction(val.$setTouched)) {
+                    val.$setTouched();
+                  }
                 }
               });
             }

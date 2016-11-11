@@ -304,7 +304,7 @@
                       <tr>
                         <th>Enrollments</th>
                         <th ng-repeat="rateType in plan.rates track by $index">
-                          <h-number name="doenrollment_{{rateType.name}}" value="rateType.count" min="0" max="{{rateType.maxCount}}" step="1" change="$ctrl.onChangeDirectOptionEnrollment()"></h-number>
+                          <h-number name="doenrollment_{{rateType.name}}" value="rateType.count" ctrl="$ctrl" min="0" max="{{rateType.maxCount}}" step="1" change="$ctrl.onChangeDirectOptionEnrollment()"></h-number>
                         </th>
                         <th class="input-styled"><span>{{$ctrl.doTotalEnrollment ? $ctrl.doTotalEnrollment : 0}}</span></th>
                       </tr>
