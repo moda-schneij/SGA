@@ -20,8 +20,6 @@ import disableAllInputsDirective from './disableallinputs.directive';
 import modaMessagesDirective from './moda.messages.directive';
 import modaPleaseWaitDirective from './moda.pleasewait.directive';
 import modaScrollToTopDirective from './moda.scrolltotop.directive';
-import modaTabsDirective from './moda.tabs.directive';
-import modaUiSelectContainerDirective from './modauiselectcontainer.directive';
 import modelCurrencyDirective from './modelcurrency.directive';
 import modelFloatDirective from './modelfloat.directive';
 import modelIntegerDirective from './modelinteger.directive';
@@ -34,10 +32,6 @@ import textToNumModelDirective from './texttonummodel.directive';
 
 export default angular
   .module('sgAppCoreDirectives', [
-    modaTabsDirective.name,
-    modaUiSelectContainerDirective.name,
-    modelCurrencyDirective.name,
-    modelFloatDirective.name,
     modelIntegerDirective.name,
     modelPercentageDirective.name,
     ngBindAttrsDirective.name,
@@ -53,4 +47,6 @@ export default angular
   .directive('formOnChange', formOnChangeDirective)
   .directive('modaMessages', modaMessagesDirective)
   .directive('modaPleaseWait', modaPleaseWaitDirective)
+  .directive('modelCurrency', modelCurrencyDirective)
+  .directive('modelFloat', modelFloatDirective)
   .directive('scrollToTop', modaScrollToTopDirective);

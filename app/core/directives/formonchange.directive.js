@@ -13,12 +13,17 @@ class FormOnChangeDirective {
   constructor($parse, $log) {
     this.restrict = 'A';
     this.require = ['?form', '?ngForm'];
+    this.link = this.linkFn.bind(this);
     this.$parse = $parse;
     this.$log = $log;
   }
-  link($scope, $element, $attrs, $controller) {
+  linkFn($scope, $element, $attrs, $controller) {
+    /* no isolate scope here, do not parse the attribute 
+    ** (a callback function 
+    ** on the parent controller) against scope 
+    */
     const cb = this.$parse($attrs.formOnChange);
-    $element.on('change select input', function(){
+    $element.on('change select input', () => {
       this.$log.debug($controller);
       cb($scope);
     });
