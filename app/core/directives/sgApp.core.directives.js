@@ -24,19 +24,12 @@ import modelCurrencyDirective from './modelcurrency.directive';
 import modelFloatDirective from './modelfloat.directive';
 import modelIntegerDirective from './modelinteger.directive';
 import modelPercentageDirective from './modelpercentage.directive';
-import ngBindAttrsDirective from './ngbindattributes.directive';
 import ngTipsoDirective from './ngtipso.directive';
 import prettySelectCheckboxDirective from './prettyselectcheckbox.directive';
-import setCurrentNavDirective from './setcurrentnav.directive';
 import textToNumModelDirective from './texttonummodel.directive';
 
 export default angular
-  .module('sgAppCoreDirectives', [
-    ngTipsoDirective.name,
-    prettySelectCheckboxDirective.name,
-    setCurrentNavDirective.name,
-    textToNumModelDirective.name
-  ])
+  .module('sgAppCoreDirectives', [])
   .directive('bindInputVal', bindInputValDirective)
   .directive('bindTrustedHtml', bindTrustedHtmlDirective)
   .directive('checkFormEmpty', checkFormEmptyDirective)
@@ -48,5 +41,7 @@ export default angular
   .directive('modelFloat', modelFloatDirective)
   .directive('modelInteger', modelIntegerDirective)
   .directive('modelPercentage', modelPercentageDirective)
-  .directive('ngBindAttributes', ngBindAttrsDirective)
-  .directive('scrollToTop', modaScrollToTopDirective);
+  .directive('ngTipso', ngTipsoDirective)
+  .directive('prettySelectCheckbox', prettySelectCheckboxDirective)
+  .directive('scrollToTop', modaScrollToTopDirective)
+  .directive('textToNumModel', textToNumModelDirective);

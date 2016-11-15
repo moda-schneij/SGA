@@ -10,18 +10,20 @@
  
 import angular from 'angular';
 
-export default angular.module('ngTipsoDirective', [])
-  .directive('ngTipso', ngTipsoDirectiveFn);
-
 //Angular wrapper for jquery Tipso
 //https://github.com/object505/tipso
 
-/*@ngInject*/
-function ngTipsoDirectiveFn() {
-  return {
-    restrict: 'A',
-    link: (scope, element, attrs, modelCtrl) => {
-      $(element).tipso(scope.$eval(attrs.ngTipso));
-    }
+class NgTipsoDirective {
+  constructor() {
+    this.restrict = 'A',
+    this.link = linkFn;
+  }
+  linkFn(scope, element, attrs, modelCtrl) {
+    $(element).tipso(scope.$eval(attrs.ngTipso));
+  }
+  static directiveFactory() {
+    return new NgTipsoDirective();
   }
 }
+
+export default NgTipsoDirective.directiveFactory;

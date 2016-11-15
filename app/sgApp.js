@@ -23,7 +23,6 @@ so that I can get the parent component using a require in the partial component*
 
 import sidebar from './partials/sidebar/sgApp.component.sidebar';
 import header from './partials/header/sgApp.component.header';
-import navmain from './partials/navmain/sgApp.component.navmain';
 import footer from './partials/footer/sgApp.component.footer';
 import messages from './partials/messages/sgApp.component.messages';
 
