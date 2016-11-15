@@ -32,8 +32,6 @@ import textToNumModelDirective from './texttonummodel.directive';
 
 export default angular
   .module('sgAppCoreDirectives', [
-    modelPercentageDirective.name,
-    ngBindAttrsDirective.name,
     ngTipsoDirective.name,
     prettySelectCheckboxDirective.name,
     setCurrentNavDirective.name,
@@ -49,4 +47,6 @@ export default angular
   .directive('modelCurrency', modelCurrencyDirective)
   .directive('modelFloat', modelFloatDirective)
   .directive('modelInteger', modelIntegerDirective)
+  .directive('modelPercentage', modelPercentageDirective)
+  .directive('ngBindAttributes', ngBindAttrsDirective)
   .directive('scrollToTop', modaScrollToTopDirective);
