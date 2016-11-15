@@ -17,6 +17,7 @@ import sgAppCoreDirectives from './directives/sgApp.core.directives';
 import percentageFilter from './filters/percentage.filter';
 import trustedHTMLFilter from './filters/trustedHTML.filter';
 import sgaConstants from './sgApp.constants';
+import sgaConfig from './sgApp.config';
 
 export default angular
   .module('sgAppCore', [
@@ -25,4 +26,5 @@ export default angular
     sgAppCoreSvcs.name,
     trustedHTMLFilter.name
   ])
-  .constant(sgaConstants);
+  .constant(sgaConstants)
+  .config(sgaConfig);

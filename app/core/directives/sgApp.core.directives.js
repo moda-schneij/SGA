@@ -32,7 +32,6 @@ import textToNumModelDirective from './texttonummodel.directive';
 
 export default angular
   .module('sgAppCoreDirectives', [
-    modelIntegerDirective.name,
     modelPercentageDirective.name,
     ngBindAttrsDirective.name,
     ngTipsoDirective.name,
@@ -49,4 +48,5 @@ export default angular
   .directive('modaPleaseWait', modaPleaseWaitDirective)
   .directive('modelCurrency', modelCurrencyDirective)
   .directive('modelFloat', modelFloatDirective)
+  .directive('modelInteger', modelIntegerDirective)
   .directive('scrollToTop', modaScrollToTopDirective);

@@ -18,10 +18,10 @@ class CheckFormEmptyDirective {
     this.$log = $log;
   }
   
-  linkFn($scope, $element, $attrs, formCtrl) {
+  linkFn($scope, $element, $attrs, ngFormCtrl) {
     let deregisterWatch;
     const ctrlsArr = [];
-    const thisCtrl = formCtrl.filter((val) => !!val)[0];
+    const thisCtrl = ngFormCtrl.filter((val) => !!val)[0];
     if (angular.isObject(thisCtrl)) {
       proceedWithCheck.call(this);
     }

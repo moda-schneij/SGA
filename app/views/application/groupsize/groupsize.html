@@ -67,12 +67,6 @@
     </ul>
     <ng-form name="additionalcounts" check-form-empty>
       <ul class="form-container">
-        <li class="form-row" ng-if="$ctrl.appCtrl.groupOR || ($ctrl.appCtrl.groupAK &&  $ctrl.appCtrl.effDate.getFullYear() !== 2016)">
-          <label for="cobraeligibility" class="required">COBRA determination employee count
-            <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.cobraElig">
-          </label>
-          <input type="text" class="input-num" name="cobraeligibility" id="cobraeligibility" ng-model="$ctrl.appCtrl.appdata.cobraCount" max-value="50" min-value="0" model-integer required>
-        </li>
         <li class="form-row" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016">
           <label for="akgroupcount" class="required">Current group count
             <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.akGroupCount">
@@ -84,6 +78,12 @@
           <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.akEmpCurrentCalYear"></span>
           </label>
           <span class="output-value" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
+        </li>
+        <li class="form-row" ng-if="$ctrl.appCtrl.groupOR || ($ctrl.appCtrl.groupAK &&  $ctrl.appCtrl.effDate.getFullYear() !== 2016)">
+          <label for="cobraeligibility" class="required">COBRA determination employee count
+            <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.cobraElig">
+          </label>
+          <input type="text" class="input-num" name="cobraeligibility" id="cobraeligibility" ng-model="$ctrl.appCtrl.appdata.cobraCount" max-value="50" min-value="0" model-integer required>
         </li>
         <li class="form-row" ng-if="$ctrl.appCtrl.effDate.getFullYear() !== 2016">
           <label for="medsecpayer" class="required">
