@@ -6,7 +6,7 @@ const inject = helpers.inject;
 const localStorage = helpers.localStorage;
 const sessionStorage = helpers.sessionStorage;
 
-require('../storage.service');
+require('../services/sgApp.core.services');
 
 const expect = require('chai').expect;
 const assert = require('chai').assert;
@@ -27,7 +27,7 @@ describe('Services: ', function() {
   //console.log('what is my mocked localstorage?');
   //console.log(localStorage);
 
-  beforeEach(ngModule('sgAppStorageSvc'));
+  beforeEach(ngModule('sgAppCoreSvcs'));
 
   beforeEach(inject(function(_StorageSvc_, _$window_) {
     StorageSvc = _StorageSvc_;
