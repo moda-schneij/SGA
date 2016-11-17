@@ -11,7 +11,9 @@ import 'babel-polyfill';
 import jquery from 'jquery';
 import angular from 'angular';
 import sgAppApplicationForm from './views/application/sgApp.component.application';
+import sgAppThirdParty from './core/sgApp.third-party';
 import sgAppCore from './core/sgApp.core';
+import sgaConfig from './core/sgApp.config';
 import sgAppLogin from './views/login/sgApp.component.login';
 import sgAppRoot from './root/sgApp.component.root';
 
@@ -56,30 +58,15 @@ var MODA = window.MODA || {};
 
 export default angular
   .module('sgApp', [
-    'angular-aba-routing-validation',
-    'angular-bind-html-compile',
-    'angularSpinner',
-    'angular-toArrayFilter',
-    'duScroll',
-    'ngAnimate',
-    'ngComponentRouter',
-    'ngCookies',
-    'ngFileSaver',
-    'ngSanitize',
-    'ngDialog',
-    'ngInputModified',
-    'ngNumberPicker',
-    'ngResource',
-    'pretty-checkable',
-    'ui.mask',
-    'ui.select',
+    sgAppThirdParty.name,
     sgAppCore.name,
     sgAppApplicationForm.name,
     sgAppRoot.name,
     sgAppLogin.name
   ])
   .value('$routerRootComponent', 'sgaRoot')
-  .run(runBlock);
+  .run(runBlock)
+  .config(sgaConfig);
 
 /*@ngInject*/
 function runBlock(RouteChangeSvc, StorageSvc, STORAGE_KEYS, $log, $templateCache) {

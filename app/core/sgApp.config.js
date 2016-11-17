@@ -14,7 +14,7 @@ const MODA = window.MODA || {};
 MODA.SGA = MODA.SGA || {};
 
 /*@ngInject*/
-export default function sgaConfig($httpProvider, $logProvider, $locationProvider, $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) {
+export default function sgaConfig(CONFIGS, $httpProvider, $logProvider, $locationProvider, $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) {
   $httpProvider.interceptors.push('AuthInterceptorSvc');
   $logProvider.debugEnabled(!PROD); //disable debug logging in production
   $locationProvider.html5Mode(false);
@@ -24,21 +24,8 @@ export default function sgaConfig($httpProvider, $logProvider, $locationProvider
     // Allow loading from our parent context application.  Notice the difference between * and **.
     MODA.baseDomain + '**'
   ]);
-  usSpinnerConfigProvider.setDefaults({
-    lines: 11,
-    length: 15,
-    width: 8,
-    radius: 18,
-    rotate: 37,
-    trail: 66,
-    speed: 0.8
-  });
-  ngDialogProvider.setDefaults({
-    className: 'ngdialog-theme-default',
-    showClose: false,
-    closeByEscape: false,
-    closeByDocument: false
-  });
+  usSpinnerConfigProvider.setDefaults(CONFIGS.spinner);
+  ngDialogProvider.setDefaults(CONFIGS.dialogDefaults);
   uiSelectConfig.theme = 'select2';
   uiSelectConfig.resetSearchInput = true;
   //decorate the number picker directive

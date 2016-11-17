@@ -87,6 +87,24 @@ const sgaConstants = (function(){
         proceed?</p>`
       }
     },
+    'CONFIGS': {
+      spinner: {
+        lines: 11,
+        length: 15,
+        width: 8,
+        radius: 18,
+        rotate: 37,
+        trail: 66,
+        speed: 0.8,
+        position: 'fixed'
+      },
+      dialogDefaults: {
+        className: 'ngdialog-theme-default',
+        showClose: false,
+        closeByEscape: false,
+        closeByDocument: false
+      }
+    },
     'FAKE_APPID': '245',
     'FAKE_QUOTEID': '90038',
     'APP_ROOT': MODA.SGA.appRoot,

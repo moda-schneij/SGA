@@ -13,5 +13,11 @@ module.exports = {
         include: path.join(__dirname, 'app')
       }
     ]
+  },
+  resolve: {
+    root: [
+      path.resolve(__dirname, 'app'),
+      path.resolve(__dirname, 'node_modules')
+    ]
   }
 };

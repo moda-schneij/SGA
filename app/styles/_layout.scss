@@ -11,6 +11,7 @@
 
 html {
   height: 100%;
+  min-height: 100%;
   overflow-y: scroll;
   overflow-x: hidden; // I do NOT want hz scroll
   &.ngdialog-open {
@@ -24,10 +25,6 @@ body {
   overflow-y: initial; // avoid the double scroll
   padding: 0;
   //background: image-url("body_bg.gif") repeat-y scroll 50% 0 rgba(0, 0, 0, 0);
-  &.ngdialog-open {
-    //disable body scroll when dialog is open
-    //overfow: hidden !important;
-  }
 }
 
 #pagewrap {

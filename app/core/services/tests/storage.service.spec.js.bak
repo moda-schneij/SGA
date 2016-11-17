@@ -1,12 +1,14 @@
 'use strict';
 
-const helpers = require('../../../test.helper');
+//FILE RESOLUTION DEPENDS ON WEBPACK RESOLVE ROOT IN webpack.config-test
+
+const helpers = require('testing/test.helper');
 const ngModule = helpers.module;
 const inject = helpers.inject;
 const localStorage = helpers.localStorage;
 const sessionStorage = helpers.sessionStorage;
 
-require('../services/sgApp.core.services');
+require('core/services/sgApp.core.services');
 
 const expect = require('chai').expect;
 const assert = require('chai').assert;
