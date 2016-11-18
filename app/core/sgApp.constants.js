@@ -19,7 +19,8 @@ const sgaConstants = (function(){
   //reusable constant parts here
   const serAppName = 'SpeedERatesWeb';
   const apiPath = '/' + serAppName + '/sgaws/rest';
-  return {
+  const constantsObj = {
+    'CONSTANTS_OBJ': constantsObj,
     'SER_APPNAME': serAppName,
     'SGA_PATH': '/WebContent/sga',
     'API_ROOT_PATH': apiPath,
@@ -112,6 +113,8 @@ const sgaConstants = (function(){
     'REFERRER_COOKIE': MODA.SGA.refCookieName,
     'TIMEOUT_MINS': 30
   };
+  constantsObj.API_PATHS.createApplicationResource = constantsObj.API_PATHS.createApplication + ':quote_id/ein/:ein';
+  return constantsObj;
 }());
 
 export default sgaConstants;

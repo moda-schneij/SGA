@@ -16,7 +16,7 @@ import angular from 'angular';
 class NgTipsoDirective {
   constructor() {
     this.restrict = 'A',
-    this.link = linkFn;
+    this.link = this.linkFn.bind(this);
   }
   linkFn(scope, element, attrs, modelCtrl) {
     $(element).tipso(scope.$eval(attrs.ngTipso));
