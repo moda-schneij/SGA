@@ -240,7 +240,7 @@ function retrieveApplication(paramsObj) {
       //reqUrl = this.API_URL + apiPath + paramsObj.quoteId + einPathFragment;
       const AppResource = this.$resource(this.API_URL + this.API_PATHS.createApplicationResource, {quote_id:'@quote_id',ein:'@ein'});
       const promise = AppResource.get({quote_id: paramsObj.quoteId, ein: paramsObj.ein}).$promise;
-      debugger;
+      return promise;
     }
     if (getExistingApplication) {
       reqUrl = this.API_URL + apiPath + paramsObj.appId;

@@ -3,11 +3,6 @@
 //FILE RESOLUTION DEPENDS ON WEBPACK RESOLVE ROOT IN webpack.config-test
 
 const helpers = require('testing/test.helper');
-const assert = helpers.assert;
-const expect = helpers.expect;
-const spy = helpers.spy;
-const should = helpers.should;
-const sinon = require('sinon');
 const module = helpers.module;
 const inject = helpers.inject;
 const localStorage = helpers.localStorage;
@@ -26,6 +21,9 @@ require('angular-resource'); //used by data service for application requests
 //get the module that contains the core services
 require('core/sgApp.core');
 
+const expect = require('chai').expect;
+const assert = require('chai').assert;
+
 describe('Services: ', function() {
 
   //empty references to nested dependencies
@@ -34,8 +32,8 @@ describe('Services: ', function() {
   const fakeAPIUrl = '/SpeedERatesWeb/sgaws/rest';
 
   //dependencies to be injected
-  let ApplicationSvc, DataSvc, ConstantsSvc, UrlSvc, UserSvc, StorageSvc, $httpBackend, $resource, $window, $timeout, 
-    $q, $http, API_PATHS, createApplicationUrl, getApplicationUrl;
+  let ApplicationSvc, DataSvc, ConstantsSvc, UrlSvc, StorageSvc, $httpBackend, $resource, $window, $timeout, 
+    $q, API_PATHS, createApplicationUrl, getApplicationUrl;
 
   const idsObj = {
     quoteId: appObj.quoteId,
@@ -48,9 +46,9 @@ describe('Services: ', function() {
   };
 
   const mockUserSvc = {
-    getIsLoggedIn: spy(function() {
+    getIsLoggedIn: function() {
       return true;
-    })
+    }
   };
 
   const mockSpinnerControlSvc = {
@@ -59,17 +57,9 @@ describe('Services: ', function() {
   };
 
   const mockStorageSvc = {
-    setSessionStore: spy((key, value) => true),
-    getSessionStore: spy((key) => undefined)
+    setSessionStore: (key, value) => sessionStorage.setItem(key, value),
+    getSessionStore: (key) => sessionStorage.getItem(key)
   };
-
-  // const mockDataSvc = {
-  //   application: {
-  //     create: spy((params) => {
-  //       return $http.get('/application/get/quote_id/' + params.quoteId + '/ein/' + params.ein);
-  //     })
-  //   }
-  // };
 
   beforeEach(() => {
     // load modules, including the module that contains the service
@@ -82,7 +72,7 @@ describe('Services: ', function() {
       $provide.value('SpinnerControlSvc', mockSpinnerControlSvc); //does nothing
       $provide.value('FileSaver', mockFileSaver);
       $provide.value('Blob', mockBlob);
-      $provide.value('StorageSvc', mockStorageSvc); //working way to spy on storage calls
+      // $provide.value('StorageSvc', mockStorageSvc);
       // $provide.value('API_URL', fakeAPIUrl); //this should be called in the ApplicationSvc?? (no, it is not)
       // $provide.value('DataSvc', mockDataSvc);
       // console.log('here is $provide');
@@ -91,28 +81,24 @@ describe('Services: ', function() {
       // }
     });
 
-    inject((_ApplicationSvc_, _DataSvc_, _API_PATHS_, _StorageSvc_, _UserSvc_,  
-      _ConstantsSvc_, _$httpBackend_, _$resource_, _$window_, _$timeout_, _$q_, _$http_) => {
+    inject((_ApplicationSvc_, _DataSvc_, _API_PATHS_, _StorageSvc_, 
+      _ConstantsSvc_, _$httpBackend_, _$resource_, _$window_, _$timeout_, _$q_) => {
       ApplicationSvc = _ApplicationSvc_;
       DataSvc = _DataSvc_;
       API_PATHS = _API_PATHS_;
       StorageSvc = _StorageSvc_;
-      UserSvc = _UserSvc_;
       ConstantsSvc = _ConstantsSvc_;
       $httpBackend = _$httpBackend_;
       $resource = _$resource_;
       $window = _$window_;
       $timeout = _$timeout_;
       $q = _$q_;
-      $http = _$http_;
-      $resource = _$resource_; //resource is also required at top because it's not core angular
+      $resource = _$resource_;
     });
 
     createApplicationUrl = fakeAPIUrl + API_PATHS.createApplication;
     getApplicationUrl = fakeAPIUrl + API_PATHS.getApplication + idsObj.appId;
 
-    //console.log('API_PATHS');
-    //console.log(API_PATHS);
     //this is a truncated portion of the create URL turned into a regex
     fakeCreateUrl = new RegExp(fakeAPIUrl + API_PATHS.createApplication);
 
@@ -121,10 +107,10 @@ describe('Services: ', function() {
 
   });
 
-  describe('ApplicationSvc: ', () => {
+  describe('DataSvc: ', () => {
 
     describe('Creates a new application: ', () => {
-      beforeEach(() => {
+      beforeEach(() => { 
         $httpBackend.when('GET', /.*\/application\/get\/quote_id\/.*/)
           .respond(200, appObj);
       });
@@ -132,24 +118,19 @@ describe('Services: ', function() {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
       });
-      it('Should call the Data Service using a quote ID to request a new application', () => {
+      it('Should retrieve a new application using a quote ID and EIN', () => {
         $httpBackend.expect('GET', /.*\/application\/get\/quote_id\/.*/); //rely on backend definition to respond with the fake appObj
-
-        const promise = ApplicationSvc.getInitialApplication(idObj);
-
-        // ApplicationSvc.getInitialApplication(idObj).then((_response) => {
-        //   console.log('response');
-        //   console.log(_response);
-        //   const response = Boolean(_response.data) ? _response.data : _response;
+        // ApplicationSvc.getInitialApplication(idObj).then(() => {
         //   expect(true).to.be.true;
-        //   //expect(response).to.deep.equal(appObj);
+        //   //what to test here - that sessionStorage has the appObj?
         // });
-        // expect(promise).to.eventually.deep.equal(appObj);
-        // expect(DataSvc.application.create).to.have.been.called();
-        expect(UserSvc.getIsLoggedIn).to.have.been.called();
-        expect(StorageSvc.getSessionStore).to.have.been.called(); //works with mocked StorageSvc
-        //expect(getStoreFn).to.have.been.called();
-        //expect(createAppFn).to.have.been.called();
+        DataSvc.application.create(idObj).then((_response) => {
+          //console.log('response');
+          const response = Boolean(_response.data) ? _response.data : 
+            Boolean(_response.Resource) ? _response.Resource : _response;
+          //console.log(response);
+          expect(response.quoteId).to.equal(idObj.quoteId);
+        });
         $httpBackend.flush();
       });
     });

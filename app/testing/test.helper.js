@@ -5,6 +5,20 @@ var Storage = require('dom-storage');
 var localStorage = new Storage('./db.json', { strict: false, ws: '  ' });
 var sessionStorage = new Storage(null, { strict: true });
 
+//add simple spies plugin
+const chai = require('chai');
+const chaiSpies = require('chai-spies');
+chai.use(chaiSpies);
+
+//add sinon and syntax integrator for sinon with chai
+const sinon = require('sinon');
+//const sinonChai = require('sinon-chai');
+//chai.use(sinonChai);
+sinon.assert.expose(chai.assert, { prefix: "" });
+
+const expect = chai.expect;
+const assert = chai.assert;
+
 var document = global.document = jsdom('<html><head></head><body></body></html>');
 var window = global.window = document.defaultView;
 
@@ -57,5 +71,9 @@ module.exports = {
     inject: window.angular.mock.inject,
     module: window.angular.mock.module,
     localStorage: localStorage,
-    sessionStorage: sessionStorage
+    sessionStorage: sessionStorage,
+    expect: expect,
+    assert: assert,
+    spy: chai.spy,
+    should: chai.should()
 };
