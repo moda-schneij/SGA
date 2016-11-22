@@ -5,9 +5,9 @@
 const helpers = require('testing/test.helper');
 const assert = helpers.assert;
 const expect = helpers.expect;
-const spy = helpers.spy;
+const spy = helpers.spy; //sinon.spy
 const should = helpers.should;
-const sinon = require('sinon');
+const sinon = helpers.sinon;
 const module = helpers.module;
 const inject = helpers.inject;
 const localStorage = helpers.localStorage;
@@ -48,9 +48,7 @@ describe('Services: ', function() {
   };
 
   const mockUserSvc = {
-    getIsLoggedIn: spy(function() {
-      return true;
-    })
+    getIsLoggedIn: spy(() => true)
   };
 
   const mockSpinnerControlSvc = {
@@ -135,13 +133,14 @@ describe('Services: ', function() {
         $httpBackend.verifyNoOutstandingRequest();
       });
 
-      it('Should check whether the user is logged in and there is no existing application', () => {
+      it('Should check whether the user is logged in and thatsthere is no existing application', () => {
         ApplicationSvc.getInitialApplication(idObj);
         
-        expect(UserSvc.getIsLoggedIn).to.have.been.called();
-        expect(UserSvc.getIsLoggedIn()).to.be.true;
-        expect(StorageSvc.getSessionStore).to.have.been.called(); //works with mocked StorageSvc
+        expect(UserSvc.getIsLoggedIn).to.have.been.called;
+        expect(UserSvc.getIsLoggedIn()).to.be.true; //false throws error
+        expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY); //works with mocked StorageSvc
         expect(StorageSvc.getSessionStore(STORAGE_KEYS.APPLICATION_KEY)).to.be.undefined;
+        expect(StorageSvc.getSessionStore).to.not.have.returned(appObj);
 
         $httpBackend.flush();
       });
@@ -159,12 +158,15 @@ describe('Services: ', function() {
       });
 
       it('Should return an existing application if one exists', () => {
-        //may need to revise this if it passes without changing mockStorageSvc, but meant to demonstrate getting an application with no httpBackend
+        /*may need to revise this if it passes without changing mockStorageSvc, 
+        but meant to demonstrate getting an application with no httpBackend*/
         const originalMockStorageSvc = mockStorageSvc;
         mockStorageSvc.getSessionStore = spy((key) => appObj);
         ApplicationSvc.getInitialApplication(idObj).then((response) => {
           // console.log(response);
           // console.log(appObj);
+          expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY);
+          expect(StorageSvc.getSessionStore).to.have.returned(appObj);
           expect(response).to.deep.equal(appObj);
         });
         mockStorageSvc = originalMockStorageSvc;

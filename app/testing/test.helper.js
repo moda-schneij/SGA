@@ -9,14 +9,14 @@ const sessionStorage = new Storage(null, { strict: true });
 const chai = require('chai');
 const chaiSpies = require('chai-spies');
 const chaiAsPromised = require('chai-as-promised');
-chai.use(chaiSpies);
+//chai.use(chaiSpies);
 chai.use(chaiAsPromised);
 
 //add sinon and syntax integrator for sinon with chai
 const sinon = require('sinon');
-//const sinonChai = require('sinon-chai');
-//chai.use(sinonChai);
-sinon.assert.expose(chai.assert, { prefix: "" });
+const sinonChai = require('sinon-chai');
+chai.use(sinonChai);
+//sinon.assert.expose(chai.assert, { prefix: "" });
 
 const expect = chai.expect;
 const assert = chai.assert;
@@ -76,6 +76,8 @@ module.exports = {
     sessionStorage: sessionStorage,
     expect: expect,
     assert: assert,
-    spy: chai.spy,
-    should: chai.should()
+    //spy: chai.spy,
+    should: chai.should(),
+    sinon: sinon,
+    spy: sinon.spy
 };
