@@ -34,7 +34,7 @@ describe('Services: ', function() {
   const fakeAPIUrl = '/SpeedERatesWeb/sgaws/rest';
 
   //dependencies to be injected
-  let ApplicationSvc, DataSvc, ConstantsSvc, UrlSvc, UserSvc, StorageSvc, $httpBackend, $resource, $window, $timeout, 
+  let originalMockStorageSvc, ApplicationSvc, DataSvc, ConstantsSvc, UrlSvc, UserSvc, StorageSvc, $httpBackend, $resource, $window, $timeout, 
     $q, $http, STORAGE_KEYS, API_PATHS, API_ROOT_PATH, createApplicationUrl, getApplicationUrl;
 
   const idsObj = {
@@ -117,35 +117,38 @@ describe('Services: ', function() {
     describe('Creates a new application: ', () => {
 
       beforeEach(() => {
+        originalMockStorageSvc = mockStorageSvc; //set up for overrides
+      });
+
+      afterEach(() => {
+        mockStorageSvc = originalMockStorageSvc; //return to default mock status
+      });
+
+      it('Should check and find that the user is logged in', () => {
+        ApplicationSvc.getInitialApplication(idObj);
+        
+        expect(UserSvc.getIsLoggedIn).to.have.been.called;
+        expect(UserSvc.getIsLoggedIn()).to.be.true; //false throws error
+      });
+
+      it('Should verify that there is no existing application in local (session) storage', () => {
+        ApplicationSvc.getInitialApplication(idObj);
+        
+        expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY); //works with mocked StorageSvc
+        expect(StorageSvc.getSessionStore(STORAGE_KEYS.APPLICATION_KEY)).to.be.undefined;
+        expect(StorageSvc.getSessionStore).to.not.have.returned(appObj);
+      });
+
+      it('Should get a new application by calling the Data Service with an ID object containing the quote_id and EIN', () => {
         $httpBackend.when('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein'])
           .respond((method, url, data, headers, params) => {
-            console.log(params);
-            console.log(appObj.quoteId);
+            // console.log(params);
+            // console.log(appObj.quoteId);
             if (appObj.quoteId && params.quote_id && (params.quote_id.toString() === appObj.quoteId.toString())) {
               return [200, payload];
             }
             return [200, {}]; //this case would make the test fail
           });
-      });
-
-      afterEach(() => {
-        $httpBackend.verifyNoOutstandingExpectation();
-        $httpBackend.verifyNoOutstandingRequest();
-      });
-
-      it('Should check whether the user is logged in and thatsthere is no existing application', () => {
-        ApplicationSvc.getInitialApplication(idObj);
-        
-        expect(UserSvc.getIsLoggedIn).to.have.been.called;
-        expect(UserSvc.getIsLoggedIn()).to.be.true; //false throws error
-        expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY); //works with mocked StorageSvc
-        expect(StorageSvc.getSessionStore(STORAGE_KEYS.APPLICATION_KEY)).to.be.undefined;
-        expect(StorageSvc.getSessionStore).to.not.have.returned(appObj);
-
-        $httpBackend.flush();
-      });
-
-      it('Should be able to get a new application by calling the Data Service with a quote ID and EIN', () => {
         $httpBackend.expect('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']); //rely on backend definition to respond with the fake appObj
 
         ApplicationSvc.getInitialApplication(idObj).then((response) => {
@@ -155,13 +158,15 @@ describe('Services: ', function() {
         });
         
         $httpBackend.flush();
+
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
       });
 
       it('Should return an existing application if one exists', () => {
-        /*may need to revise this if it passes without changing mockStorageSvc, 
-        but meant to demonstrate getting an application with no httpBackend*/
-        const originalMockStorageSvc = mockStorageSvc;
-        mockStorageSvc.getSessionStore = spy((key) => appObj);
+        //save and override the original mockStorageSvc
+        originalMockStorageSvc = mockStorageSvc;
+        mockStorageSvc.getSessionStore = spy((key) => appObj); //now return an existing application
         ApplicationSvc.getInitialApplication(idObj).then((response) => {
           // console.log(response);
           // console.log(appObj);
@@ -174,25 +179,27 @@ describe('Services: ', function() {
 
     });
 
-    // describe('Gets an existing application: ', function() {
-    //   beforeEach(function() {
-    //     $httpBackend.when('GET', getApplicationUrl)
-    //       .respond((method, url, data, headers, params) => {
-          //    return [200, appObj]
-          //  });
-    //   });
-    //   it('Should call the Data Service using an application id to get an existing application', function() {
-    //     //$httpBackend.expectGET(getApplicationUrl);
-    //     ApplicationSvc.getInitialApplication().then(function() {
-    //       expect(true).to.be.false;
-    //     });
-    //     $httpBackend.flush();
-    //   });
-    //   afterEach(function() {
-    //     $httpBackend.verifyNoOutstandingExpectation();
-    //     $httpBackend.verifyNoOutstandingRequest();
-    //   });
-    // });
+    describe('Gets an existing application: ', function() {
+      beforeEach(function() {
+        originalMockStorageSvc = mockStorageSvc;
+        // $httpBackend.when('GET', getApplicationUrl)
+        //   .respond((method, url, data, headers, params) => {
+        //      return [200, appObj]
+        //    });
+      });
+      it('Should call the Data Service using an application id to get an existing application', function() {
+        //$httpBackend.expect('GET', getApplicationUrl);
+        mockStorageSvc.getSessionStore = spy((key) => appObj);
+        const app = ApplicationSvc.getApplication();
+        expect(app).to.deep.equal(appObj);
+        //$httpBackend.flush();
+      });
+      afterEach(function() {
+        mockStorageSvc = originalMockStorageSvc;
+        // $httpBackend.verifyNoOutstandingExpectation();
+        // $httpBackend.verifyNoOutstandingRequest();
+      });
+    });
 
   });
 
