@@ -1,14 +1,16 @@
 'use strict';
 
-var jsdom = require('jsdom').jsdom;
-var Storage = require('dom-storage');
-var localStorage = new Storage('./db.json', { strict: false, ws: '  ' });
-var sessionStorage = new Storage(null, { strict: true });
+const jsdom = require('jsdom').jsdom;
+const Storage = require('dom-storage');
+const localStorage = new Storage('./db.json', { strict: false, ws: '  ' });
+const sessionStorage = new Storage(null, { strict: true });
 
 //add simple spies plugin
 const chai = require('chai');
 const chaiSpies = require('chai-spies');
+const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiSpies);
+chai.use(chaiAsPromised);
 
 //add sinon and syntax integrator for sinon with chai
 const sinon = require('sinon');

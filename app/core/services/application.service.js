@@ -473,7 +473,9 @@ function checkinLogoutOrReturnSER(option) {
 function fetchApplicationSuccess(_response) {
   //depending on whether this results from use of $http or $resource promise
   //the needed objects either are or aren't on a nested "data" object
-  const response = angular.isDefined(_response.data) ? _response.data : _response;
+  let response = angular.isDefined(_response.data) ? _response.data : _response;
+  //attempt to normalize the $resource promise response
+  response = JSON.parse(angular.toJson(response));
   const appObj = this.UtilsSvc.checkAndSetToNull(response.application); //the application itself
   const optionsObj = this.UtilsSvc.checkAndSetToNull(response.options); //metadata for the ui (mostly selects)
   const rulesObj = this.UtilsSvc.checkAndSetToNull(response.rules); //rules for the ui, validations

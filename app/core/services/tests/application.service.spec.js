@@ -35,7 +35,7 @@ describe('Services: ', function() {
 
   //dependencies to be injected
   let ApplicationSvc, DataSvc, ConstantsSvc, UrlSvc, UserSvc, StorageSvc, $httpBackend, $resource, $window, $timeout, 
-    $q, $http, API_PATHS, createApplicationUrl, getApplicationUrl;
+    $q, $http, STORAGE_KEYS, API_PATHS, API_ROOT_PATH, createApplicationUrl, getApplicationUrl;
 
   const idsObj = {
     quoteId: appObj.quoteId,
@@ -58,18 +58,10 @@ describe('Services: ', function() {
     stopSpin: () => {}
   };
 
-  const mockStorageSvc = {
+  let mockStorageSvc = {
     setSessionStore: spy((key, value) => true),
     getSessionStore: spy((key) => undefined)
   };
-
-  // const mockDataSvc = {
-  //   application: {
-  //     create: spy((params) => {
-  //       return $http.get('/application/get/quote_id/' + params.quoteId + '/ein/' + params.ein);
-  //     })
-  //   }
-  // };
 
   beforeEach(() => {
     // load modules, including the module that contains the service
@@ -84,18 +76,19 @@ describe('Services: ', function() {
       $provide.value('Blob', mockBlob);
       $provide.value('StorageSvc', mockStorageSvc); //working way to spy on storage calls
       // $provide.value('API_URL', fakeAPIUrl); //this should be called in the ApplicationSvc?? (no, it is not)
-      // $provide.value('DataSvc', mockDataSvc);
       // console.log('here is $provide');
       // for (var prop in $provide) {
       //   console.log(prop);
       // }
     });
 
-    inject((_ApplicationSvc_, _DataSvc_, _API_PATHS_, _StorageSvc_, _UserSvc_,  
+    inject((_ApplicationSvc_, _DataSvc_, _STORAGE_KEYS_, _API_PATHS_, _API_ROOT_PATH_, _StorageSvc_, _UserSvc_,  
       _ConstantsSvc_, _$httpBackend_, _$resource_, _$window_, _$timeout_, _$q_, _$http_) => {
       ApplicationSvc = _ApplicationSvc_;
       DataSvc = _DataSvc_;
+      STORAGE_KEYS = _STORAGE_KEYS_;
       API_PATHS = _API_PATHS_;
+      API_ROOT_PATH = _API_ROOT_PATH_;
       StorageSvc = _StorageSvc_;
       UserSvc = _UserSvc_;
       ConstantsSvc = _ConstantsSvc_;
@@ -114,7 +107,7 @@ describe('Services: ', function() {
     //console.log('API_PATHS');
     //console.log(API_PATHS);
     //this is a truncated portion of the create URL turned into a regex
-    fakeCreateUrl = new RegExp(fakeAPIUrl + API_PATHS.createApplication);
+    fakeCreateUrl = new RegExp(API_ROOT_PATH + API_PATHS.createApplication + '(.+)/ein/(.+)');
 
     $window.localStorage = localStorage; //use fake local and session storage - is testable
     $window.sessionStorage = sessionStorage;
@@ -122,42 +115,69 @@ describe('Services: ', function() {
   });
 
   describe('ApplicationSvc: ', () => {
-
+    
     describe('Creates a new application: ', () => {
+
       beforeEach(() => {
-        $httpBackend.when('GET', /.*\/application\/get\/quote_id\/.*/)
-          .respond(200, appObj);
+        $httpBackend.when('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein'])
+          .respond((method, url, data, headers, params) => {
+            console.log(params);
+            console.log(appObj.quoteId);
+            if (appObj.quoteId && params.quote_id && (params.quote_id.toString() === appObj.quoteId.toString())) {
+              return [200, payload];
+            }
+            return [200, {}]; //this case would make the test fail
+          });
       });
+
       afterEach(() => {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
       });
-      it('Should call the Data Service using a quote ID to request a new application', () => {
-        $httpBackend.expect('GET', /.*\/application\/get\/quote_id\/.*/); //rely on backend definition to respond with the fake appObj
 
-        const promise = ApplicationSvc.getInitialApplication(idObj);
-
-        // ApplicationSvc.getInitialApplication(idObj).then((_response) => {
-        //   console.log('response');
-        //   console.log(_response);
-        //   const response = Boolean(_response.data) ? _response.data : _response;
-        //   expect(true).to.be.true;
-        //   //expect(response).to.deep.equal(appObj);
-        // });
-        // expect(promise).to.eventually.deep.equal(appObj);
-        // expect(DataSvc.application.create).to.have.been.called();
+      it('Should check whether the user is logged in and there is no existing application', () => {
+        ApplicationSvc.getInitialApplication(idObj);
+        
         expect(UserSvc.getIsLoggedIn).to.have.been.called();
+        expect(UserSvc.getIsLoggedIn()).to.be.true;
         expect(StorageSvc.getSessionStore).to.have.been.called(); //works with mocked StorageSvc
-        //expect(getStoreFn).to.have.been.called();
-        //expect(createAppFn).to.have.been.called();
+        expect(StorageSvc.getSessionStore(STORAGE_KEYS.APPLICATION_KEY)).to.be.undefined;
+
         $httpBackend.flush();
       });
+
+      it('Should be able to get a new application by calling the Data Service with a quote ID and EIN', () => {
+        $httpBackend.expect('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']); //rely on backend definition to respond with the fake appObj
+
+        ApplicationSvc.getInitialApplication(idObj).then((response) => {
+          // console.log(response);
+          // console.log(appObj);
+          expect(response).to.deep.equal(appObj);
+        });
+        
+        $httpBackend.flush();
+      });
+
+      it('Should return an existing application if one exists', () => {
+        //may need to revise this if it passes without changing mockStorageSvc, but meant to demonstrate getting an application with no httpBackend
+        const originalMockStorageSvc = mockStorageSvc;
+        mockStorageSvc.getSessionStore = spy((key) => appObj);
+        ApplicationSvc.getInitialApplication(idObj).then((response) => {
+          // console.log(response);
+          // console.log(appObj);
+          expect(response).to.deep.equal(appObj);
+        });
+        mockStorageSvc = originalMockStorageSvc;
+      });
+
     });
 
     // describe('Gets an existing application: ', function() {
     //   beforeEach(function() {
     //     $httpBackend.when('GET', getApplicationUrl)
-    //       .respond(appObj);
+    //       .respond((method, url, data, headers, params) => {
+          //    return [200, appObj]
+          //  });
     //   });
     //   it('Should call the Data Service using an application id to get an existing application', function() {
     //     //$httpBackend.expectGET(getApplicationUrl);
