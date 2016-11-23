@@ -16,11 +16,11 @@ const path = require('path');
 const fs = require('fs');
 const payload = require('json!testing/application.payload.json');
 const appObj = payload.application;
-const idObj = {
+let idObj = {
   quoteId: appObj.quoteId,
   appId: appObj.applicationId,
   ein: appObj.group.employerTaxId
-}
+};
 require('angular-resource'); //used by data service for application requests
 
 //get the module that contains the core services
@@ -29,7 +29,7 @@ require('core/sgApp.core');
 describe('Services: ', function() {
 
   //empty references to nested dependencies
-  let mockAuthenticationSvc, mockCookies, mockResource, mockFileSaver, mockBlob, fakeCreateUrl;
+  let mockAuthenticationSvc, mockCookies, mockResource, mockFileSaver, mockBlob, fakeCreateUrl, fakeGetUrl;
 
   const fakeAPIUrl = '/SpeedERatesWeb/sgaws/rest';
 
@@ -105,7 +105,9 @@ describe('Services: ', function() {
     //console.log('API_PATHS');
     //console.log(API_PATHS);
     //this is a truncated portion of the create URL turned into a regex
+    //the '(.+)' portions are param placeholders that can be accessed during execution by $httpBackend
     fakeCreateUrl = new RegExp(API_ROOT_PATH + API_PATHS.createApplication + '(.+)/ein/(.+)');
+    fakeGetUrl = new RegExp('.*' + API_ROOT_PATH + API_PATHS.getApplication + '(.+)');
 
     $window.localStorage = localStorage; //use fake local and session storage - is testable
     $window.sessionStorage = sessionStorage;
@@ -114,14 +116,14 @@ describe('Services: ', function() {
 
   describe('ApplicationSvc: ', () => {
     
-    describe('Creates a new application: ', () => {
+    describe('Creates a new application (getInitialApplication): ', () => {
 
       beforeEach(() => {
         originalMockStorageSvc = mockStorageSvc; //set up for overrides
       });
 
       afterEach(() => {
-        mockStorageSvc = originalMockStorageSvc; //return to default mock status
+        mockStorageSvc = originalMockStorageSvc; //return to default original state
       });
 
       it('Should check and find that the user is logged in', () => {
@@ -139,21 +141,20 @@ describe('Services: ', function() {
         expect(StorageSvc.getSessionStore).to.not.have.returned(appObj);
       });
 
-      it('Should get a new application by calling the Data Service with an ID object containing the quote_id and EIN', () => {
-        $httpBackend.when('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein'])
+      it('Should get a new application via XHR when passing the quote_id and EIN', () => {
+        const modIdObj = Object.assign({}, idObj);
+        modIdObj.appId = null; //leave quoteId and ein
+        $httpBackend.when('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']) //array injects params for httpBackend (see URL regex)
           .respond((method, url, data, headers, params) => {
-            // console.log(params);
-            // console.log(appObj.quoteId);
             if (appObj.quoteId && params.quote_id && (params.quote_id.toString() === appObj.quoteId.toString())) {
               return [200, payload];
             }
             return [200, {}]; //this case would make the test fail
           });
-        $httpBackend.expect('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']); //rely on backend definition to respond with the fake appObj
-
-        ApplicationSvc.getInitialApplication(idObj).then((response) => {
-          // console.log(response);
-          // console.log(appObj);
+        //rely on backend definition to respond with the fake appObj
+        $httpBackend.expect('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']); 
+          
+        ApplicationSvc.getInitialApplication(modIdObj).then((response) => {
           expect(response).to.deep.equal(appObj);
         });
         
@@ -163,41 +164,84 @@ describe('Services: ', function() {
         $httpBackend.verifyNoOutstandingRequest();
       });
 
-      it('Should return an existing application if one exists', () => {
+      it('Should return an existing application if one exists in browser storage', () => {
         //save and override the original mockStorageSvc
-        originalMockStorageSvc = mockStorageSvc;
         mockStorageSvc.getSessionStore = spy((key) => appObj); //now return an existing application
         ApplicationSvc.getInitialApplication(idObj).then((response) => {
-          // console.log(response);
-          // console.log(appObj);
           expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY);
           expect(StorageSvc.getSessionStore).to.have.returned(appObj);
           expect(response).to.deep.equal(appObj);
         });
-        mockStorageSvc = originalMockStorageSvc;
       });
 
+      it('Should fetch (XHR) an existing application by ID if none exists in browser storage', () => {
+        const modIdObj = Object.assign({}, idObj);
+        modIdObj.ein = null; //leave only appId
+        modIdObj.quoteId = null;
+        $httpBackend.when('GET', fakeGetUrl, undefined, undefined, ['id']) //array injects params for httpBackend (see URL regex)
+          .respond((method, url, data, headers, params) => {
+            if (appObj.applicationId && params.id && (params.id.toString() === appObj.applicationId.toString())) {
+              return [200, payload];
+            }
+            return [200, {}]; //this case would make the test fail
+          });
+        $httpBackend.expect('GET', fakeGetUrl, undefined, undefined, ['id']);
+        mockStorageSvc.getSessionStore = spy((key) => undefined); //now return undefined
+        
+        ApplicationSvc.getInitialApplication(modIdObj).then((response) => {
+          expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY);
+          expect(StorageSvc.getSessionStore(STORAGE_KEYS.APPLICATION_KEY)).to.be.undefined;
+          expect(response).to.deep.equal(appObj);
+        });
+        $httpBackend.flush();
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
     });
 
-    describe('Gets an existing application: ', function() {
+    describe('Gets an existing application from browser storage (getApplication): ', function() {
       beforeEach(function() {
         originalMockStorageSvc = mockStorageSvc;
-        // $httpBackend.when('GET', getApplicationUrl)
-        //   .respond((method, url, data, headers, params) => {
-        //      return [200, appObj]
-        //    });
       });
-      it('Should call the Data Service using an application id to get an existing application', function() {
-        //$httpBackend.expect('GET', getApplicationUrl);
+      it('Should Storage Service using an application id to get an existing application', function() {
         mockStorageSvc.getSessionStore = spy((key) => appObj);
         const app = ApplicationSvc.getApplication();
         expect(app).to.deep.equal(appObj);
-        //$httpBackend.flush();
       });
       afterEach(function() {
         mockStorageSvc = originalMockStorageSvc;
-        // $httpBackend.verifyNoOutstandingExpectation();
-        // $httpBackend.verifyNoOutstandingRequest();
+      });
+    });
+
+    describe('Gets an existing application from the database (restoreApplication): ', function() {
+      beforeEach(function() {
+        originalMockStorageSvc = mockStorageSvc;
+        $httpBackend.when('GET', fakeGetUrl, undefined, undefined, ['id'])
+          .respond((method, url, data, headers, params) => {
+            if (params.id && appObj.applicationId && (params.id.toString() === appObj.applicationId.toString())) {
+              return [200, payload];
+            }
+            return [200, {}]; //this case would make the test fail
+          });
+      });
+      it('Should call the Data Service to get an existing application using an id from browser storage', function() {
+        $httpBackend.expect('GET', fakeGetUrl);
+        mockStorageSvc.getSessionStore = spy((key) => idObj.appId);
+        ApplicationSvc.restoreApplication().then((app) => {
+          expect(app).to.deep.equal(appObj);
+        });
+        $httpBackend.flush();
+      });
+      it('Should return false if there is no application ID in browser storage', function() {
+        mockStorageSvc.getSessionStore = spy((key) => undefined); //return undefined again, so the method will return false
+        ApplicationSvc.restoreApplication().then((response) => {
+          expect(response).to.be.false;
+        });
+      });
+      afterEach(function() {
+        mockStorageSvc = originalMockStorageSvc;
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
       });
     });
 

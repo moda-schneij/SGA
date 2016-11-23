@@ -53,9 +53,11 @@ export default class ApplicationSvc {
     if (isLoggedIn && existingApp) {
       return existingApp; //return an existing application
     } 
-    return; //user is not logged in
+    return; //user is not logged in or there is no existing app
   }
 
+  /*this method is used to refresh the application from the server if 
+  navigating without persistence (e.g., Go Back), after making local changes*/
   restoreApplication() {
     const deferred = this.$q.defer();
     const appId = this.StorageSvc.getSessionStore(this.APPID_KEY);
@@ -119,12 +121,14 @@ export default class ApplicationSvc {
           );
           //TODO - favor getting app and quote ids from the payload
           this.StorageSvc.setSessionStore(this.APPID_KEY, appId);
-        } else {
-          if (this.SER_CONTEXT) {
+        } else { //there is no quoteId or appId
+          if (this.SER_CONTEXT) { //if this is within SpeedE, there's a problem
             deferred.resolve(false);
             this.SpinnerControlSvc.stopSpin();
             this.AuthenticationSvc.logout();
           } else {
+          /*if we're in development, use a fake id 
+          (but this has mostly been supplanted by the ability to login with an ID during dev)*/
             this.DataSvc.application.get(this.FAKE_APPID).then(
               fetchApplicationSuccess.bind(angular.extend({}, {fakeApp: true}, thisObj)),
               fetchApplicationFailure.bind(thisObj)
