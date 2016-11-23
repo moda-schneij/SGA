@@ -143,28 +143,6 @@ describe('Services: ', function() {
         expect(StorageSvc.getSessionStore).to.not.have.returned(appObj);
       });
 
-      it('Should get a new application via XHR when passing the quote_id and EIN', () => {
-        idObj.appId = null; //leave quoteId and ein
-        $httpBackend.when('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']) //array injects params for httpBackend (see URL regex)
-          .respond((method, url, data, headers, params) => {
-            if (appObj.quoteId && params.quote_id && (params.quote_id.toString() === appObj.quoteId.toString())) {
-              return [200, payload];
-            }
-            return [200, {}]; //this case would make the test fail
-          });
-        //rely on backend definition to respond with the fake appObj
-        $httpBackend.expect('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']); 
-          
-        ApplicationSvc.getInitialApplication(idObj).then((response) => {
-          expect(response).to.deep.equal(appObj);
-        });
-        
-        $httpBackend.flush();
-
-        $httpBackend.verifyNoOutstandingExpectation();
-        $httpBackend.verifyNoOutstandingRequest();
-      });
-
       it('Should return an existing application if one exists in browser storage', () => {
         //now return an existing application
         mockStorageSvc.getSessionStore = spy((key) => appObj);
@@ -175,26 +153,57 @@ describe('Services: ', function() {
         });
       });
 
-      it('Should fetch (XHR) an existing application by ID if none exists in browser storage', () => {
-        idObj.ein = null; //leave only appId
-        idObj.quoteId = null;
-        $httpBackend.when('GET', fakeGetUrl, undefined, undefined, ['id']) //array injects params for httpBackend (see URL regex)
-          .respond((method, url, data, headers, params) => {
-            if (appObj.applicationId && params.id && (params.id.toString() === appObj.applicationId.toString())) {
-              return [200, payload];
-            }
-            return [200, {}]; //this case would make the test fail
-          });
-        $httpBackend.expect('GET', fakeGetUrl, undefined, undefined, ['id']);        
-        ApplicationSvc.getInitialApplication(idObj).then((response) => {
-          expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY);
-          expect(StorageSvc.getSessionStore(STORAGE_KEYS.APPLICATION_KEY)).to.be.undefined;
-          expect(response).to.deep.equal(appObj);
+      describe('When it determines it needs to make a server request...: ', () => {
+
+        beforeEach(() => {
+          originalIdObj = Object.assign({}, idObj);
+          originalMockStorageSvc = Object.assign({}, mockStorageSvc); //set up for overrides
         });
-        $httpBackend.flush();
-        $httpBackend.verifyNoOutstandingExpectation();
-        $httpBackend.verifyNoOutstandingRequest();
+
+        afterEach(() => {
+          idObj = originalIdObj;
+          mockStorageSvc = originalMockStorageSvc; //return to default original state
+          $httpBackend.flush();
+          $httpBackend.verifyNoOutstandingExpectation();
+          $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it('Should create and get a new application by via XHR if it receives a quote ID and EIN', () => {
+          idObj.appId = null; //leave quoteId and ein
+          $httpBackend.when('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']) //array injects params for httpBackend (see URL regex)
+            .respond((method, url, data, headers, params) => {
+              if (appObj.quoteId && params.quote_id && (params.quote_id.toString() === appObj.quoteId.toString())) {
+                return [200, payload];
+              }
+              return [200, {}]; //this case would make the test fail
+            });
+          //rely on backend definition to respond with the fake appObj
+          $httpBackend.expect('GET', fakeCreateUrl, undefined, undefined, ['quote_id', 'ein']); 
+            
+          ApplicationSvc.getInitialApplication(idObj).then((response) => {
+            expect(response).to.deep.equal(appObj);
+          });
+        });
+
+        it('Should fetch an existing application via XHR if it receives an application ID', () => {
+          idObj.ein = null; //leave only appId
+          idObj.quoteId = null;
+          $httpBackend.when('GET', fakeGetUrl, undefined, undefined, ['id']) //array injects params for httpBackend (see URL regex)
+            .respond((method, url, data, headers, params) => {
+              if (appObj.applicationId && params.id && (params.id.toString() === appObj.applicationId.toString())) {
+                return [200, payload];
+              }
+              return [200, {}]; //this case would make the test fail
+            });
+          $httpBackend.expect('GET', fakeGetUrl, undefined, undefined, ['id']);        
+          ApplicationSvc.getInitialApplication(idObj).then((response) => {
+            expect(StorageSvc.getSessionStore).to.have.been.calledWith(STORAGE_KEYS.APPLICATION_KEY);
+            expect(StorageSvc.getSessionStore(STORAGE_KEYS.APPLICATION_KEY)).to.be.undefined;
+            expect(response).to.deep.equal(appObj);
+          });
+        });
       });
+
     });
 
     describe('Gets an existing application from browser storage (getApplication): ', function() {

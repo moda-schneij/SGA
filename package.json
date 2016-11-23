@@ -133,6 +133,7 @@
     "angular-spinner": "^0.8.1",
     "angular-toarrayfilter": "^1.0.1",
     "angular-ui-mask": "^1.8.4",
+    "angular-ui-router": "^1.0.0-beta.3",
     "console-polyfill": "^0.2.2",
     "jquery": "^3.1.0",
     "lodash": "^4.14.0",

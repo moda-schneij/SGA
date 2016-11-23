@@ -138,6 +138,7 @@ const common = { //set up common dev and build stuff here
       'angular-spinner',
       'angular-toarrayfilter',
       'angular-ui-mask',
+      'angular-ui-router',
       'jquery',
       'ng-dialog',
       ngcomponentrouter,

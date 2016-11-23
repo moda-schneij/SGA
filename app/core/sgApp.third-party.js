@@ -30,5 +30,6 @@ export default angular
     'ngResource',
     'pretty-checkable',
     'ui.mask',
+    'ui.router',
     'ui.select'
   ]);

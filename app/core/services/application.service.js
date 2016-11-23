@@ -10,11 +10,8 @@
  */
 
 import angular from 'angular';
-//DUMMYING in RULES object: TODO - remove when implemented
-//const rulesObj = require('json!./rules.json');
-//const mockData = require('json!./sgaData.json');
+
 const failedCheckinMessage = require('!html!../templates/failedcheckin.html');
-//DUMMYING in RULES object: TODO - remove when implemented
 
 export default class ApplicationSvc {
 

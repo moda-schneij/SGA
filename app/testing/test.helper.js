@@ -5,11 +5,9 @@ const Storage = require('dom-storage');
 const localStorage = new Storage('./db.json', { strict: false, ws: '  ' });
 const sessionStorage = new Storage(null, { strict: true });
 
-//add simple spies plugin
+//setup chai
 const chai = require('chai');
-const chaiSpies = require('chai-spies');
 const chaiAsPromised = require('chai-as-promised');
-//chai.use(chaiSpies);
 chai.use(chaiAsPromised);
 
 //add sinon and syntax integrator for sinon with chai
