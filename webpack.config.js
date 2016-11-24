@@ -97,6 +97,7 @@ const openBrowser = new OpenBrowserPlugin({
 const setGlobals = new webpack.DefinePlugin({ //pass values to modules as constants
   __WEB_PORT__: JSON.stringify(WEB_PORT),
   __WEB_PROTOCOL__: JSON.stringify(WEB_PROTOCOL),
+  __WEB_HOST__: JSON.stringify(WEB_HOST),
   __SER_PORT__: JSON.stringify(SER_PORT),
   __WS_PORT__: JSON.stringify(WS_PORT),
   __NODE_ENV__: NODE_ENV_STR, /* eslint angular/json-functions: "off" */

@@ -11,6 +11,7 @@
 
 import angular from 'angular';
 import rootTemplate from './root.html';
+import {rootState} from './sgApp.states.root';
 
 /*eslint-disable*/
 const MODA = window.MODA || {};
@@ -32,7 +33,9 @@ export default angular
   });
 
 /*@ngInject*/
-function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $location, UtilsSvc, SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, APP_ROOT, STORAGE_KEYS, StorageSvc, DataSvc, ContentSvc, $sce) {
+function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $location, UtilsSvc, 
+    SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, 
+    APP_ROOT, STORAGE_KEYS, StorageSvc, DataSvc, ContentSvc, $sce) {
   const vm = this;
   vm.quoteId = quoteId = UrlSvc.getQuoteIdFromUrl() || null;
   vm.ein = ein = UrlSvc.getEINFromUrl() || null;
@@ -65,6 +68,7 @@ function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $locatio
   };
 
   vm.$onInit = function() {
+    $log.debug('what\'s in rootState?', rootState);
     if (!vm.isLoggedIn && ConstantsSvc.SER_CONTEXT) {
       AuthenticationSvc.getIsLoggedIn().then(function() {
         initView(); //the query parameter (quote id or app id) is lost by the time this is called - we have routed
