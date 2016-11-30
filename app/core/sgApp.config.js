@@ -14,10 +14,10 @@ const otherwiseRoute = SER_CONTEXT ? '/' : '/login'; //not sure about this yet
 const MODA = window.MODA || {};
 /*eslint-enable*/
 MODA.SGA = MODA.SGA || {};
-import decorators from './sgApp.decorators';
+import decorators from './sgApp.decorators'
 
 /*@ngInject*/
-const sgaConfig = (CONFIGS, $httpProvider, $logProvider, $locationProvider, $urlRouterProvider, $stateProvider, 
+const sgaConfig = (CONFIGS, $httpProvider, $logProvider, $locationProvider, 
     $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) => {
   $httpProvider.interceptors.push('AuthInterceptorSvc');
   $logProvider.debugEnabled(!PROD); //disable debug logging in production

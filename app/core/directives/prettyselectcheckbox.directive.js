@@ -22,11 +22,11 @@ class PrettySelectCheckboxDirective {
     const $parent = $element.parent().parent(); //this is (should be) the ui select row
     //TODO - think about other ways to target this element using native querySelector or jQLite (in case jquery isn't available)
     const $boundEl = $parent.find('.ng-binding');
-    $parent.on('click', '*:not(a)', handleSelect); //bind all clicks
-    $parent.on('mousedown', 'a', handleSelect); //bind mousedown to the checkbox itself, to prevent default
+    $parent.on('click', '*:not(a)', handleSelect.bind(this)); //bind all clicks
+    $parent.on('mousedown', 'a', handleSelect.bind(this)); //bind mousedown to the checkbox itself, to prevent default
     function handleSelect(e) {
       if (!e.continue) { //use a click event data setting to trigger the select delay function one time
-        delaySelect(e);
+        delaySelect.call(this, e);
       }
     }
     function delaySelect(e) {

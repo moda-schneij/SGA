@@ -62,7 +62,10 @@
           <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.FTE">
           </span>
         </label>
-        <h-number ng-if="$ctrl.onInitComplete" name="pyfte" ctrl="$ctrl" value="$ctrl.appCtrl.appdata.fullTimeEqCount" min="0" max="{{$ctrl.originalFTCount}}" step="1" change="$ctrl.onChangeFTEEnrollments($ctrl.appCtrl.appdata.fullTimeEqCount)"></h-number>
+        <h-number ng-if="$ctrl.onInitComplete" name="pyfte" ctrl="$ctrl" value="$ctrl.appCtrl.appdata.fullTimeEqCount" 
+          min="0" max="{{$ctrl.originalFTCount}}" step="1" change="$ctrl.onChangeFTEEnrollments($ctrl.appCtrl.appdata.fullTimeEqCount)">
+          <input name="pyfte" ng-model="$ctrl.appCtrl.appdata.fullTimeEqCount" class="numpicker-value"></input>
+        </h-number>
       </li>
     </ul>
     <ng-form name="additionalcounts" check-form-empty>
@@ -156,10 +159,10 @@
       </fieldset>
     </ng-form>
   </fieldset>
-  <fieldset ng-repeat="section in $ctrl.output" ng-if="section.name === 'enrollment'">
+  <fieldset>
     <legend>Enrollment counts</legend>
     <ul class="form-container container-output">
-      <li class="form-row" ng-repeat="item in section.content track by $index">
+      <li class="form-row" ng-repeat="item in $ctrl.enrollmentSection track by $index">
         <span class="output-label" ng-bind-html="::item.name"></span>
         <span class="output-value" ng-bind-html="::item.value"></span>
       </li>

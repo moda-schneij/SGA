@@ -167,14 +167,11 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     ], (newVal) => {
       if (UtilsSvc.notNullOrEmptyObj(newVal[0]) && UtilsSvc.notNullOrEmptyObj(newVal[1])) {
         updateViewValues.call(bindingObj);
-        
         angular.forEach(vm.appCtrl.statesArray, (value, key) => {
           if (value.value !== "HI") {
             vm.statesArray.push(value);
           }
         });
-        
-        
         if (!vm.output) {
           getOutput.call(bindingObj, {init: true});
         }
@@ -246,6 +243,7 @@ function getOutput(option) {
   this.$log.debug('SECTIONS ARRAY');
   this.$log.debug(sectionsArr);
   this.vm.output = sectionsArr;
+  this.vm.enrollmentSection = sectionsArr.filter((section) => section.name === 'enrollment')[0].content;
   this.$timeout(() => {
     if (this.vm.needsEmployeeStateCounts) {
       resetEmployeeByStateForm.bind(this);
