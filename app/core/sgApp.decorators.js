@@ -18,7 +18,6 @@ const decorators = {
   hNumberDirective: ($delegate, $timeout, $log, $parse, $interpolate, $compile) => {
     'ngInject';
     const directive = $delegate[0]; //grab the directive that is being decorated (the first element of the $delegate array)
-    directive.scope.ctrl = '='; //this is the vm passed to the numpicker as the "ctrl" attribute
     directive.require = '^form'; //make sure the control is nested in a form/ngForm
     const compile = directive.compile; //ref to the compile method of the decorated directive
     let ctrlName;
@@ -42,10 +41,7 @@ const decorators = {
         .addClass('numpicker-number');
 
       return function($scope, $elem, $attrs, formCtrl) {
-        const vm = $scope.ctrl;
         const _val = $scope.value ? $scope.value : 0;
-        // let _formCtrl;
-        // let formCtrlName;
         let inputCtrlName;
         let inputCtrl;
         let $input;
@@ -57,13 +53,19 @@ const decorators = {
         //now do decorated link (ie, postlink) stuff
         //here is where an input can be inserted, with interpolated ng-model and name attributes
         $elem.find('.numpicker-number')
-          .prepend('<input name="' + $attrs.name + '" ng-model="' + $attrs.value + '" class="numpicker-value">{{$attrs.value}}</input>');
+          .prepend('<input type="text" name="' + $attrs.name + '" ng-model="' + $attrs.value + '" ' + 
+            'class="numpicker-value"" />');
         //this input must now be compiled against scope to register with the parent form (ngModelCtrl)
         $compile($elem.contents())($scope);
         $input = $elem.find('.numpicker-value'); //get a ref to the newly added input
         
         inputCtrlName = formCtrl ? Object.keys(formCtrl).filter((prop) => prop === ctrlName) : null;
         inputCtrl = inputCtrlName && formCtrl ? formCtrl[inputCtrlName] : null;
+
+        if (inputCtrl && angular.isFunction(inputCtrl.$setViewValue)) {
+          inputCtrl.$setViewValue(_val);
+          inputCtrl.$commitViewValue();
+        }
 
         $scope.$watch(
           () => $scope.value,
@@ -72,6 +74,8 @@ const decorators = {
               const _newVal = newVal ? newVal : 0;
               if (inputCtrl && angular.isFunction(inputCtrl.$setViewValue)) {
                 inputCtrl.$setViewValue(_newVal);
+                inputCtrl.$commitViewValue();
+                $input.val(_newVal);
               }
               if (inputCtrl && angular.isFunction(inputCtrl.$setDirty)) {
                 inputCtrl.$setDirty();

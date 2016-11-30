@@ -42,11 +42,13 @@
   }
 }
 
+ //the input (inserted by decorator) is there only for validation and setting state on the form
 .numpicker-value {
-  border: 0 none;
+  border: 0 none !important;
+  height: 0 !important;
+  padding: 0 !important;
   text-align: center;
-  width: 0; //the input (inserted by decorator) is there only for validation and setting state on the form
-  height: 0;
+  width: 0 !important; 
 }
 
 .numpicker {
