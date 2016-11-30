@@ -159,10 +159,10 @@
       </fieldset>
     </ng-form>
   </fieldset>
-  <fieldset ng-repeat="section in $ctrl.output" ng-if="section.name === 'enrollment'">
+  <fieldset>
     <legend>Enrollment counts</legend>
     <ul class="form-container container-output">
-      <li class="form-row" ng-repeat="item in section.content track by $index">
+      <li class="form-row" ng-repeat="item in $ctrl.enrollmentSection track by $index">
         <span class="output-label" ng-bind-html="::item.name"></span>
         <span class="output-value" ng-bind-html="::item.value"></span>
       </li>

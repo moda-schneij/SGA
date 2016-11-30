@@ -45,7 +45,8 @@
 .numpicker-value {
   border: 0 none;
   text-align: center;
-  width: inherit;
+  width: 0; //the input (inserted by decorator) is there only for validation and setting state on the form
+  height: 0;
 }
 
 .numpicker {
