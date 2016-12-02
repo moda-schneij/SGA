@@ -1,4 +1,6 @@
-<div id="container-header-content" class="sga-container container-header-content {{sgApp.pagePath | lowercase}}" ng-class="{'is-logged-in': sgApp.isLoggedIn, 'status-inprogress': sgApp.inProgress, 'status-not-inprogress': !sgApp.inProgress}" ng-show="sgApp.pageReady && sgApp.routeReady">    
+<div id="container-header-content" class="sga-container container-header-content {{sgApp.pagePath | lowercase}}" 
+    ng-class="{'is-logged-in': sgApp.isLoggedIn, 'status-inprogress': sgApp.inProgress, 'status-not-inprogress': !sgApp.inProgress}" 
+    ng-show="sgApp.pageReady && sgApp.routeReady">    
 
   <sga-header id="header" class="header" routeconfig="sgApp.routeConfig" isloggedin="sgApp.isLoggedIn" pagetitle="sgApp.pageTitle" showtitle="sgApp.showPageTitle" inprogress="sgApp.inProgress" appid="sgApp.appdata.applicationId" groupor="sgApp.groupOR" groupak="sgApp.groupAK" user="sgApp.appdata.checkedOutBy" on-logout="sgApp.logout($event)" on-return-ser="sgApp.returnToSER($event)" on-delete-app="sgApp.deleteApp($event)" on-view-app="sgApp.viewApp($event)" on-set-manual="sgApp.setManualProcess($event)" app-status="sgApp.appdata.appStatus"></sga-header>
 
@@ -9,7 +11,8 @@
 
     <ng-form novalidate name="sgApp.rootform" id="content" class="sga-container container-content">
       <messages id="messages" isloggedin="sgApp.isLoggedIn" class="sga-container container-messages"></messages>
-      <ng-outlet class="sga-container container-route-main"></ng-outlet>
+      <!--<ng-outlet class="sga-container container-route-main"></ng-outlet>-->
+      <div ui-view class="sga-container container-route-main"></div>
     </ng-form>
 
     <!-- layout in-progress -->

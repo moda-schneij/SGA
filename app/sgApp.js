@@ -64,14 +64,12 @@ export default angular
     sgAppRoot.name,
     sgAppLogin.name
   ])
-  .value('$routerRootComponent', 'sgaRoot')
+  //.value('$routerRootComponent', 'sgaRoot')
   .run(runBlock)
   .config(sgaConfig);
 
 /*@ngInject*/
-function runBlock(RouteChangeSvc, StorageSvc, STORAGE_KEYS, $log, $templateCache) {
+function runBlock(RouteChangeSvc, $templateCache) {
   RouteChangeSvc.onStart();
   RouteChangeSvc.onSuccess();
-  StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, angular.toJson({foo: 'bar'}));
-  $log.debug(StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY));
 }

@@ -14,9 +14,6 @@ export default angular
   .module('sgAppLogin', [])
   .component('loginComponent', {
     templateUrl: loginTemplate,
-    bindings: {
-      $router: '<'
-    },
     require: {
       rootCtrl: '^sgaRoot'
     },

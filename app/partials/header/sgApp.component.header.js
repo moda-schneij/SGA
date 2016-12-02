@@ -17,7 +17,6 @@ export default angular
   .component('sgaHeader', {
     templateUrl: headerTemplate,
     bindings: {
-      $router: '<',
       isloggedin: '<',
       inprogress: '<',
       pagetitle: '<',

@@ -14,15 +14,18 @@ const otherwiseRoute = SER_CONTEXT ? '/' : '/login'; //not sure about this yet
 const MODA = window.MODA || {};
 /*eslint-enable*/
 MODA.SGA = MODA.SGA || {};
-import decorators from './sgApp.decorators'
+import decorators from './sgApp.decorators';
+import {rootState, loginState, applicationState} from '../root/sgApp.states.root';
+const states = [rootState, loginState, applicationState];
 
 /*@ngInject*/
-const sgaConfig = (CONFIGS, $httpProvider, $logProvider, $locationProvider, 
+const sgaConfig = (CONFIGS, $httpProvider, $urlRouterProvider, $stateProvider, $logProvider, $locationProvider, 
     $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) => {
   $httpProvider.interceptors.push('AuthInterceptorSvc');
   $logProvider.debugEnabled(!PROD); //disable debug logging in production
   $locationProvider.html5Mode(false);
-  $urlRouterProvider.otherwise('/');
+  //!__SER_CONTEXT__ && $urlRouterProvider.otherwise('/login');
+  //!__SER_CONTEXT__ && $urlRouterProvider.deferIntercept();
   $sceDelegateProvider.resourceUrlWhitelist([
     // Allow same origin resource loads.
     'self',
@@ -35,6 +38,7 @@ const sgaConfig = (CONFIGS, $httpProvider, $logProvider, $locationProvider,
     theme: 'select2',
     resetSearchInput: true
   });
+  states.forEach(state => $stateProvider.state(state.name, state));
   //decorate the number picker directive
   Object.keys(decorators).forEach((name) => $provide.decorator(name, decorators[name]));
 };

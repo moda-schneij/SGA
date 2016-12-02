@@ -11,7 +11,7 @@
 
 import angular from 'angular';
 import rootTemplate from './root.html';
-import {rootState} from './sgApp.states.root';
+import {rootState, loginState, applicationState} from './sgApp.states.root';
 
 /*eslint-disable*/
 const MODA = window.MODA || {};
@@ -28,8 +28,10 @@ export default angular
     templateUrl: rootTemplate,
     transclude: true,
     controller: sgAppCtrl,
-    controllerAs: 'sgApp',
-    $routeConfig: routeConfigFn.call(sgAppCtrl)
+    controllerAs: 'sgApp'
+    //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
+    //,
+    //$routeConfig: routeConfigFn.call(sgAppCtrl)
   });
 
 /*@ngInject*/
