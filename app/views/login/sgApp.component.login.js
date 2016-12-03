@@ -14,20 +14,20 @@ export default angular
   .module('sgAppLogin', [])
   .component('loginComponent', {
     templateUrl: loginTemplate,
-    require: {
-      rootCtrl: '^sgaRoot'
+    bindings: {
+      setRouteReady: '&'
     },
     controller: LoginCtrl
   });
 
 /*@ngInject*/
-function LoginCtrl(ConstantsSvc, XdMessagingSvc, AuthenticationSvc, ApplicationSvc, $log, $rootRouter, $location, $sce, $window) {
+function LoginCtrl($transitions, ConstantsSvc, XdMessagingSvc, AuthenticationSvc, ApplicationSvc, $log, $rootRouter, $location, $sce, $window) {
   var vm = this;
 
   vm.serContext = ConstantsSvc.SER_CONTEXT;
   
   vm.$onInit = () => {
-    vm.rootCtrl.setRouteReady();
+    vm.setRouteReady();
   };
 
   if (!vm.serContext) {

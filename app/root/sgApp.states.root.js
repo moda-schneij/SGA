@@ -18,27 +18,46 @@ const PROD = __PROD__ ;
  * 2) Provide a viewport (ui-view) for a substate to plug into
 **/
 
-export const rootState = {
+const rootState = {
   name: 'root',
   redirectTo: __SER_CONTEXT__ ? 'application' : 'login',
-  component: 'sgaRoot'
-  //no url for root component
+  component: 'sgaRoot',
+  url: '',
+  data: {
+    requiresAuth: false
+  }
 };
 
-export const loginState = {
+const loginState = {
   name: 'login',
   parent: 'root',
   url: '/login',
-  component: 'loginComponent',
+  //component: 'loginComponent',
+  template: '<login-component set-route-ready="$ctrl.setRouteReady()"></login-component>',
   data: {
-    loginRequired: false,
+    requiresAuth: false,
     title: 'Login',
     linkTitle: 'Home',
     addToMenu: false
   }
 };
 
-export const applicationState = {
+const notFoundState = {
+  name: 'notfound',
+  parent: 'root',
+  url: '/oops',
+  //component: 'loginComponent',
+  template: '<p>Sorry, but you\'ve reached an invalid page. <a ui-sref=\'home\'>Return home</a>.</p>',
+  data: {
+    requiresAuth: false,
+    title: 'Oops!',
+    addToMenu: false,
+    doNotBlock: true,
+    overrideDefaultTitle: true
+  }
+};
+
+const applicationState = {
   name: 'application',
   parent: 'root',
   url: '/application',
@@ -54,9 +73,13 @@ export const applicationState = {
     }
   },
   data: {
-    loginRequired: true,
+    requiresAuth: true,
     title: 'Welcome to the small group application form',
     linkTitle: 'Home',
     addToMenu: true
   }
 };
+
+const rootStates = [rootState, loginState, notFoundState, applicationState];
+
+export default rootStates;

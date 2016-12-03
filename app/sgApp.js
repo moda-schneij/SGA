@@ -14,6 +14,7 @@ import sgAppApplicationForm from './views/application/sgApp.component.applicatio
 import sgAppThirdParty from './core/sgApp.third-party';
 import sgAppCore from './core/sgApp.core';
 import sgaConfig from './core/sgApp.config';
+import authHookRunBlock from './core/requiresAuth.hook';
 import sgAppLogin from './views/login/sgApp.component.login';
 import sgAppRoot from './root/sgApp.component.root';
 
@@ -65,7 +66,7 @@ export default angular
     sgAppLogin.name
   ])
   //.value('$routerRootComponent', 'sgaRoot')
-  .run(runBlock)
+  .run(authHookRunBlock)
   .config(sgaConfig);
 
 /*@ngInject*/

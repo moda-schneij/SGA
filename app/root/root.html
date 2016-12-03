@@ -1,22 +1,22 @@
-<div id="container-header-content" class="sga-container container-header-content {{sgApp.pagePath | lowercase}}" 
-    ng-class="{'is-logged-in': sgApp.isLoggedIn, 'status-inprogress': sgApp.inProgress, 'status-not-inprogress': !sgApp.inProgress}" 
-    ng-show="sgApp.pageReady && sgApp.routeReady">    
+<div id="container-header-content" class="sga-container container-header-content {{$ctrl.pagePath | lowercase}}" 
+    ng-class="{'is-logged-in': $ctrl.isLoggedIn, 'status-inprogress': $ctrl.inProgress, 'status-not-inprogress': !$ctrl.inProgress}" 
+    ng-show="$ctrl.pageReady && $ctrl.routeReady">    
 
-  <sga-header id="header" class="header" routeconfig="sgApp.routeConfig" isloggedin="sgApp.isLoggedIn" pagetitle="sgApp.pageTitle" showtitle="sgApp.showPageTitle" inprogress="sgApp.inProgress" appid="sgApp.appdata.applicationId" groupor="sgApp.groupOR" groupak="sgApp.groupAK" user="sgApp.appdata.checkedOutBy" on-logout="sgApp.logout($event)" on-return-ser="sgApp.returnToSER($event)" on-delete-app="sgApp.deleteApp($event)" on-view-app="sgApp.viewApp($event)" on-set-manual="sgApp.setManualProcess($event)" app-status="sgApp.appdata.appStatus"></sga-header>
+  <sga-header id="header" class="header" routeconfig="$ctrl.routeConfig" isloggedin="$ctrl.isLoggedIn" overridetitle="$ctrl.overrideDefaultTitle" pagetitle="$ctrl.pageTitle" showtitle="$ctrl.showPageTitle" inprogress="$ctrl.inProgress" appid="$ctrl.appdata.applicationId" groupor="$ctrl.groupOR" groupak="$ctrl.groupAK" user="$ctrl.appdata.checkedOutBy" on-logout="$ctrl.logout($event)" on-return-ser="$ctrl.returnToSER($event)" on-delete-app="$ctrl.deleteApp($event)" on-view-app="$ctrl.viewApp($event)" on-set-manual="$ctrl.setManualProcess($event)" app-status="$ctrl.appdata.appStatus"></sga-header>
 
   <div class="sga-container container-main container-grid" id="main">
 
     <!-- layout not-in-progress -->
-    <sidebar id="sidebar" class="sidebar" isloggedin="sgApp.isLoggedIn" appdata="sgApp.appdata" sidebarobj="sgApp.addToSidebarObj" groupor="sgApp.groupOR" groupak="sgApp.groupAK" ng-show="sgApp.displaySidebar" ng-if="!sgApp.inProgress"></sidebar>
+    <sidebar id="sidebar" class="sidebar" isloggedin="$ctrl.isLoggedIn" appdata="$ctrl.appdata" sidebarobj="$ctrl.addToSidebarObj" groupor="$ctrl.groupOR" groupak="$ctrl.groupAK" ng-show="$ctrl.displaySidebar" ng-if="!$ctrl.inProgress"></sidebar>
 
-    <ng-form novalidate name="sgApp.rootform" id="content" class="sga-container container-content">
-      <messages id="messages" isloggedin="sgApp.isLoggedIn" class="sga-container container-messages"></messages>
+    <ng-form novalidate name="$ctrl.rootform" id="content" class="sga-container container-content">
+      <messages id="messages" isloggedin="$ctrl.isLoggedIn" class="sga-container container-messages"></messages>
       <!--<ng-outlet class="sga-container container-route-main"></ng-outlet>-->
       <div ui-view class="sga-container container-route-main"></div>
     </ng-form>
 
     <!-- layout in-progress -->
-    <sidebar id="sidebar" class="sidebar" isloggedin="sgApp.isLoggedIn" appdata="sgApp.appdata" sidebarobj="sgApp.addToSidebarObj" groupor="sgApp.groupOR" groupak="sgApp.groupAK" ng-show="sgApp.displaySidebar" ng-if="sgApp.inProgress"></sidebar>
+    <sidebar id="sidebar" class="sidebar" isloggedin="$ctrl.isLoggedIn" appdata="$ctrl.appdata" sidebarobj="$ctrl.addToSidebarObj" groupor="$ctrl.groupOR" groupak="$ctrl.groupAK" ng-show="$ctrl.displaySidebar" ng-if="$ctrl.inProgress"></sidebar>
 
     <stepwise id="stepwise" class="navigation navigation-stepwise"></stepwise>
 
@@ -26,8 +26,8 @@
   
 </div><!--#header-content-->
 
-<div id="footer" class="footer" ng-bind-html="sgApp.footerContent" ng-show="sgApp.pageReady && sgApp.routeReady">
+<div id="footer" class="footer" ng-bind-html="$ctrl.footerContent" ng-show="$ctrl.pageReady && $ctrl.routeReady">
 </div>
 
-<iframe id="serframe" ng-src="{{::sgApp.serFrameUrl}}">
+<iframe id="serframe" ng-src="{{::$ctrl.serFrameUrl}}">
 </iframe>

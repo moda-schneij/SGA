@@ -6,19 +6,21 @@
  * - The user is not authenticated
  * - The user is navigating to a state that requires authentication
  */
-export function authHookRunBlock($transitions, AuthService) {
+export default function authHookRunBlock($transitions, UserSvc, AuthenticationSvc) {
   // Matches if the destination state's data property has a truthy 'requiresAuth' property
-  let requiresAuthCriteria = {
+  const requiresAuthCriteria = {
     to: (state) => state.data && state.data.requiresAuth
   };
 
   // Function that returns a redirect for the current transition to the login state
   // if the user is not currently authenticated (according to the AuthService)
 
-  let redirectToLogin = (transition) => {
-    let AuthService = transition.injector().get('AuthService');
-    let $state = transition.router.stateService;
-    if (!AuthService.isAuthenticated()) {
+  const redirectToLogin = (transition) => {
+    const AuthenticationSvc = transition.injector().get('AuthenticationSvc');
+    const UserSvc = transition.injector().get('UserSvc');
+    const $state = transition.router.stateService;
+    //TODO - use other services to prompt and return user to SER in that context, instead of dumping to login
+    if (!UserSvc.getIsLoggedIn()) {
       return $state.target('login', undefined, { location: false });
     }
   };

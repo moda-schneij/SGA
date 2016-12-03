@@ -11,7 +11,6 @@
 
 import angular from 'angular';
 import rootTemplate from './root.html';
-import {rootState, loginState, applicationState} from './sgApp.states.root';
 
 /*eslint-disable*/
 const MODA = window.MODA || {};
@@ -27,15 +26,14 @@ export default angular
   .component('sgaRoot', {
     templateUrl: rootTemplate,
     transclude: true,
-    controller: sgAppCtrl,
-    controllerAs: 'sgApp'
+    controller: sgAppCtrl
     //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
     //,
     //$routeConfig: routeConfigFn.call(sgAppCtrl)
   });
 
 /*@ngInject*/
-function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $location, UtilsSvc, 
+function sgAppCtrl($transitions, $state, $log, $q, $scope, $rootScope, $rootRouter, $timeout, $location, UtilsSvc, 
     SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, 
     APP_ROOT, STORAGE_KEYS, StorageSvc, DataSvc, ContentSvc, $sce) {
   const vm = this;
@@ -57,6 +55,34 @@ function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $locatio
     SpinnerControlSvc.stopSpin();
   };
 
+  /*TODO - REPLACE THIS BY USING NATIVE UI-ROUTER RESOLVES INSTEAD OF pageready and routeready*/
+
+  const resolveNowCriteria = {
+    from: (state) => {
+      // alert('from');
+      return state.data && state.data.doNotBlock && state.data.doNotBlock === true;
+    },
+    to: (state) => {
+      // alert('to');
+      return state.data && state.data.doNotBlock && state.data.doNotBlock === true;
+    },
+    exiting: (state) => {
+      // alert('exiting');
+      return state.data && state.data.doNotBlock && state.data.doNotBlock === true;
+    },
+    entering: (state) => {
+      // alert('entering');
+      return state.data && state.data.doNotBlock && state.data.doNotBlock === true;
+    },
+    retained: (state) => {
+      // alert('retained');
+      return state.data && state.data.doNotBlock && state.data.doNotBlock === true;
+    }
+  };
+
+  $transitions.onRetain(resolveNowCriteria, vm.setRouteReady);
+  $transitions.onSuccess({}, setRouteValues);
+
   vm.setDisplaySidebar = function(bool) {
     vm.displaySidebar = bool;
   };
@@ -70,7 +96,6 @@ function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $locatio
   };
 
   vm.$onInit = function() {
-    $log.debug('what\'s in rootState?', rootState);
     if (!vm.isLoggedIn && ConstantsSvc.SER_CONTEXT) {
       AuthenticationSvc.getIsLoggedIn().then(function() {
         initView(); //the query parameter (quote id or app id) is lost by the time this is called - we have routed
@@ -78,6 +103,10 @@ function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $locatio
     } else {
       initView();
     }
+    //if the current state says to not block the route, go ahead and resolve it, the hacky way that's in this root controller
+    $state.current && $state.current.data && $state.current.data.doNotBlock === true &&
+      setRouteValues(); 
+      vm.setRouteReady();
   };
 
   //I will be calling this from the nested application component controller, which has a binding to this controller
@@ -209,18 +238,24 @@ function sgAppCtrl($log, $q, $scope, $rootScope, $rootRouter, $timeout, $locatio
   }
 
   function setRouteValues() {
-    vm.pageTitle = ($rootRouter.currentInstruction && 
-      $rootRouter.currentInstruction.child && 
-      $rootRouter.currentInstruction.child.component && 
-      $rootRouter.currentInstruction.child.component.routeData.data.title) || 
-      ($rootRouter.currentInstruction && 
-      $rootRouter.currentInstruction.component && 
-      $rootRouter.currentInstruction.component.routeData.data.title);
-    vm.pagePath = ($rootRouter.currentInstruction && 
-      $rootRouter.currentInstruction.child && 
-      $rootRouter.currentInstruction.child.urlPath.toLowerCase() + '-page') || 
-      ($rootRouter.currentInstruction && 
-      $rootRouter.currentInstruction.urlPath.toLowerCase() + '-page');
+    // vm.pageTitle = ($rootRouter.currentInstruction && 
+    //   $rootRouter.currentInstruction.child && 
+    //   $rootRouter.currentInstruction.child.component && 
+    //   $rootRouter.currentInstruction.child.component.routeData.data.title) || 
+    //   ($rootRouter.currentInstruction && 
+    //   $rootRouter.currentInstruction.component && 
+    //   $rootRouter.currentInstruction.component.routeData.data.title);
+    // vm.pagePath = ($rootRouter.currentInstruction && 
+    //   $rootRouter.currentInstruction.child && 
+    //   $rootRouter.currentInstruction.child.urlPath.toLowerCase() + '-page') || 
+    //   ($rootRouter.currentInstruction && 
+    //   $rootRouter.currentInstruction.urlPath.toLowerCase() + '-page');
+    vm.pageTitle = $state.current && $state.current.data && angular.isString($state.current.data.title) ? 
+      $state.current.data.title : 'Welcome';
+    vm.overrideDefaultTitle = $state.current && $state.current.data && $state.current.data.overrideDefaultTitle === true;
+    $log.debug('current state', $state.current);
+    $log.debug('$state', $state);
+    vm.pagePath = angular.isString($state.router.urlRouter.location) ? $state.router.urlRouter.location.toLowerCase() : '';
     vm.showPageTitle = vm.pageTitle && vm.pageTitle !== '';
     vm.pageTitle = vm.pageTitle && vm.pageTitle !== '' ? vm.pageTitle : 'Welcome';
     vm.isLoggedIn = UserSvc.getIsLoggedIn();

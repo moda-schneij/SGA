@@ -43,5 +43,5 @@
   </header>
 </div> <!-- /containter-branding -->
 <div id="subhead">
-  <h1 ng-class="{'hide': !header.showtitle}" class="heading heading-page">{{header.inprogress ? header.pagetitle : 'Small group application - Enrollment'}}</h1><!-- bind page title -->
+  <h1 ng-class="{'hide': !header.showtitle}" class="heading heading-page">{{header.inprogress || header.overridetitle ? header.pagetitle : 'Small group application - Enrollment'}}</h1><!-- bind page title -->
 </div>
