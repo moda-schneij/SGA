@@ -8,8 +8,7 @@
  */
 export default function doNotBlockHook($transitions, $log) {
   'ngInject';
-  const boundCtrl = this;
-
+  
   const resolveNowCriteria = {
     to: (state) => {
       return state.data && state.data.doNotBlock && state.data.doNotBlock === true;

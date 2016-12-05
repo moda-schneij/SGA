@@ -21,7 +21,7 @@ export default angular
   });
 
 /*@ngInject*/
-function LoginCtrl($transitions, ConstantsSvc, XdMessagingSvc, AuthenticationSvc, ApplicationSvc, $log, $rootRouter, $location, $sce, $window) {
+function LoginCtrl($transitions, ConstantsSvc, XdMessagingSvc, AuthenticationSvc, ApplicationSvc, $log, $sce, $window) {
   var vm = this;
 
   vm.serContext = ConstantsSvc.SER_CONTEXT;

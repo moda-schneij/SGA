@@ -40,6 +40,7 @@ import cobraFormComponent from './views/application/cobra/sgApp.component.cobra'
 import agentSalesFormComponent from './views/application/agent_sales/sgApp.component.agentsales';
 
 //Imports of services and directives for above components
+import RootComponentSvc from './root/sgApp.service.rootcomponent';
 import PlanSelectSvc from './views/application/planselect/sgApp.service.planselect';
 import ApplicationComponentSvc from './views/application/sgApp.service.applicationcomponent';
 import CobraComponentSvc from './views/application/cobra/sgApp.service.cobracomponent';

@@ -3,21 +3,21 @@
   <header class="container container-app-header" id="app-header">
     <div class="container container-navbar" id="navbar">
       <div class="app-name">
-        <a ng-if="header.isloggedin" ng-href="" ng-click="header.appName.action()">{{::header.appName.title}}
-          <span ng-if="header.groupor"> - Oregon</span>
-          <span ng-if="header.groupak"> - Alaska</span>
+        <a ng-if="header.isLoggedIn" ng-href="" ng-click="header.appName.action()">{{::header.appName.title}}
+          <span ng-if="header.groupOR"> - Oregon</span>
+          <span ng-if="header.groupAK"> - Alaska</span>
         </a>
-        <span ng-if="!header.isloggedin">{{::header.appName.title}}</span>
+        <span ng-if="!header.isLoggedIn">{{::header.appName.title}}</span>
       </div>
       <nav class="nav nav-util">
-        <ul class="nav-items" ng-if="header.isloggedin && header.inprogress">
+        <ul class="nav-items" ng-if="header.isLoggedIn && header.inProgress">
           <li class="nav-item" ng-repeat="item in header.navUtil">
             <a class="nav-item-link" ng-link="['{{::item.name}}']">{{::item.title}}</a>
           </li>
         </ul>
       </nav>
     </div> <!-- /containter-navbar -->
-    <nav class="nav nav-logged-in" ng-if="header.isloggedin">
+    <nav class="nav nav-logged-in" ng-if="header.isLoggedIn">
       <ul class="nav-items">
         <li class="nav-item">
           <p class="greeting" ng-bind="'Welcome, ' + header.user"></p>
@@ -43,5 +43,5 @@
   </header>
 </div> <!-- /containter-branding -->
 <div id="subhead">
-  <h1 ng-class="{'hide': !header.showtitle}" class="heading heading-page">{{header.inprogress || header.overridetitle ? header.pagetitle : 'Small group application - Enrollment'}}</h1><!-- bind page title -->
+  <h1 ng-class="{'hide': !header.showTitle}" class="heading heading-page">{{(header.inProgress || header.overrideTitle) ? 'Small group application - ' + header.pageTitle : 'Small group application - Enrollment'}}</h1><!-- bind page title -->
 </div>

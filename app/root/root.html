@@ -2,7 +2,7 @@
     ng-class="{'is-logged-in': $ctrl.isLoggedIn, 'status-inprogress': $ctrl.inProgress, 'status-not-inprogress': !$ctrl.inProgress}" 
     ng-show="$ctrl.pageReady && $ctrl.routeReady">    
 
-  <sga-header id="header" class="header" routeconfig="$ctrl.routeConfig" isloggedin="$ctrl.isLoggedIn" overridetitle="$ctrl.overrideDefaultTitle" pagetitle="$ctrl.pageTitle" showtitle="$ctrl.showPageTitle" inprogress="$ctrl.inProgress" appid="$ctrl.appdata.applicationId" groupor="$ctrl.groupOR" groupak="$ctrl.groupAK" user="$ctrl.appdata.checkedOutBy" on-logout="$ctrl.logout($event)" on-return-ser="$ctrl.returnToSER($event)" on-delete-app="$ctrl.deleteApp($event)" on-view-app="$ctrl.viewApp($event)" on-set-manual="$ctrl.setManualProcess($event)" app-status="$ctrl.appdata.appStatus"></sga-header>
+  <sga-header id="header" class="header" route-config="$ctrl.routeConfig" is-logged-in="$ctrl.isLoggedIn" override-title="$ctrl.overrideDefaultTitle" page-title="$ctrl.pageTitle" show-title="$ctrl.showPageTitle" in-progress="$ctrl.inProgress" app-id="$ctrl.appdata.applicationId" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK" user="$ctrl.appdata.checkedOutBy" on-logout="$ctrl.logout($event)" on-return-ser="$ctrl.returnToSER($event)" on-delete-app="$ctrl.deleteApp($event)" on-view-app="$ctrl.viewApp($event)" on-set-manual="$ctrl.setManualProcess($event)" app-status="$ctrl.appdata.appStatus"></sga-header>
 
   <div class="sga-container container-main container-grid" id="main">
 

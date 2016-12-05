@@ -38,7 +38,9 @@ const loginState = {
     requiresAuth: false,
     title: 'Login',
     linkTitle: 'Home',
-    addToMenu: false
+    addToMenu: false,
+    doNotBlock: true,
+    overrideDefaultTitle: true
   }
 };
 
@@ -61,9 +63,10 @@ const applicationState = {
   name: 'application',
   parent: 'root',
   url: '/application',
-  component: 'applicationComponent',
+  template: '<application appdata="$ctrl.appData"></application>',
   resolve: {
     appData: (ApplicationSvc, $transition$) => {
+      'ngInject';
       const idObj = {};
       const params = $transition$.params();
       params.id && (idObj.appId = params.id);

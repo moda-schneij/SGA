@@ -17,16 +17,17 @@ export default angular
   .component('sgaHeader', {
     templateUrl: headerTemplate,
     bindings: {
-      isloggedin: '<',
-      inprogress: '<',
-      pagetitle: '<',
-      showtitle: '<',
-      routeconfig: '<',
-      groupor: '<',
-      groupak: '<',
-      appid: '<',
+      isLoggedIn: '<',
+      inProgress: '<',
+      pageTitle: '<',
+      showTitle: '<',
+      routeConfig: '<',
+      groupOR: '<',
+      groupAK: '<',
+      appId: '<',
       user: '<',
       appStatus: '<',
+      overrideTitle: '<',
       onLogout: '&',
       onDeleteApp: '&',
       onReturnSer: '&',
@@ -53,11 +54,11 @@ function HeaderCtrl(SER_CONTEXT, $log, ApplicationSvc, DataSvc, $sce) {
   //TODO - replace with manual list that has appropriate header links
   vm.navUtil = (function() {
     const _navUtil = [];
-    angular.forEach(vm.routeconfig, function(route, key) {
+    angular.forEach(vm.routeConfig, function(route, key) {
       if (route.data.addToMenu) {
         const navObj = {
           name: route.name,
-          ngLink: vm.isloggedin ? '["' + route.name + '"]' : '',
+          ngLink: vm.isLoggedIn ? '["' + route.name + '"]' : '',
           title: route.data.linkTitle
         };
         _navUtil.push(navObj);
@@ -74,10 +75,10 @@ function HeaderCtrl(SER_CONTEXT, $log, ApplicationSvc, DataSvc, $sce) {
     //_menuLoggedIn.push(logoutItem);
     return _menuLoggedIn;
   }());
-  $log.debug('vm.routeconfig: ');
-  $log.debug(vm.routeconfig);
+  $log.debug('vm.routeConfig: ');
+  $log.debug(vm.routeConfig);
   vm.homeName = (function() {
-    angular.forEach(vm.routeconfig, function(route, key) {
+    angular.forEach(vm.routeConfig, function(route, key) {
       if (route.path === '/') {
         return route.name;
       }
@@ -110,7 +111,7 @@ function HeaderCtrl(SER_CONTEXT, $log, ApplicationSvc, DataSvc, $sce) {
     vm.onDeleteApp({
       $event: {
         action: 'delete',
-        appid: vm.appid
+        appId: vm.appId
       }
     });
   };
@@ -119,7 +120,7 @@ function HeaderCtrl(SER_CONTEXT, $log, ApplicationSvc, DataSvc, $sce) {
     vm.onViewApp({
       $event: {
         action: 'view',
-        appid: vm.appid
+        appId: vm.appId
       }
     });
   };
@@ -128,7 +129,7 @@ function HeaderCtrl(SER_CONTEXT, $log, ApplicationSvc, DataSvc, $sce) {
     vm.onSetManual({
       $event: {
         action: 'setManual',
-        appid: vm.appid,
+        appId: vm.appId,
         allowCancel: true
       }
     });
