@@ -1,11 +1,11 @@
 'use strict';
 
 const groupsize = {
-  path: '/groupsize',
+  url: '/groupsize',
   parent: 'application',
-  name: 'GroupSize',
-  component: 'groupSizeFormComponent',
-  useAsDefault: true,
+  name: 'groupsize',
+  //component: 'groupSizeFormComponent',
+  template: '<group-size-form-component app-data="$ctrl.appData"></group-size-form-component>',
   data: {
     order: 1,
     requiresAuth: true,
@@ -16,10 +16,11 @@ const groupsize = {
 };
 
 const planselect = {
-  path: '/planselect',
+  url: '/planselect',
   parent: 'application',
-  name: 'PlanSelect',
-  component: 'planSelectFormComponent',
+  name: 'planselect',
+  //component: 'planSelectFormComponent',
+  template: '<plan-select-form-component app-data="$ctrl.appData"></plan-select-form-component>',
   data: {
     order: 2,
     requiresAuth: true,
@@ -30,10 +31,11 @@ const planselect = {
 };
 
 const groupinfo = {
-  path: '/groupinfo',
+  url: '/groupinfo',
   parent: 'application',
-  name: 'GroupInfo',
-  component: 'groupInfoFormComponent',
+  name: 'groupinfo',
+  //component: 'groupInfoFormComponent',
+  template: '<group-info-form-component app-data="$ctrl.appData"></group-info-form-component>',
   data: {
     order: 3,
     requiresAuth: true,
@@ -44,10 +46,11 @@ const groupinfo = {
 };
 
 const cobra = {
-  path: '/cobra',
+  url: '/cobra',
   parent: 'application',
-  name: 'Cobra',
-  component: 'cobraFormComponent',
+  name: 'cobra',
+  //component: 'cobraFormComponent',
+  template: '<cobra-form-component app-data="$ctrl.appData"></cobra-form-component>',
   data: {
     order: 4,
     requiresAuth: true,
@@ -58,10 +61,11 @@ const cobra = {
 };
 
 const agent_sales = {
-  path: '/agent_sales',
+  url: '/agent_sales',
   parent: 'application',
-  name: 'AgentSales',
-  component: 'agentSalesFormComponent',
+  name: 'agent_sales',
+  //component: 'agentSalesFormComponent',
+  template: '<agent-sales-form-component app-data="$ctrl.appData"></agent-sales-form-component>',
   data: {
     order: 5,
     requiresAuth: true,

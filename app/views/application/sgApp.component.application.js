@@ -21,6 +21,7 @@ export default angular
     templateUrl: applicationTemplate,
     bindings: {
       $router: '<',
+      appData: '<',
       onSave: '&'
     },
     require: {
@@ -31,13 +32,14 @@ export default angular
   });
 
 /*@ngInject*/
-function ApplicationCtrl($transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $scope) {
+function ApplicationCtrl($state, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $scope) {
   const vm = this;
   const args = Array.prototype.slice.call(arguments);
   $log.debug('THE ARGS ARRAY');
   $log.debug(args);
   const bindingObj = {
     vm,
+    $state,
     $transitions,
     SpinnerControlSvc,
     AuthenticationSvc,
@@ -61,11 +63,16 @@ function ApplicationCtrl($transitions, SpinnerControlSvc, AuthenticationSvc, Dat
   let deregisterAppCtrlDataWatch;
   let deregisterConfigWatch;
 
-  const deregisterRouterWatch = $rootScope.$watch(function() {
-    return vm.$router.currentInstruction;
-  }, function(newVal) {
+  //attempt to use ui-router 
+  $transitions.onSuccess({}, () => {
     ApplicationComponentSvc.configNav(vm); //set up nav buttons
   });
+
+  // const deregisterRouterWatch = $rootScope.$watch(function() {
+  //   return vm.$router.currentInstruction;
+  // }, function(newVal) {
+  //   ApplicationComponentSvc.configNav(vm); //set up nav buttons
+  // });
 
   //I don't know what this is about (below) - looks like it may be cruft
   vm.$routerCanActivate = (val) => val;
@@ -263,7 +270,6 @@ function ApplicationCtrl($transitions, SpinnerControlSvc, AuthenticationSvc, Dat
 
   vm.$onDestroy = () => {
     deregisterAppCtrlDataWatch();
-    deregisterRouterWatch();
     if (angular.isFunction(deregisterConfigWatch)) {
       deregisterConfigWatch();
     }

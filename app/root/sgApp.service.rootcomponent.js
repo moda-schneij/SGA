@@ -13,17 +13,24 @@ import angular from 'angular';
 class RootComponentSvc {
 
   /*@ngInject*/
-  constructor($log, $state, $q, StorageSvc, UtilsSvc, UserSvc, STORAGE_KEYS) {
+  constructor($log, $state, $q, $sce, StorageSvc, UtilsSvc, UserSvc, ContentSvc, STORAGE_KEYS) {
     this.$log = $log;
     this.$state = $state;
     this.$q = $q;
+    this.$sce = $sce;
     this.StorageSvc = StorageSvc;
     this.UtilsSvc = UtilsSvc;
     this.UserSvc = UserSvc;
+    this.ContentSvc = ContentSvc;
     this.STORAGE_KEYS = STORAGE_KEYS;
+    this.setComputedProps = this.setComputedProps.bind(this);
     this.setRouteValues = this.setRouteValues.bind(this);
     this.setRouteValuesAndReady = this.setRouteValuesAndReady.bind(this);
     this.setPageValues = this.setPageValues.bind(this);
+  }
+
+  init(vm) {
+    this.vm = vm;
   }
 
   /*************************************
@@ -59,8 +66,8 @@ class RootComponentSvc {
     vm.setRouteReady();
   }
 
-  setPageValues() {
-    const {$q, StorageSvc, UtilsSvc, STORAGE_KEYS} = this;
+  setPageValues(vm) {
+    const {$q, StorageSvc, UtilsSvc, ContentSvc, STORAGE_KEYS} = this;
     const deferred = $q.defer();
     if (!StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY)) {
       StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, {});
@@ -87,24 +94,24 @@ class RootComponentSvc {
       promises.footerContent = $q.when(storedFooterContent);
     }
     $q.all(promises)
-      .then(function(responses) {
+      .then((responses) => {
         if (UtilsSvc.notNullOrEmptyObj(responses.appdata)) {
-          setAppData(responses.appdata);
+          setAppData.apply(this, [responses.appdata, vm]);
         } else {
-          handleAppDataError('No application returned from server.');
+          handleAppDataError.call(this, 'No application returned from server.');
           deferred.resolve(false);
         }
         if (responses.footerContent) {
-          footerContentSuccess(responses.footerContent);
+          footerContentSuccess.apply(this, [responses.footerContent, vm]);
         }
         deferred.resolve(true);
-      }, function(reasons) {
+      }, (reasons) => {
         $log.error(reasons);
         if (reasons.appdata) {
-          handleAppDataError(reasons.appdata);
+          handleAppDataError.call(this, reasons.appdata);
         }
         if (reasons.footerContent) {
-          footerContentError(reasons.footerContent);
+          footerContentError.call(this, reasons.footerContent);
         }
         deferred.resolve(true); //TODO - evaluate how this entire chain of logic is handling errors - test!
         //this still blocks the UI if one fails, so try different handlers - inspect q.all documentation
@@ -154,6 +161,43 @@ class RootComponentSvc {
     return config;
   }
 
+}
+
+function setAppData(response, vm) {
+  const {$log, UtilsSvc} = this;
+  $log.debug('setting appData in root component: ');
+  $log.debug(response);
+  if (UtilsSvc.notNullOrEmptyObj(response)) {
+    vm.appdata = response;
+    //also to pass as props to the application, for forking behavior, etc
+    vm.groupOR = response.group.clientState === 'OR';
+    vm.groupAK = response.group.clientState === 'AK';
+    this.setComputedProps(vm);
+  } else {
+    $log.error('no app data in root component');
+  }
+  return true;
+}
+
+function handleAppDataError(error) {
+  const {$log} = this;
+  $log.error('error getting appData in root component on login: ');
+  $log.error(error);
+  return true;
+}
+
+function footerContentSuccess(response, vm) {
+  const {$log, $sce} = this;
+  const footerContent = $sce.trustAsHtml(response);
+  $log.debug(footerContent);
+  vm.footerContent = footerContent;
+  return true;
+}
+
+function footerContentError(error) {
+  const {$log} = this;
+  $log.error(error);
+  return true;
 }
 
 export default angular

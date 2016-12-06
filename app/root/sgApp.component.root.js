@@ -33,7 +33,7 @@ export default angular
   });
 
 /*@ngInject*/
-function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $rootScope, $rootRouter, $timeout, $location, UtilsSvc, 
+function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $rootScope, $timeout, $location, UtilsSvc, 
     SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, 
     APP_ROOT, STORAGE_KEYS, StorageSvc, DataSvc, ContentSvc, $sce) {
   const vm = this;
@@ -68,6 +68,8 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
   };
 
   vm.$onInit = function() {
+    //test injecting vm
+    RootComponentSvc.init(vm);
     if (!vm.isLoggedIn && ConstantsSvc.SER_CONTEXT) {
       AuthenticationSvc.getIsLoggedIn().then(function() {
         initView(); //the query parameter (quote id or app id) is lost by the time this is called - we have routed
@@ -87,7 +89,12 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
   };
 
   //ui-router - any successful transition should set route values
-  $transitions.onSuccess({}, () => { RootComponentSvc.setRouteValues(vm) });
+  $transitions.onSuccess({}, () => { 
+    RootComponentSvc.setRouteValues(vm);
+  });
+  $transitions.onRetain({}, () => { 
+    RootComponentSvc.setRouteValues(vm);
+  });
 
   function initView() {
     vm.isLoggedIn = UserSvc.getIsLoggedIn();
@@ -179,39 +186,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
     deregisterCallLogout();
   };
 
-  vm.routeConfig = RootComponentSvc.routeConfigFn(vm); //this is being passed to menu components
-
-  function setAppData(response) {
-    $log.debug('setting appData in root component: ');
-    $log.debug(response);
-    if (UtilsSvc.notNullOrEmptyObj(response)) {
-      vm.appdata = response;
-      //also to pass as props to the application, for forking behavior, etc
-      vm.groupOR = response.group.clientState === 'OR';
-      vm.groupAK = response.group.clientState === 'AK';
-      RootComponentSvc.setComputedProps(vm);
-    } else {
-      $log.error('no app data in root component');
-    }
-    return true;
-  }
-
-  function handleAppDataError(error) {
-    $log.error('error getting appData in root component on login: ');
-    $log.error(error);
-    return true;
-  }
-
-  function footerContentSuccess(response) {
-    const footerContent = $sce.trustAsHtml(response);
-    $log.debug(footerContent);
-    vm.footerContent = footerContent;
-    return true;
-  }
-
-  function footerContentError(error) {
-    $log.error(error);
-    return true;
-  }
+  //TODO - determine whether this was being used at all
+  //vm.routeConfig = RootComponentSvc.routeConfigFn(vm); //this is being passed to menu components
 
 }

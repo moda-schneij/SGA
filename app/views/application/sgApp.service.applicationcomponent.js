@@ -15,8 +15,9 @@ const routeConfig = require('json!./routes.json');
 class ApplicationComponentSvc {
 
   /*@ngInject*/
-  constructor($log, $timeout, SpinnerControlSvc, UtilsSvc, DialogSvc, DataSvc, REGEXS, toArrayFilter, RulesSvc, OptionsSvc, ApplicationSvc, MessagesSvc, SGA_CLIENT_KEYS) {
+  constructor($log, $state, $timeout, SpinnerControlSvc, UtilsSvc, DialogSvc, DataSvc, REGEXS, toArrayFilter, RulesSvc, OptionsSvc, ApplicationSvc, MessagesSvc, SGA_CLIENT_KEYS) {
     this.$log = $log;
+    this.$state = $state;
     this.$timeout = $timeout;
     this.SpinnerControlSvc = SpinnerControlSvc;
     this.UtilsSvc = UtilsSvc;

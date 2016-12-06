@@ -16,6 +16,7 @@ const MODA = window.MODA || {};
 MODA.SGA = MODA.SGA || {};
 import decorators from './sgApp.decorators';
 import rootStates from '../root/sgApp.states.root';
+import applicationStates from '../views/application/sgApp.states.application';
 
 /*@ngInject*/
 const sgaConfig = (CONFIGS, $httpProvider, $urlRouterProvider, $stateProvider, $logProvider, $locationProvider, 
@@ -37,7 +38,7 @@ const sgaConfig = (CONFIGS, $httpProvider, $urlRouterProvider, $stateProvider, $
     theme: 'select2',
     resetSearchInput: true
   });
-  rootStates.forEach(state => $stateProvider.state(state.name, state));
+  rootStates.concat(applicationStates).forEach(state => $stateProvider.state(state.name, state));
   //decorate the number picker directive
   Object.keys(decorators).forEach((name) => $provide.decorator(name, decorators[name]));
 };

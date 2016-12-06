@@ -23,7 +23,8 @@ export default angular
   .component('groupSizeFormComponent', {
     templateUrl: groupSizeTemplate,
     bindings: {
-      $router: '<'
+      $router: '<',
+      appData: '<'
     },
     require: {
       appCtrl: '^applicationComponent'

@@ -23,6 +23,17 @@ const rootState = {
   redirectTo: __SER_CONTEXT__ ? 'application' : 'login',
   component: 'sgaRoot',
   url: '',
+  resolve: {
+    appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
+      'ngInject';
+      const idObj = {};
+      const savedAppData = ApplicationSvc.getApplication();
+      if ($stateParams.id) { idObj.appId = $stateParams.id };
+      if ($stateParams.quote_id) { idObj.quoteId = $stateParams.quote_id };
+      if ($stateParams.ein) { idObj.ein = $stateParams.ein };
+      return UserSvc.getIsLoggedIn() ? (savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj)) : null;
+    }
+  },
   data: {
     requiresAuth: false
   }
@@ -63,18 +74,7 @@ const applicationState = {
   name: 'application',
   parent: 'root',
   url: '/application',
-  template: '<application appdata="$ctrl.appData"></application>',
-  resolve: {
-    appData: (ApplicationSvc, $transition$) => {
-      'ngInject';
-      const idObj = {};
-      const params = $transition$.params();
-      params.id && (idObj.appId = params.id);
-      params.quote_id && (idObj.quoteId = params.quote_id);
-      params.ein && (idObj.ein = params.ein);
-      return ApplicationSvc.getInitialApplication(idObj);
-    }
-  },
+  template: '<application app-data="$ctrl.appData" quote-Id="$ctrl.quoteId" app-Id="$ctrl.appId"></application>',
   data: {
     requiresAuth: true,
     title: 'Welcome to the small group application form',
