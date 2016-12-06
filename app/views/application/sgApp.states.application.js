@@ -2,8 +2,8 @@
 
 const groupsize = {
   url: '/groupsize',
-  parent: 'application',
-  name: 'groupsize',
+  parent: 'ApplicationView',
+  name: 'GroupSize',
   //component: 'groupSizeFormComponent',
   template: '<group-size-form-component app-data="$ctrl.appData"></group-size-form-component>',
   data: {
@@ -17,8 +17,8 @@ const groupsize = {
 
 const planselect = {
   url: '/planselect',
-  parent: 'application',
-  name: 'planselect',
+  parent: 'ApplicationView',
+  name: 'PlanSelect',
   //component: 'planSelectFormComponent',
   template: '<plan-select-form-component app-data="$ctrl.appData"></plan-select-form-component>',
   data: {
@@ -32,8 +32,8 @@ const planselect = {
 
 const groupinfo = {
   url: '/groupinfo',
-  parent: 'application',
-  name: 'groupinfo',
+  parent: 'ApplicationView',
+  name: 'GroupInfo',
   //component: 'groupInfoFormComponent',
   template: '<group-info-form-component app-data="$ctrl.appData"></group-info-form-component>',
   data: {
@@ -47,8 +47,8 @@ const groupinfo = {
 
 const cobra = {
   url: '/cobra',
-  parent: 'application',
-  name: 'cobra',
+  parent: 'ApplicationView',
+  name: 'Cobra',
   //component: 'cobraFormComponent',
   template: '<cobra-form-component app-data="$ctrl.appData"></cobra-form-component>',
   data: {
@@ -62,8 +62,8 @@ const cobra = {
 
 const agent_sales = {
   url: '/agent_sales',
-  parent: 'application',
-  name: 'agent_sales',
+  parent: 'ApplicationView',
+  name: 'AgentSales',
   //component: 'agentSalesFormComponent',
   template: '<agent-sales-form-component app-data="$ctrl.appData"></agent-sales-form-component>',
   data: {

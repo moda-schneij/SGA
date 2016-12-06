@@ -39,7 +39,8 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
   const vm = this;
   vm.quoteId = quoteId = UrlSvc.getQuoteIdFromUrl() || null;
   vm.ein = ein = UrlSvc.getEINFromUrl() || null;
-  vm.appId = appId = UrlSvc.getAppIdFromUrl() || null;
+  vm.appId = appId = ApplicationSvc.getAppID() ? ApplicationSvc.getAppID() : 
+    UrlSvc.getAppIdFromUrl() ? UrlSvc.getAppIdFromUrl() : null;
   vm.serFrameUrl = $sce.trustAsResourceUrl(ConstantsSvc.SER_ROOT_URL + '/?iframe=true');
   vm.footerContent = '';
   vm.appRoot = APP_ROOT;
@@ -47,7 +48,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
   vm.displaySidebar = false;
   vm.pageReady = false; //TODO - reevaluate all of the logic that toggles the display of content
   vm.routeReady = false;
-  vm.appdata = {}; //set after application data is retrieved
+  vm.appData = {}; //set after application data is retrieved
   
   vm.setRouteReady = () => {
     vm.routeReady = true;
@@ -85,7 +86,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
 
   //I will be calling this from the nested application component controller, which has a binding to this controller
   vm.persistAppData = function() {
-    setAppData(vm.appdata);
+    setAppData(vm.appData);
   };
 
   //ui-router - any successful transition should set route values
@@ -136,7 +137,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
     e.stopPropagation();
     $scope.$evalAsync(function() {
       vm.isLoggedIn = UserSvc.getIsLoggedIn();
-      vm.appdata = null;
+      vm.appData = null;
     });
   });
   //this is needed to deal with a circular service dependency, and I don't have time to come up with another solution
@@ -155,7 +156,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
   };
 
   vm.deleteApp = ($event) => {
-    ApplicationSvc.delete(vm.appdata);
+    ApplicationSvc.delete(vm.appData);
   };
 
   vm.viewApp = ($event) => {

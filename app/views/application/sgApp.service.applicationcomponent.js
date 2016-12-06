@@ -18,6 +18,8 @@ class ApplicationComponentSvc {
   constructor($log, $state, $timeout, SpinnerControlSvc, UtilsSvc, DialogSvc, DataSvc, REGEXS, toArrayFilter, RulesSvc, OptionsSvc, ApplicationSvc, MessagesSvc, SGA_CLIENT_KEYS) {
     this.$log = $log;
     this.$state = $state;
+    this.appRouteEntries = $state.get().filter((state) => 
+      state.parent && state.parent === 'ApplicationView');
     this.$timeout = $timeout;
     this.SpinnerControlSvc = SpinnerControlSvc;
     this.UtilsSvc = UtilsSvc;
@@ -184,29 +186,35 @@ class ApplicationComponentSvc {
 
   //retrive the name of the next step to continue with
   getNextStep(vm) {
-    //hacky and bad way of getting the final route name - there ought to be a better way. not even sure if this will throw an error at any point
-    const routeEntries = angular.isFunction(vm.$router.registry._rules.entries) && 
-      Array.from(vm.$router.registry._rules.entries())
-      .filter((entry) => entry[0] && entry[0] === 'applicationComponent')[0][1];
-    const finalRouteName = routeEntries && angular.isArray(routeEntries.rules) && 
-      routeEntries.rules[routeEntries.rules.length - 1]._routeName;
+    const {$state} = this;
+    const dummyState = {data: {order: -1}};
+    const finalAppRoute = this.appRouteEntries.reduce((prevVal, currVal) => {
+      if (prevVal.data && prevVal.data.order && currVal.data && currVal.data.order) {
+        return (currVal.data.order > prevVal.data.order) ? currVal : prevVal;
+      }
+      return dummyState;
+    }, dummyState);
+    const finalAppRouteName = finalAppRoute && finalAppRoute.name ? finalAppRoute.name : null;
     const sgaClientVal = vm.appdata.sgaClient ? angular.fromJson(vm.appdata.sgaClient) : {};
     //if this is an in-progress app, go back to last completed or saved step, otherwise to the end of the application form
-    return vm.appdata.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalRouteName) ? 
-      finalRouteName : null; //should be a route name as a string or undefined
+    return vm.appdata.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalAppRouteName) ? 
+      finalAppRouteName : null; //should be a route name as a string or undefined
   }
 
   returnToLastStep(vm) {
     const routeName = this.getNextStep(vm)
-    vm.$router.navigate([routeName]);
+    $state.go(routeName);
   }
 
   //navigation methods
   configNav(vm) {
-    const nextRouteId = vm.$router.currentInstruction.component.routeData.data.order;
-    const prevRouteId = vm.$router.currentInstruction.component.routeData.data.order - 2;
-    vm.hasNextRoute = !!routeConfig[(nextRouteId)];
-    vm.hasPrevRoute = !!routeConfig[(prevRouteId)];
+    const {$state} = this;
+    const nextRouteId = $state.current.data.order;
+    const prevRouteId = $state.current.data.order - 2;
+    vm.hasNextRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && 
+      route.data.order === nextRouteId).length > 0;
+    vm.hasPrevRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && 
+      route.data.order === prevRouteId).length > 0;
     vm.applicationform.$setPristine();
     vm.applicationform.$setUntouched();
   }

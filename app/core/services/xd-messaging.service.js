@@ -42,6 +42,8 @@ export default class XdMessagingSvc {
   
   //handler for messages coming back from SER
   //SER has similar mechanisms on its side. These are coupled sets of
+  /*On verified token response (first token retrieved) call to UserSvc.setIsLoggedIn
+  triggers navigation to the application forms*/
   handleXdTokenResponse(e) {
     var origin = e.origin || e.originalTarget.origin;
     var xdRequest = origin !== (location.protocol + '//' + location.host);
@@ -55,7 +57,7 @@ export default class XdMessagingSvc {
       if (isTokenResponse) { //this is a login event
         this.$log.debug('I\'m setting a token! ' + e.data.xdTokenResponse);
         this.TokenSvc.setToken(e.data.xdTokenResponse);
-        this.UserSvc.setIsLoggedIn();
+        this.UserSvc.setIsLoggedIn(); //triggers navigation to the application forms
       } else if (isTokenStoredMessage) {
         if (!existingToken) {
           this.$log.debug('I\'m requesting a token!');

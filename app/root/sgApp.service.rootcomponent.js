@@ -13,7 +13,7 @@ import angular from 'angular';
 class RootComponentSvc {
 
   /*@ngInject*/
-  constructor($log, $state, $q, $sce, StorageSvc, UtilsSvc, UserSvc, ContentSvc, STORAGE_KEYS) {
+  constructor($log, $state, $q, $sce, StorageSvc, UtilsSvc, UserSvc, ContentSvc, ApplicationSvc, STORAGE_KEYS) {
     this.$log = $log;
     this.$state = $state;
     this.$q = $q;
@@ -22,6 +22,7 @@ class RootComponentSvc {
     this.UtilsSvc = UtilsSvc;
     this.UserSvc = UserSvc;
     this.ContentSvc = ContentSvc;
+    this.ApplicationSvc = ApplicationSvc;
     this.STORAGE_KEYS = STORAGE_KEYS;
     this.setComputedProps = this.setComputedProps.bind(this);
     this.setRouteValues = this.setRouteValues.bind(this);
@@ -67,7 +68,7 @@ class RootComponentSvc {
   }
 
   setPageValues(vm) {
-    const {$q, StorageSvc, UtilsSvc, ContentSvc, STORAGE_KEYS} = this;
+    const {$q, StorageSvc, UtilsSvc, ContentSvc, ApplicationSvc, STORAGE_KEYS} = this;
     const deferred = $q.defer();
     if (!StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY)) {
       StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, {});
@@ -79,9 +80,9 @@ class RootComponentSvc {
     //TODO - this should be a resolve all on setAppData and footerContentSuccess
     if (!storedAppData) {
       promises.appdata = ApplicationSvc.getInitialApplication({
-        quoteId: quoteId,
-        appId: appId,
-        ein: ein
+        quoteId: vm.quoteId,
+        appId: vm.appId,
+        ein: vm.ein
       });
     } else {
       vm.appdata = storedAppData;

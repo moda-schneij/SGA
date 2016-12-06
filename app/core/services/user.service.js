@@ -11,15 +11,15 @@
 export default class UserSvc {
 
   /*@ngInject*/
-  constructor(StorageSvc, ConstantsSvc, DialogSvc, STORAGE_KEYS, $log, $q, $rootScope, $rootRouter) {
+  constructor(StorageSvc, ConstantsSvc, DialogSvc, STORAGE_KEYS, $state, $log, $rootScope) {
     this.StorageSvc = StorageSvc;
     this.ConstantsSvc = ConstantsSvc;
     this.DialogSvc = DialogSvc;
     this.LOGGED_IN_KEY = STORAGE_KEYS.LOGGED_IN_KEY;
     this.TOKEN_KEY = STORAGE_KEYS.TOKEN_KEY;
+    this.$state = $state;
     this.$log = $log;
     this.$rootScope = $rootScope;
-    this.$rootRouter = $rootRouter;
   }
 
   getIsLoggedIn() {
@@ -29,13 +29,13 @@ export default class UserSvc {
     return !!loggedInVal && !!tokenVal; //casts null and undefined as false, but bools as their actual value
   }
 
-  setIsLoggedIn() {
+  setIsLoggedIn() { //this is called on successful login
     this.StorageSvc.setSessionStore(this.LOGGED_IN_KEY, true);
     if (!this.ConstantsSvc.SER_CONTEXT) {
       this.DialogSvc.acknowledge({
         heading: 'You\'ve logged in!'
       }).then(
-        confirmSuccess.bind(this),
+        confirmSuccess.bind(this), //here is where we navigate from login to the application forms
         confirmError.bind(this)
       );
     } else {
@@ -59,7 +59,7 @@ export default class UserSvc {
 
 function confirmSuccess() {
   this.$rootScope.$emit('loginSuccess');
-  this.$rootRouter.navigate(['ApplicationView', {}]);
+  this.$state.go('ApplicationView');
 }
 
 function confirmError(e) {

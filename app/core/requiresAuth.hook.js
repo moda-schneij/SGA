@@ -21,7 +21,7 @@ export default function authHookRunBlock($transitions, UserSvc, AuthenticationSv
     const $state = transition.router.stateService;
     //TODO - use other services to prompt and return user to SER in that context, instead of dumping to login
     if (!UserSvc.getIsLoggedIn()) {
-      return $state.target('login', undefined, { location: false });
+      return $state.target('LoginView', undefined, { location: false });
     }
   };
 

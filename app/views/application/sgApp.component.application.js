@@ -32,7 +32,7 @@ export default angular
   });
 
 /*@ngInject*/
-function ApplicationCtrl($state, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $scope) {
+function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $scope) {
   const vm = this;
   const args = Array.prototype.slice.call(arguments);
   $log.debug('THE ARGS ARRAY');

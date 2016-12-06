@@ -15,7 +15,8 @@ let messageToPost = {};
 export default class AuthenticationSvc {
 
   /*@ngInject*/
-  constructor($log, $q, $timeout, $window, $cookies, $location, $rootScope, DataSvc, UtilsSvc, DialogSvc, StorageSvc, TokenSvc, SpinnerControlSvc, UserSvc, XdMessagingSvc, MessagesSvc, STORAGE_KEYS, REFERRER_COOKIE, ConstantsSvc) {
+  constructor($state, $log, $q, $timeout, $window, $cookies, $location, $rootScope, DataSvc, UtilsSvc, DialogSvc, StorageSvc, TokenSvc, SpinnerControlSvc, UserSvc, XdMessagingSvc, MessagesSvc, STORAGE_KEYS, REFERRER_COOKIE, ConstantsSvc) {
+    this.$state = $state;
     this.$log = $log;
     this.$q = $q;
     this.$timeout = $timeout;
@@ -161,6 +162,7 @@ export default class AuthenticationSvc {
 
 }
 
+//on verified success, the call to UserSvc.setIsLoggedIn triggers navigation to the application forms
 function getLoggedInSuccess(response) {
   const deferred = this.$q.defer();
   this.handleUnauth(response, this.loginRequired); //if this happens to be an error??
@@ -168,7 +170,7 @@ function getLoggedInSuccess(response) {
     this.$log.debug(response);
     const isLoggedIn = this.UserSvc.getIsLoggedIn();
     if (!isLoggedIn) {
-      this.UserSvc.setIsLoggedIn();
+      this.UserSvc.setIsLoggedIn(); //triggers navigation to the application forms
     }
     deferred.resolve(true);
   } else {
@@ -259,7 +261,8 @@ function logoutSuccess() {
     //no improvement needed unless we implement a real login from SGA
     //this.$rootRouter.navigate(['LoginView']);
     //this.$location.path('/').replace();
-    this.$window.location.hash = '#/';
+    //this.$window.location.hash = '#/';
+    this.$state.go('/login');
   }
 }
 

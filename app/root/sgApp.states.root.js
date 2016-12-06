@@ -19,8 +19,8 @@ const PROD = __PROD__ ;
 **/
 
 const rootState = {
-  name: 'root',
-  redirectTo: __SER_CONTEXT__ ? 'application' : 'login',
+  name: 'Root',
+  redirectTo: __SER_CONTEXT__ ? 'ApplicationView' : 'LoginView',
   component: 'sgaRoot',
   url: '',
   resolve: {
@@ -40,8 +40,8 @@ const rootState = {
 };
 
 const loginState = {
-  name: 'login',
-  parent: 'root',
+  name: 'LoginView',
+  parent: 'Root',
   url: '/login',
   //component: 'loginComponent',
   template: '<login-component set-route-ready="$ctrl.setRouteReady()"></login-component>',
@@ -56,8 +56,8 @@ const loginState = {
 };
 
 const notFoundState = {
-  name: 'notfound',
-  parent: 'root',
+  name: 'NotFoundView',
+  parent: 'Root',
   url: '/oops',
   //component: 'loginComponent',
   template: '<p>Sorry, but you\'ve reached an invalid page. <a ui-sref=\'home\'>Return home</a>.</p>',
@@ -71,10 +71,10 @@ const notFoundState = {
 };
 
 const applicationState = {
-  name: 'application',
-  parent: 'root',
+  name: 'ApplicationView',
+  parent: 'Root',
   url: '/application',
-  template: '<application app-data="$ctrl.appData" quote-Id="$ctrl.quoteId" app-Id="$ctrl.appId"></application>',
+  template: '<application-component app-data="$ctrl.appData" quote-Id="$ctrl.quoteId" app-Id="$ctrl.appId"></application-component>',
   data: {
     requiresAuth: true,
     title: 'Welcome to the small group application form',
