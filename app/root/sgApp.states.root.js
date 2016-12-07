@@ -74,7 +74,8 @@ const applicationState = {
   name: 'ApplicationView',
   parent: 'Root',
   url: '/application',
-  template: '<application-component app-data="$ctrl.appData" quote-Id="$ctrl.quoteId" app-Id="$ctrl.appId"></application-component>',
+  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" set-route-ready="$ctrl.setRouteReady">
+    </application-component>`,
   data: {
     requiresAuth: true,
     title: 'Welcome to the small group application form',

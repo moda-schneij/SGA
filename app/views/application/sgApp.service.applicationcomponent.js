@@ -202,6 +202,7 @@ class ApplicationComponentSvc {
   }
 
   returnToLastStep(vm) {
+    const {$state} = this;
     const routeName = this.getNextStep(vm)
     $state.go(routeName);
   }
@@ -220,12 +221,14 @@ class ApplicationComponentSvc {
   }
 
   navigate(vm, config) {
+    const {$state} = this;
     vm.navigating = true; //this is toggled by $routeChangeSuccess in the component controller
     const forward = config.direction === 'forward';
-    const nextRouteId = vm.$router.currentInstruction.component.routeData.data.order - (forward ? 0 : 2);
-    const nextRouteName = routeConfig[nextRouteId] && routeConfig[nextRouteId].name ? routeConfig[nextRouteId].name : null;
+    const nextRouteId = $state.current.data.order - (forward ? 0 : 2);
+    const nextRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && route.data.order === nextRouteId);
+    const nextRouteName = nextRoute && nextRoute.length === 1 ? nextRoute.name : null;
     if (nextRouteName) {
-      vm.$router.navigate([nextRouteName]);
+      $state.go(nextRouteName);
       this.MessagesSvc.clearAll();
       this.configNav(vm);
     } else {
@@ -275,18 +278,19 @@ class ApplicationComponentSvc {
   }
 
   dataNotSaved(response, vm) {
+    const {$log, MessagesSvc, UtilsSvc} = this;
     if (response && response.data && response.data.responseStatus && response.data.responseStatus.errorMsg) {
-      if (this.UtilsSvc.isErrorMessage(response.data.responseStatus.errorMsg)) {
-        this.$log.error(response.data.responseStatus.errorMsg);
-        this.MessagesSvc.registerErrors(response.data.responseStatus.errorMsg);
+      if (UtilsSvc.isErrorMessage(response.data.responseStatus.errorMsg)) {
+        $log.error(response.data.responseStatus.errorMsg);
+        MessagesSvc.registerErrors(response.data.responseStatus.errorMsg);
       } else {
-        this.$log.error('There was an error saving the application.');
-        this.MessagesSvc.registerErrors('There was an error saving the application.');
+        $log.error('There was an error saving the application.');
+        MessagesSvc.registerErrors('There was an error saving the application.');
       }
     } else { //chances are the session is invalid, so logout
       const errorsToLog = response.data ? ['There was an error saving the application.', response.data] : 'There was an error saving the application.';
-      this.$log.error('There was an error saving the application.');
-      this.MessagesSvc.registerErrors(errorsToLog);
+      $log.error('There was an error saving the application.');
+      MessagesSvc.registerErrors(errorsToLog);
     }
     vm.allowSubmit = false;
   }

@@ -26,7 +26,10 @@ export default angular
   .component('sgaRoot', {
     templateUrl: rootTemplate,
     transclude: true,
-    controller: sgAppCtrl
+    controller: sgAppCtrl,
+    bindings: {
+      appData: '='
+    }
     //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
     //,
     //$routeConfig: routeConfigFn.call(sgAppCtrl)
@@ -48,7 +51,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
   vm.displaySidebar = false;
   vm.pageReady = false; //TODO - reevaluate all of the logic that toggles the display of content
   vm.routeReady = false;
-  vm.appData = {}; //set after application data is retrieved
+  //vm.appData = {}; //set after application data is retrieved
   
   vm.setRouteReady = () => {
     vm.routeReady = true;

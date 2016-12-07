@@ -256,13 +256,7 @@ function logoutSuccess() {
   if (this.ConstantsSvc.SER_CONTEXT) {
     this.$window.location.href = this.ConstantsSvc.SER_ROOT_URL;
   } else {
-    //this is a hammer approach for getting to login
-    //rootRouter navigation fails here in some cases
-    //no improvement needed unless we implement a real login from SGA
-    //this.$rootRouter.navigate(['LoginView']);
-    //this.$location.path('/').replace();
-    //this.$window.location.hash = '#/';
-    this.$state.go('/login');
+    this.$state.go('LoginView');
   }
 }
 
