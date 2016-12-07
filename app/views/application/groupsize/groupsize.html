@@ -9,8 +9,8 @@
       <li class="form-row" ng-if="$ctrl.appCtrl.showEmployeeOnlySelection">
         <span class="output-label">Employee-only plan?<span ng-if="$ctrl.appCtrl.hasMedDependents || $ctrl.appCtrl.hasDenDependents" class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.EO"></span></span>
         <div class="container-pretty-checkable">
-          <pretty-checkbox name="employeeonlyplanmed" ng-disabled="$ctrl.appCtrl.hasMedDependents" ng-model="$ctrl.appCtrl.appdata.employeeOnlyPlan.medical" label="'Medical'" ng-model-options="{updateOn: 'default'}" ng-if="$ctrl.appCtrl.hasMedical"></pretty-checkbox>
-          <pretty-checkbox name="employeeonlyplanden" ng-disabled="$ctrl.appCtrl.hasDenDependents" ng-model="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental" label="'Dental'" ng-model-options="{updateOn: 'default'}" ng-if="$ctrl.appCtrl.hasDental"></pretty-checkbox>
+          <pretty-checkbox name="employeeonlyplanmed" ng-disabled="$ctrl.appCtrl.hasMedDependents" ng-model="$ctrl.appData.employeeOnlyPlan.medical" label="'Medical'" ng-model-options="{updateOn: 'default'}" ng-if="$ctrl.appCtrl.hasMedical"></pretty-checkbox>
+          <pretty-checkbox name="employeeonlyplanden" ng-disabled="$ctrl.appCtrl.hasDenDependents" ng-model="$ctrl.appData.employeeOnlyPlan.dental" label="'Dental'" ng-model-options="{updateOn: 'default'}" ng-if="$ctrl.appCtrl.hasDental"></pretty-checkbox>
         </div>
       </li>
     </ul>
@@ -19,17 +19,17 @@
       <li class="form-row">
         <div class="output-label">
           <ul>
-            <li class="form-row" ng-if="$ctrl.appCtrl.appdata.empTypeOfferedCoverage === 'ALL'"> 
+            <li class="form-row" ng-if="$ctrl.appData.empTypeOfferedCoverage === 'ALL'"> 
             	<span class="output-label">All employees regardless of hours worked</span>
             </li>
-            <li class="form-row" ng-if="$ctrl.appCtrl.appdata.empTypeOfferedCoverage === 'OVER 17.5'">
+            <li class="form-row" ng-if="$ctrl.appData.empTypeOfferedCoverage === 'OVER 17.5'">
 				<span class="output-label" ng-if="$ctrl.appCtrl.groupOR">All employees working 17.5 hours or more per week</span>
             	<span class="output-label" ng-if="$ctrl.appCtrl.groupAK"> All employees working 20 hours or more per week </span>
             </li>
-            <li class="form-row" ng-if="$ctrl.appCtrl.appdata.empTypeOfferedCoverage === 'OVER MIN'">
+            <li class="form-row" ng-if="$ctrl.appData.empTypeOfferedCoverage === 'OVER MIN'">
             	<span class="output-label"> All employees working the minimum hours required for benefits </span>
             </li>
-            <li class="form-row" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.appdata.empTypeOfferedCoverage === 'SUBGROUP'"> 
+            <li class="form-row" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appData.empTypeOfferedCoverage === 'SUBGROUP'"> 
             	<span class="output-label"> Only a certain classification of employees </span> 
             </li>
           </ul>
@@ -43,28 +43,28 @@
       <li class="form-row">
         <span class="output-label" ng-if="$ctrl.appCtrl.groupOR">Total employee count</span>
         <span class="output-label" ng-if="$ctrl.appCtrl.groupAK">Employees employed during preceding calendar year</span>
-        <span class="output-value" ng-bind="$ctrl.appCtrl.appdata.totalActiveEmpCount"></span>
+        <span class="output-value" ng-bind="$ctrl.appData.totalActiveEmpCount"></span>
       </li>
       <li class="form-row">
         <span class="output-label" ng-if="$ctrl.appCtrl.groupOR">Expected employees (plan effective date)</span>
-        <span class="output-value" ng-if="$ctrl.appCtrl.groupOR" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
+        <span class="output-value" ng-if="$ctrl.appCtrl.groupOR" ng-bind="$ctrl.appData.empExpOnEffDateOfCoverage"></span>
 
         <label for="aveEmplExpYear" class="required" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016"> Eligible Employees on the date coverage is to take effect</label>
-        <input ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016" type="text" class="input-num" name="aveEmplExpYear" id="akgroupcount" ng-model="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage" max-value="50" min-value="0" model-integer required>
+        <input ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() === 2016" type="text" class="input-num" name="aveEmplExpYear" id="akgroupcount" ng-model="$ctrl.appData.empExpOnEffDateOfCoverage" max-value="50" min-value="0" model-integer required>
 
       </li>
       <li class="form-row" ng-if="$ctrl.appCtrl.groupOR">
         <span class="output-label">Previous year full-time employees</span>
-        <span class="output-value">{{$ctrl.appCtrl.appdata.fullTimeEmployees}}</span>
+        <span class="output-value">{{$ctrl.appData.fullTimeEmployees}}</span>
       </li>
       <li class="form-row" ng-if="$ctrl.appCtrl.groupOR">
         <label class="form-column" for="pyfte">Previous year full-time equivalent
           <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.FTE">
           </span>
         </label>
-        <h-number ng-if="$ctrl.onInitComplete" name="pyfte" ctrl="$ctrl" value="$ctrl.appCtrl.appdata.fullTimeEqCount" 
-          min="0" max="{{$ctrl.originalFTCount}}" step="1" change="$ctrl.onChangeFTEEnrollments($ctrl.appCtrl.appdata.fullTimeEqCount)">
-          <input name="pyfte" ng-model="$ctrl.appCtrl.appdata.fullTimeEqCount" class="numpicker-value"></input>
+        <h-number ng-if="$ctrl.onInitComplete" name="pyfte" ctrl="$ctrl" value="$ctrl.appData.fullTimeEqCount" 
+          min="0" max="{{$ctrl.originalFTCount}}" step="1" change="$ctrl.onChangeFTEEnrollments($ctrl.appData.fullTimeEqCount)">
+          <input name="pyfte" ng-model="$ctrl.appData.fullTimeEqCount" class="numpicker-value"></input>
         </h-number>
       </li>
     </ul>
@@ -74,19 +74,19 @@
           <label for="akgroupcount" class="required">Current group count
             <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.akGroupCount">
           </label>
-          <input type="text" class="input-num" name="akgroupcount" id="akgroupcount" ng-model="$ctrl.appCtrl.appdata.alaskaEmpCurrYearCount" max-value="50" min-value="0" model-integer required>
+          <input type="text" class="input-num" name="akgroupcount" id="akgroupcount" ng-model="$ctrl.appData.alaskaEmpCurrYearCount" max-value="50" min-value="0" model-integer required>
         </li>
         <li class="form-row" ng-if="$ctrl.appCtrl.groupAK && $ctrl.appCtrl.effDate.getFullYear() !== 2016">
           <label>Employees employed during current calendar year
           <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.akEmpCurrentCalYear"></span>
           </label>
-          <span class="output-value" ng-bind="$ctrl.appCtrl.appdata.empExpOnEffDateOfCoverage"></span>
+          <span class="output-value" ng-bind="$ctrl.appData.empExpOnEffDateOfCoverage"></span>
         </li>
         <li class="form-row" ng-if="$ctrl.appCtrl.groupOR || ($ctrl.appCtrl.groupAK &&  $ctrl.appCtrl.effDate.getFullYear() !== 2016)">
           <label for="cobraeligibility" class="required">COBRA determination employee count
             <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.cobraElig">
           </label>
-          <input type="text" class="input-num" name="cobraeligibility" id="cobraeligibility" ng-model="$ctrl.appCtrl.appdata.cobraCount" max-value="50" min-value="0" model-integer required>
+          <input type="text" class="input-num" name="cobraeligibility" id="cobraeligibility" ng-model="$ctrl.appData.cobraCount" max-value="50" min-value="0" model-integer required>
         </li>
         <li class="form-row" ng-if="$ctrl.appCtrl.effDate.getFullYear() !== 2016">
           <label for="medsecpayer" class="required">
@@ -95,8 +95,8 @@
              weeks in the current calendar year or the preceding calendar year?
           </label>
           <div class="container-pretty-radio">    
-            <pretty-radio name="medsecpayer" id="medsecpayerYes" ng-model="$ctrl.appCtrl.appdata.medicareSecondPayer" value="'Y'" label="'Yes'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
-            <pretty-radio name="medsecpayer" id="medsecpayerNo" ng-model="$ctrl.appCtrl.appdata.medicareSecondPayer" value="'N'" label="'No'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+            <pretty-radio name="medsecpayer" id="medsecpayerYes" ng-model="$ctrl.appData.medicareSecondPayer" value="'Y'" label="'Yes'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+            <pretty-radio name="medsecpayer" id="medsecpayerNo" ng-model="$ctrl.appData.medicareSecondPayer" value="'N'" label="'No'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
           </div>
         </li>
         <li class="form-row" ng-if="$ctrl.appCtrl.effDate.getFullYear() !== 2016">
@@ -104,8 +104,8 @@
              Is this a controlled group?
           </label>
           <div class="container-pretty-radio">    
-            <pretty-radio name="controlledgroup" id="controlledgroupYes" ng-model="$ctrl.appCtrl.appdata.controlledGroup" value="'Y'" label="'Yes'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
-            <pretty-radio name="controlledgroup" id="controlledgroupNo" ng-model="$ctrl.appCtrl.appdata.controlledGroup" value="'N'" label="'No'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+            <pretty-radio name="controlledgroup" id="controlledgroupYes" ng-model="$ctrl.appData.controlledGroup" value="'Y'" label="'Yes'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+            <pretty-radio name="controlledgroup" id="controlledgroupNo" ng-model="$ctrl.appData.controlledGroup" value="'N'" label="'No'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
           </div>
         </li>
       </ul>
@@ -133,8 +133,8 @@
           <button name="addstate" class="button button-add-state form-column input-styled" ng-class="{'disabled': !$ctrl.enableAddState}" ng-disabled="!$ctrl.enableAddState" ng-click="$ctrl.addState($ctrl.stateSelected, $ctrl.stateCountSelected)">Add</button>
         </li>
       </ul>
-      <ul class="form-container" ng-if="$ctrl.appCtrl.appdata.additionalState.length > 0">
-        <li class="form-row form-row-thirds" ng-repeat="state in $ctrl.appCtrl.appdata.additionalState | orderBy: 'state' track by $index">
+      <ul class="form-container" ng-if="$ctrl.appData.additionalState.length > 0">
+        <li class="form-row form-row-thirds" ng-repeat="state in $ctrl.appData.additionalState | orderBy: 'state' track by $index">
           <div class="container-added-states">
             <span class="output-label" ng-bind="$ctrl.getStateDisplayName(state.state)"></span>
             <span class="output-value" ng-bind="state.noOfEmpPerState"></span>
@@ -146,7 +146,7 @@
         <ul class="form-container form-container-two-thirds">
           <li class="form-row">
             <label for="swwacount">WA employees in Clark or Cowlitz counties</label>
-            <ui-select name="swwacount" id="swwacount" class="input-styled" ng-model="$ctrl.appCtrl.appdata.waPdxMetroCoverageCount" ng-model-options="{debounce: {'default': 0}}" on-select="$ctrl.onSelectWACounties($item, $model)" theme="select2" search-enabled="false">
+            <ui-select name="swwacount" id="swwacount" class="input-styled" ng-model="$ctrl.appData.waPdxMetroCoverageCount" ng-model-options="{debounce: {'default': 0}}" on-select="$ctrl.onSelectWACounties($item, $model)" theme="select2" search-enabled="false">
               <ui-select-match placeholder="--How many--">
                 {{$select.selected}}
               </ui-select-match>
@@ -203,12 +203,12 @@
         <span class="output-value container-output-values">
           <span class="container-output-pairs">
             <label class="output-label" for="meddeppartpct" ng-class="{'required': $ctrl.depParticipationInput.dental}">Medical</label>
-            <input class="input-pct" ng-if="$ctrl.depParticipationInput.medical" name="meddeppartpct" id="meddeppartpct" type="text" model-percentage min-value="0" max-value="100" ng-model="$ctrl.appCtrl.appdata.medDepPartPct" required></input>
+            <input class="input-pct" ng-if="$ctrl.depParticipationInput.medical" name="meddeppartpct" id="meddeppartpct" type="text" model-percentage min-value="0" max-value="100" ng-model="$ctrl.appData.medDepPartPct" required></input>
             <span class="output-value input-aligned output-pct" ng-if="!$ctrl.depParticipationInput.medical">N/A</span>
           </span>
           <span class="container-output-pairs">
             <label class="output-label" for="dendeppartpct" ng-class="{'required': $ctrl.depParticipationInput.dental}">Dental</label>
-            <input class="input-pct" ng-if="$ctrl.depParticipationInput.dental" name="dendeppartpct" id="dendeppartpct" type="text" model-percentage min-value="0" max-value="100" ng-model="$ctrl.appCtrl.appdata.denDepPartPct" required></input>
+            <input class="input-pct" ng-if="$ctrl.depParticipationInput.dental" name="dendeppartpct" id="dendeppartpct" type="text" model-percentage min-value="0" max-value="100" ng-model="$ctrl.appData.denDepPartPct" required></input>
             <span class="output-value input-aligned output-pct" ng-if="!$ctrl.depParticipationInput.dental">N/A</span>
           </span>
         </span>

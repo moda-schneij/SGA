@@ -27,7 +27,7 @@ class GroupsizeComponentSvc {
   setComputedProps(vm) {
     //Computed properties for Clark/Cowlitz inputs
     Object.defineProperty(vm, 'hasWAEmployees', {
-      get: () => vm.appCtrl.appdata.additionalState.filter((stateObj) => {
+      get: () => vm.appData.additionalState.filter((stateObj) => {
         if (stateObj) {
           return stateObj.state === 'WA';
         }
@@ -39,7 +39,7 @@ class GroupsizeComponentSvc {
 
     Object.defineProperty(vm, 'waEmployeeCount', {
       get: () => {
-        const stateArrayClone = angular.copy(vm.appCtrl.appdata.additionalState);
+        const stateArrayClone = angular.copy(vm.appData.additionalState);
         const waObj = stateArrayClone.filter((stateObj) => stateObj && stateObj.state && stateObj.state === 'WA')[0];
         return waObj && waObj.noOfEmpPerState && 
           waObj.noOfEmpPerState > 0 && 
@@ -51,8 +51,8 @@ class GroupsizeComponentSvc {
 
     Object.defineProperty(vm, 'empParticipation', {
       get: () => ({
-        medical: vm.appCtrl.hasMedical ? (vm.appCtrl.appdata.medEmpPartPct + '%') : 'N/A',
-        dental: vm.appCtrl.hasDental ? (vm.appCtrl.appdata.denEmpPartPct + '%') : 'N/A'
+        medical: vm.appCtrl.hasMedical ? (vm.appData.medEmpPartPct + '%') : 'N/A',
+        dental: vm.appCtrl.hasDental ? (vm.appData.denEmpPartPct + '%') : 'N/A'
       }),
       configurable: true,
       enumerable: true
@@ -60,8 +60,8 @@ class GroupsizeComponentSvc {
 
     Object.defineProperty(vm, 'depParticipationInput', {
       get: () => ({
-        medical: !vm.appCtrl.appdata.employeeOnlyPlan.medical && vm.appCtrl.hasMedical,
-        dental: !vm.appCtrl.appdata.employeeOnlyPlan.dental && vm.appCtrl.hasDental
+        medical: !vm.appData.employeeOnlyPlan.medical && vm.appCtrl.hasMedical,
+        dental: !vm.appData.employeeOnlyPlan.dental && vm.appCtrl.hasDental
       }),
       enumerable: true,
       configurable: true

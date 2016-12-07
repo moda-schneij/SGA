@@ -16,14 +16,29 @@ const mockRulesObj = require('json!../json/rules.json');
 export default class RulesSvc {
 
   /*@ngInject*/
-  constructor(StorageSvc, $log, STORAGE_KEYS) {
+  constructor(StorageSvc, $log, $q, $interval, STORAGE_KEYS) {
     this.StorageSvc = StorageSvc;
     this.$log = $log;
+    this.$q = $q;
+    this.$interval = $interval;
     this.RULES_KEY = STORAGE_KEYS.RULES_KEY;
   }
 
   get rules() {
     return this.StorageSvc.getSessionStore(this.RULES_KEY) ? this.StorageSvc.getSessionStore(this.RULES_KEY) : {};
+  }
+
+  get rulesAsync() {
+    const {$q, $interval, StorageSvc, RULES_KEY} = this;
+    return $q((resolve, reject) => {
+      const returnRules = $interval(() => {
+        const rules = StorageSvc.getSessionStore(RULES_KEY);
+        if (rules) {
+          resolve(rules);
+          $interval.cancel(returnRules);
+        } 
+      }, 50, 10); //interval in ms, repeat value
+    });
   }
 
   //the setter should only be called by the application service on loading the payload

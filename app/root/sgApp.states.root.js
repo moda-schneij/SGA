@@ -32,6 +32,14 @@ const rootState = {
       if ($stateParams.quote_id) { idObj.quoteId = $stateParams.quote_id };
       if ($stateParams.ein) { idObj.ein = $stateParams.ein };
       return UserSvc.getIsLoggedIn() ? (savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj)) : null;
+    },
+    rules: (RulesSvc) => {
+      'ngInject';
+      return RulesSvc.rulesAsync;
+    },
+    options: (OptionsSvc) => {
+      'ngInject'
+      return OptionsSvc.optionsAsync;
     }
   },
   data: {
@@ -44,7 +52,7 @@ const loginState = {
   parent: 'Root',
   url: '/login',
   //component: 'loginComponent',
-  template: '<login-component set-route-ready="$ctrl.setRouteReady()"></login-component>',
+  template: '<login-component></login-component>',
   data: {
     requiresAuth: false,
     title: 'Login',
@@ -74,7 +82,7 @@ const applicationState = {
   name: 'ApplicationView',
   parent: 'Root',
   url: '/application',
-  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" set-route-ready="$ctrl.setRouteReady">
+  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options">
     </application-component>`,
   data: {
     requiresAuth: true,

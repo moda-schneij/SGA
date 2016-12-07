@@ -117,13 +117,13 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
 
   //new handler for adjusting FT based on FTE selection
   vm.onChangeFTEEnrollments = (value) => {
-    vm.appCtrl.appdata.fullTimeEmployees = vm.originalFTCount - value;
+    vm.appData.fullTimeEmployees = vm.originalFTCount - value;
   };
 
   // handler for clicking on the add button once a state and quantity are selected
   vm.addState = function(state, count) {
     $log.debug(state + ', ' + count);
-    vm.appCtrl.appdata.additionalState.push({
+    vm.appData.additionalState.push({
       state: state,
       noOfEmpPerState: count
     });
@@ -133,15 +133,15 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     //TODO - reset the states and counts array - removal of call to getOutput rendered this not working
     //getOutput.call(bindingObj); //TODO - remove if clear it's not needed
     resetEmployeeByStateForm.call(bindingObj); //TODO - remove if clear it's not needed
-    $log.debug('added states: ' + angular.toJson(vm.appCtrl.appdata.additionalState));
+    $log.debug('added states: ' + angular.toJson(vm.appData.additionalState));
   };
 
   // handler for clicking on the remove button next to a state and employee count
   vm.removeState = function(stateCode) {
     if (stateCode === 'WA') {
-      vm.appCtrl.appdata.waPdxMetroCoverageCount = 0;
+      vm.appData.waPdxMetroCoverageCount = 0;
     }
-    vm.appCtrl.appdata.additionalState = vm.appCtrl.appdata.additionalState
+    vm.appData.additionalState = vm.appData.additionalState
       .filter((stateObj) => stateObj.state !== stateCode);
     //getOutput.call(bindingObj); //TODO - remove if clear it's not needed
     //resetEmployeeByStateForm.call(bindingObj); //TODO - remove if clear it's not needed
@@ -164,7 +164,7 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     $log.debug('I am in the groupsize component controller');
     
     deregisterInitDataWatch = $scope.$watchGroup([
-      () => vm.appCtrl.appdata, () => vm.appCtrl.statesArray
+      () => vm.appData, () => vm.appCtrl.statesArray
     ], (newVal) => {
       if (UtilsSvc.notNullOrEmptyObj(newVal[0]) && UtilsSvc.notNullOrEmptyObj(newVal[1])) {
         updateViewValues.call(bindingObj);
@@ -178,8 +178,8 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
         }
         vm.groupOR = vm.appCtrl.groupOR;
         vm.groupAK = vm.appCtrl.groupAK;
-        // vm.appCtrl.appdata.fullTimeEmployees = angular.copy(vm.appCtrl.appdata.totalActiveEmpCount);
-        vm.originalFTCount = angular.copy(vm.appCtrl.appdata.totalActiveEmpCount);
+        // vm.appData.fullTimeEmployees = angular.copy(vm.appData.totalActiveEmpCount);
+        vm.originalFTCount = angular.copy(vm.appData.totalActiveEmpCount);
         vm.onInitComplete = true;
         GroupsizeComponentSvc.setComputedProps(vm);
         checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
@@ -189,7 +189,7 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     });
 
     deregisterAppDataWatch = $scope.$watch(
-      () => vm.appCtrl.appdata,
+      () => vm.appData,
       (newVal) => {
         if (newVal && UtilsSvc.notNullOrEmptyObj(newVal) && vm.output) {
           getOutput.call(bindingObj);
@@ -209,7 +209,7 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
 }
 
 function updateAppdata() { //call bound to the controller binding object
-  appdata = this.vm.appCtrl && this.vm.appCtrl.appdata;
+  appdata = this.vm.appCtrl && this.vm.appData;
 }
 
 //set values for the view after appdata is loaded in onInit

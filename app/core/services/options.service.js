@@ -17,14 +17,29 @@ const mockOptionsObj = require('json!../json/options.json');
 export default class OptionsSvc {
 
   /*@ngInject*/
-  constructor(StorageSvc, $log, STORAGE_KEYS) {
+  constructor(StorageSvc, $log, $q, $interval, STORAGE_KEYS) {
     this.StorageSvc = StorageSvc;
     this.$log = $log;
+    this.$q = $q;
+    this.$interval = $interval;
     this.OPTIONS_KEY = STORAGE_KEYS.OPTIONS_KEY;
   }
 
   get options () {
     return this.StorageSvc.getSessionStore(this.OPTIONS_KEY);
+  }
+
+  get optionsAsync() {
+    const {$q, $interval, StorageSvc, OPTIONS_KEY} = this;
+    return $q((resolve, reject) => {
+      const returnOptions = $interval(() => {
+        const options = StorageSvc.getSessionStore(OPTIONS_KEY);
+        if (options) {
+          resolve(options);
+          $interval.cancel(returnOptions);
+        } 
+      }, 50, 10); //interval in ms, repeat value
+    });
   }
 
   set options (optionsObj) {

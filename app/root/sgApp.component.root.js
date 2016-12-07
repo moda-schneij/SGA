@@ -28,7 +28,9 @@ export default angular
     transclude: true,
     controller: sgAppCtrl,
     bindings: {
-      appData: '='
+      appData: '=',
+      rules: '<',
+      options: '<'
     }
     //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
     //,

@@ -5,7 +5,7 @@ const groupsize = {
   parent: 'ApplicationView',
   name: 'GroupSize',
   //component: 'groupSizeFormComponent',
-  template: '<group-size-form-component app-data="$ctrl.appData"></group-size-form-component>',
+  template: '<group-size-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"></group-size-form-component>',
   data: {
     order: 1,
     requiresAuth: true,
@@ -20,7 +20,7 @@ const planselect = {
   parent: 'ApplicationView',
   name: 'PlanSelect',
   //component: 'planSelectFormComponent',
-  template: '<plan-select-form-component app-data="$ctrl.appData"></plan-select-form-component>',
+  template: '<plan-select-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"></plan-select-form-component>',
   data: {
     order: 2,
     requiresAuth: true,
@@ -35,7 +35,7 @@ const groupinfo = {
   parent: 'ApplicationView',
   name: 'GroupInfo',
   //component: 'groupInfoFormComponent',
-  template: '<group-info-form-component app-data="$ctrl.appData"></group-info-form-component>',
+  template: '<group-info-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"></group-info-form-component>',
   data: {
     order: 3,
     requiresAuth: true,
@@ -50,7 +50,7 @@ const cobra = {
   parent: 'ApplicationView',
   name: 'Cobra',
   //component: 'cobraFormComponent',
-  template: '<cobra-form-component app-data="$ctrl.appData"></cobra-form-component>',
+  template: '<cobra-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"></cobra-form-component>',
   data: {
     order: 4,
     requiresAuth: true,
@@ -65,7 +65,7 @@ const agent_sales = {
   parent: 'ApplicationView',
   name: 'AgentSales',
   //component: 'agentSalesFormComponent',
-  template: '<agent-sales-form-component app-data="$ctrl.appData"></agent-sales-form-component>',
+  template: '<agent-sales-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"></agent-sales-form-component>',
   data: {
     order: 5,
     requiresAuth: true,

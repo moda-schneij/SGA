@@ -52,45 +52,45 @@ class ApplicationComponentSvc {
 
     Object.defineProperty(vm, 'enableSubmit', {
       get: () => !vm.applicationform.$invalid && 
-        vm.rootCtrl.appdata && 
-        vm.rootCtrl.appdata.appStatus === 'P' && 
+        vm.rootCtrl.appData && 
+        vm.rootCtrl.appData.appStatus === 'P' && 
         ((!vm.applicationform.$pristine && vm.applicationform.modified) || vm.allowSubmit),
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'inProgressApp', {
-      get: () => vm.rootCtrl.appdata && 
-        vm.rootCtrl.appdata.appStatus === 'P',
+      get: () => vm.rootCtrl.appData && 
+        vm.rootCtrl.appData.appStatus === 'P',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'completedApp', {
-      get: () => vm.rootCtrl.appdata && 
-        vm.rootCtrl.appdata.appStatus === 'C',
+      get: () => vm.rootCtrl.appData && 
+        vm.rootCtrl.appData.appStatus === 'C',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'failedApp', {
-      get: () => vm.rootCtrl.appdata && 
-        vm.rootCtrl.appdata.appStatus === 'F',
+      get: () => vm.rootCtrl.appData && 
+        vm.rootCtrl.appData.appStatus === 'F',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'enrolledApp', {
-      get: () => vm.rootCtrl.appdata && 
-        vm.rootCtrl.appdata.appStatus === 'S',
+      get: () => vm.rootCtrl.appData && 
+        vm.rootCtrl.appData.appStatus === 'S',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'disallowFutureDependents', {
       get: () => ({
-        dental: !vm.hasDenDependents && vm.appdata.employeeOnlyPlan.dental,
-        medical: !vm.hasMedDependents && vm.appdata.employeeOnlyPlan.medical
+        dental: !vm.hasDenDependents && vm.appData.employeeOnlyPlan.dental,
+        medical: !vm.hasMedDependents && vm.appData.employeeOnlyPlan.medical
       }),
       configurable: true,
       enumerable: true
@@ -98,33 +98,33 @@ class ApplicationComponentSvc {
 
     Object.defineProperty(vm, 'enableDependentInputs', {
       get: () => ({
-        dental: vm.hasDenDependents || !vm.appdata.employeeOnlyPlan.dental,
-        medical: vm.hasMedDependents || !vm.appdata.employeeOnlyPlan.medical
+        dental: vm.hasDenDependents || !vm.appData.employeeOnlyPlan.dental,
+        medical: vm.hasMedDependents || !vm.appData.employeeOnlyPlan.medical
       }),
       configurable: true,
       enumerable: true
     });
 
     Object.defineProperty(vm, 'employeeOnlyApp', {
-      get: () => vm.appdata.employeeOnlyPlan.medical &&
-        vm.appdata.employeeOnlyPlan.dental,
+      get: () => vm.appData.employeeOnlyPlan.medical &&
+        vm.appData.employeeOnlyPlan.dental,
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'anyPlanSelected', {
       get: () => ({
-        dental: vm.appdata.groupPlan.categories.dental.plans.filter((plan) => plan.selected).length > 0,
-        medical: vm.appdata.groupPlan.categories.medical.plans.filter((plan) => plan.selected).length > 0
+        dental: vm.appData.groupPlan.categories.dental.plans.filter((plan) => plan.selected).length > 0,
+        medical: vm.appData.groupPlan.categories.medical.plans.filter((plan) => plan.selected).length > 0
       }),
       enumerable: true,
       configurable: true
     });
     
     Object.defineProperty(vm, 'employeeOnlyForSelectedLines', {
-      get: () => (vm.appdata.employeeOnlyPlan.medical && vm.appdata.employeeOnlyPlan.dental) || 
-        (vm.appdata.employeeOnlyPlan.medical && (!vm.hasDental || !vm.anyPlanSelected.dental)) ||
-        (vm.appdata.employeeOnlyPlan.dental && (!vm.hasMedical || !vm.anyPlanSelected.medical)),
+      get: () => (vm.appData.employeeOnlyPlan.medical && vm.appData.employeeOnlyPlan.dental) || 
+        (vm.appData.employeeOnlyPlan.medical && (!vm.hasDental || !vm.anyPlanSelected.dental)) ||
+        (vm.appData.employeeOnlyPlan.dental && (!vm.hasMedical || !vm.anyPlanSelected.medical)),
       enumerable: true,
       configurable: true
     });
@@ -143,29 +143,29 @@ class ApplicationComponentSvc {
   }
 
   setRulesAndOptions(vm) {
-    vm.rules = this.RulesSvc.rules;
-    vm.options = this.OptionsSvc.options;
-    vm.addressRules = this.RulesSvc.rules.addressRules;
-    vm.contactRules = this.RulesSvc.rules.contactRules;
-    vm.groupRules = this.RulesSvc.rules.groupRules;
-    vm.groupPlanRules = this.RulesSvc.rules.groupPlanRules;
+    //vm.rules = this.RulesSvc.rules;
+    //vm.options = this.OptionsSvc.options;
+    vm.addressRules = vm.rules.addressRules;
+    vm.contactRules = vm.rules.contactRules;
+    vm.groupRules = vm.rules.groupRules;
+    vm.groupPlanRules = vm.rules.groupPlanRules;
     //add a string for ng-pattern for zip codes (TODO - add others)
-    vm.addressRules.zip.pattern = '\\d{' + this.RulesSvc.rules.addressRules.zip.minLength + ',' + this.RulesSvc.rules.addressRules.zip.maxLength + '}';
+    vm.addressRules.zip.pattern = '\\d{' + vm.addressRules.zip.minLength + ',' + vm.addressRules.zip.maxLength + '}';
   }
 
-  //set *static* values for the view after appdata is loaded in onInit
+  //set *static* values for the view after appData is loaded in onInit
   updateViewValues(vm) { 
-    const appdata = vm.appdata = vm.rootCtrl.appdata;
-    const medEnrollments = appdata.groupPlan.categories.medical.enrollments;
-    const denEnrollments = appdata.groupPlan.categories.dental.enrollments;
-    vm.groupOR = vm.appdata.group.clientState === 'OR';
-    vm.groupAK = vm.appdata.group.clientState === 'AK';
-    vm.effDate = new Date(vm.appdata.effectiveDate);
-    vm.denExceedsMed = appdata.totalEmpAndCobraMedEnrolling < appdata.totalEmpAndCobraDenEnrolling;
-    vm.denOnlyEmployees = appdata.totalEmpAndCobraDenEnrolling - appdata.totalEmpAndCobraMedEnrolling;
-    vm.groupName = this.UtilsSvc.notNullOrEmpty(appdata.group.facetsOutputName) ?
-      appdata.group.facetsOutputName : this.UtilsSvc.notNullOrEmpty(appdata.group.employerLegalName) ?
-      appdata.group.employerLegalName : 'this group';
+    const appData = vm.appData;
+    const medEnrollments = appData.groupPlan.categories.medical.enrollments;
+    const denEnrollments = appData.groupPlan.categories.dental.enrollments;
+    vm.groupOR = vm.appData.group.clientState === 'OR';
+    vm.groupAK = vm.appData.group.clientState === 'AK';
+    vm.effDate = new Date(vm.appData.effectiveDate);
+    vm.denExceedsMed = appData.totalEmpAndCobraMedEnrolling < appData.totalEmpAndCobraDenEnrolling;
+    vm.denOnlyEmployees = appData.totalEmpAndCobraDenEnrolling - appData.totalEmpAndCobraMedEnrolling;
+    vm.groupName = this.UtilsSvc.notNullOrEmpty(appData.group.facetsOutputName) ?
+      appData.group.facetsOutputName : this.UtilsSvc.notNullOrEmpty(appData.group.employerLegalName) ?
+      appData.group.employerLegalName : 'this group';
     vm.hasMedDependents = (medEnrollments.ecCount + medEnrollments.esCount + medEnrollments.efCount) > 0;
     vm.hasDenDependents = (denEnrollments.ecCount + denEnrollments.esCount + denEnrollments.efCount) > 0;
     vm.medTotalEnrollment = Object.keys(medEnrollments).reduce((prevVal, key) => (prevVal + medEnrollments[key]), 0);
@@ -179,9 +179,9 @@ class ApplicationComponentSvc {
   //persistence of client progress
   updateProgress(vm, nextRouteName) {
     //this should run only if sgaClient is null, as it is before any modification
-    const sgaClientValToSet = vm.appdata.sgaClient ? angular.fromJson(vm.appdata.sgaClient) : {};
+    const sgaClientValToSet = vm.appData.sgaClient ? angular.fromJson(vm.appData.sgaClient) : {};
     sgaClientValToSet[this.PROGRESS_KEY] = nextRouteName;
-    vm.appdata.sgaClient = angular.toJson(sgaClientValToSet);
+    vm.appData.sgaClient = angular.toJson(sgaClientValToSet);
   }
 
   //retrive the name of the next step to continue with
@@ -195,9 +195,9 @@ class ApplicationComponentSvc {
       return dummyState;
     }, dummyState);
     const finalAppRouteName = finalAppRoute && finalAppRoute.name ? finalAppRoute.name : null;
-    const sgaClientVal = vm.appdata.sgaClient ? angular.fromJson(vm.appdata.sgaClient) : {};
+    const sgaClientVal = vm.appData.sgaClient ? angular.fromJson(vm.appData.sgaClient) : {};
     //if this is an in-progress app, go back to last completed or saved step, otherwise to the end of the application form
-    return vm.appdata.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalAppRouteName) ? 
+    return vm.appData.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalAppRouteName) ? 
       finalAppRouteName : null; //should be a route name as a string or undefined
   }
 
@@ -246,9 +246,9 @@ class ApplicationComponentSvc {
       const enroll = actionObj && actionObj.enroll;
       const newAppData = response.data.application;
       this.$log.debug(response);
-      vm.appdata = vm.rootCtrl.appdata = newAppData; //get appdata consistent across components
+      vm.appData = vm.rootCtrl.appData = newAppData; //get appData consistent across components
       this.ApplicationSvc.setApplication(response.data.application); //save to client storage
-      vm.rootCtrl.persistAppData(); //update root component's appdata object
+      vm.rootCtrl.persistAppData(); //update root component's appData object
       vm.applicationform.$setPristine();
       vm.applicationform.$setUntouched();
       this.MessagesSvc.clearAll();
@@ -297,7 +297,7 @@ class ApplicationComponentSvc {
 
   enroll(vm) {
     this.SpinnerControlSvc.startSpin({overlay: true});
-    this.DataSvc.application.enroll(vm.appdata)
+    this.DataSvc.application.enroll(vm.appData)
       .then(
         function(response) {
           this.ApplicationSvc.enrollSuccess(response, vm);

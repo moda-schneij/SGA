@@ -21,6 +21,8 @@ export default angular
     templateUrl: applicationTemplate,
     bindings: {
       appData: '<',
+      rules: '<',
+      options: '<',
       appId: '<',
       quoteId: '<',
       setRouteReady: '&'
@@ -64,11 +66,11 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   //let deregisterAppCtrlDataWatch;
   let deregisterConfigWatch;
 
-  //attempt to use ui-router 
-  $transitions.onSuccess({}, () => {
-    ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    vm.navigating = false;
-  });
+  // //attempt to use ui-router 
+  // $transitions.onSuccess({}, () => {
+  //   ApplicationComponentSvc.configNav(vm); //set up nav buttons
+  //   vm.navigating = false;
+  // });
 
   // const deregisterRouterWatch = $rootScope.$watch(function() {
   //   return vm.$router.currentInstruction;
@@ -215,7 +217,7 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
     ApplicationComponentSvc.resetPristineState(vm);
   };
 
-  vm.$onInit = function() {
+  vm.$onInit = () => {
     $log.debug(vm);
     //these values were set on the root component, which grabbed them from the URL query string
     //set application component controller appData object (if it doesn't already exist) from root component
@@ -232,19 +234,19 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
       .finally(() => {
         ApplicationComponentSvc.updateViewValues(vm); //static props
         ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
+        ApplicationComponentSvc.configNav(vm); //set up nav buttons
         ApplicationComponentSvc.returnToLastStep(vm);
+        vm.navigating = false;
       });
   };
 
-    // //copy data back to root controller if it changes in the app component
-    // deregisterAppCtrlDataWatch = $rootScope.$watchCollection(() => vm.appData,
-    // (newVal) => {
-    //   if (newVal) {
-    //     vm.rootCtrl.appdata = vm.appdata;
-    //   }
-    // });
-
-    //$scope.$on('$routeChangeSuccess', () => { vm.navigating = false; });
+  // //copy data back to root controller if it changes in the app component
+  // deregisterAppCtrlDataWatch = $rootScope.$watchCollection(() => vm.appData,
+  // (newVal) => {
+  //   if (newVal) {
+  //     vm.rootCtrl.appdata = vm.appdata;
+  //   }
+  // });
 
   vm.$onDestroy = () => {
     //deregisterAppCtrlDataWatch();
