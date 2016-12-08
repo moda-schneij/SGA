@@ -24,7 +24,7 @@ const rootState = {
   component: 'sgaRoot',
   url: '',
   resolve: {
-    appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
+    appData: ($transition$, ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
       'ngInject';
       const idObj = {};
       const savedAppData = ApplicationSvc.getApplication();
@@ -33,15 +33,15 @@ const rootState = {
       if ($stateParams.ein) { idObj.ein = $stateParams.ein };
       return UserSvc.getIsLoggedIn() ? (savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj)) : null;
     },
-    rules: (RulesSvc, UserSvc) => {
+    rules: ($transition$, RulesSvc, UserSvc) => {
       'ngInject';
       return UserSvc.getIsLoggedIn() ? RulesSvc.rulesAsync : null;
     },
-    options: (OptionsSvc, UserSvc) => {
+    options: ($transition$, OptionsSvc, UserSvc) => {
       'ngInject'
       return UserSvc.getIsLoggedIn() ? OptionsSvc.optionsAsync : null;
     },
-    statesArray: (CachingSvc, UserSvc) => {
+    statesArray: ($transition$, CachingSvc, UserSvc) => {
       'ngInject';
       return UserSvc.getIsLoggedIn() ? CachingSvc.getStates() : null;
     }
@@ -85,48 +85,35 @@ const applicationState = {
   name: 'ApplicationView',
   parent: 'Root',
   url: '/application',
-  //component: 'applicationComponent',
-  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray">
-    </application-component>`,
+  component: 'applicationComponent',
+  /*template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray">
+    </application-component>`,*/
   data: {
     requiresAuth: true,
     title: 'Welcome to the small group application form',
     linkTitle: 'Home',
     addToMenu: true
+  },
+  resolve: {
+    appData: (appData) => {
+      return appData;
+    },
+    rules: (rules) => {
+      return rules;
+    },
+    options: (options) => {
+      return options;
+    },
+    statesArray: (statesArray) => {
+      return statesArray;
+    },
+    appId: (appData) => {
+      return appData.appId;
+    },
+    quoteId: (appData) => {
+      return appData.quoteId;
+    }
   }
-  // ,resolve: {
-  //   someVal: ($timeout) => {
-  //     'ngInject';
-  //     $timeout(() => {
-  //       debugger;
-  //       return 'foo';
-  //     }, 2000)
-  //   },
-  //   appData: (appData) => {
-  //     debugger;
-  //     return appData;
-  //   },
-  //   rules: (rules) => {
-  //     debugger;
-  //     return rules;
-  //   },
-  //   options: (options) => {
-  //     debugger;
-  //     return options;
-  //   },
-  //   statesArray: (statesArray) => {
-  //     debugger;
-  //     return statesArray;
-  //   },
-  //   appId: (appData) => {
-  //     debugger;
-  //     return appData.appId;
-  //   },
-  //   quoteId: (appData) => {
-  //     debugger;
-  //     return appData.quoteId;
-  //   }
-  // }
 };
 
 const rootStates = [rootState, loginState, notFoundState, applicationState];

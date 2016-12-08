@@ -22,8 +22,7 @@ export const applicationComponent = {
     options: '<',
     statesArray: '<',
     appId: '<',
-    quoteId: '<',
-    setRouteReady: '&'
+    quoteId: '<'
   },
   require: {
     rootCtrl: '^sgaRoot'
