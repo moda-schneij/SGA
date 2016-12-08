@@ -11,28 +11,26 @@
 
 import angular from 'angular';
 import applicationTemplate from './application.html';
-import sgAppRoot from '../../root/sgApp.component.root';
 
 const routeConfig = require('json!./routes.json');
 
-export default angular
-  .module(sgAppRoot.name)
-  .component('applicationComponent', {
-    templateUrl: applicationTemplate,
-    bindings: {
-      appData: '<',
-      rules: '<',
-      options: '<',
-      appId: '<',
-      quoteId: '<',
-      setRouteReady: '&'
-    },
-    require: {
-      rootCtrl: '^sgaRoot'
-    },
-    controller: ApplicationCtrl,
-    $routeConfig: routeConfig
-  });
+export const applicationComponent = {
+  templateUrl: applicationTemplate,
+  bindings: {
+    appData: '<',
+    rules: '<',
+    options: '<',
+    statesArray: '<',
+    appId: '<',
+    quoteId: '<',
+    setRouteReady: '&'
+  },
+  require: {
+    rootCtrl: '^sgaRoot'
+  },
+  controller: ApplicationCtrl,
+  $routeConfig: routeConfig
+};
 
 /*@ngInject*/
 function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $scope) {
@@ -219,25 +217,53 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
 
   vm.$onInit = () => {
     $log.debug(vm);
+    $log.debug('APPLICATIONCOMPONENT.$onInit');
     //these values were set on the root component, which grabbed them from the URL query string
     //set application component controller appData object (if it doesn't already exist) from root component
     ApplicationComponentSvc.setRulesAndOptions(vm);
-    CachingSvc.getStates()
-      .then((states) => {
-        if (angular.isArray(states)) {
-          vm.statesArray = states;
-        }
-      }, (error) => {
-        $log.error('No states were returned');
-        $log.error(error);
-      })
-      .finally(() => {
-        ApplicationComponentSvc.updateViewValues(vm); //static props
-        ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
-        ApplicationComponentSvc.configNav(vm); //set up nav buttons
-        ApplicationComponentSvc.returnToLastStep(vm);
-        vm.navigating = false;
-      });
+    ApplicationComponentSvc.updateViewValues(vm); //static props
+    ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
+    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    // ApplicationComponentSvc.returnToLastStep(vm);
+    // vm.navigating = false;
+  
+    // CachingSvc.getStates()
+    //   .then((states) => {
+    //     if (angular.isArray(states)) {
+    //       vm.statesArray = states;
+    //     }
+    //   }, (error) => {
+    //     $log.error('No states were returned');
+    //     $log.error(error);
+    //   })
+    //   .finally(() => {
+    //     ApplicationComponentSvc.updateViewValues(vm); //static props
+    //     ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
+    //     ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    //     ApplicationComponentSvc.returnToLastStep(vm);
+    //     vm.navigating = false;
+    //   });
+  };
+
+  vm.$postLink = () => {
+    $log.debug('APPLICATIONCOMPONENT.$postLink');
+    ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    ApplicationComponentSvc.returnToLastStep(vm);
+    vm.navigating = false;
+    // $timeout(() => {
+    //   ApplicationComponentSvc.setRulesAndOptions(vm);
+    //   ApplicationComponentSvc.updateViewValues(vm); //static props
+    //   ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
+    //   ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    //   ApplicationComponentSvc.returnToLastStep(vm);
+    //   vm.navigating = false;
+    // }, 100);
+    // ApplicationComponentSvc.setRulesAndOptions(vm);
+    // ApplicationComponentSvc.updateViewValues(vm); //static props
+    // ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
+    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    // ApplicationComponentSvc.returnToLastStep(vm);
+    // vm.navigating = false;
   };
 
   // //copy data back to root controller if it changes in the app component

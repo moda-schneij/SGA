@@ -11,22 +11,19 @@
 
 import angular from 'angular';
 import groupInfoTemplate from './groupinfo.html';
-import sgAppRoot from '../../../root/sgApp.component.root';
 const domesticPartnerORTooltip = require('!html!./domestic_partner_or.html');
 const _get = require('lodash/get');
 
-export default angular
-  .module(sgAppRoot.name)
-  .component('groupInfoFormComponent', {
-    templateUrl: groupInfoTemplate,
-    bindings: {
-      $router: '<'
-    },
-    require: {
-      appCtrl: '^applicationComponent'
-    },
-    controller: GroupInfoFormCtrl
-  });
+export const groupInfoFormComponent = {
+  templateUrl: groupInfoTemplate,
+  bindings: {
+    $router: '<'
+  },
+  require: {
+    appCtrl: '^applicationComponent'
+  },
+  controller: GroupInfoFormCtrl
+};
 
 /*@ngInject*/
 function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $log, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, $rootRouter, $rootScope, $sce, $timeout, STORAGE_KEYS) {

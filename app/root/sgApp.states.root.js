@@ -33,13 +33,17 @@ const rootState = {
       if ($stateParams.ein) { idObj.ein = $stateParams.ein };
       return UserSvc.getIsLoggedIn() ? (savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj)) : null;
     },
-    rules: (RulesSvc) => {
+    rules: (RulesSvc, UserSvc) => {
       'ngInject';
-      return RulesSvc.rulesAsync;
+      return UserSvc.getIsLoggedIn() ? RulesSvc.rulesAsync : null;
     },
-    options: (OptionsSvc) => {
+    options: (OptionsSvc, UserSvc) => {
       'ngInject'
-      return OptionsSvc.optionsAsync;
+      return UserSvc.getIsLoggedIn() ? OptionsSvc.optionsAsync : null;
+    },
+    statesArray: (CachingSvc, UserSvc) => {
+      'ngInject';
+      return UserSvc.getIsLoggedIn() ? CachingSvc.getStates() : null;
     }
   },
   data: {
@@ -67,7 +71,6 @@ const notFoundState = {
   name: 'NotFoundView',
   parent: 'Root',
   url: '/oops',
-  //component: 'loginComponent',
   template: '<p>Sorry, but you\'ve reached an invalid page. <a ui-sref=\'home\'>Return home</a>.</p>',
   data: {
     requiresAuth: false,
@@ -82,7 +85,8 @@ const applicationState = {
   name: 'ApplicationView',
   parent: 'Root',
   url: '/application',
-  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options">
+  //component: 'applicationComponent',
+  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray">
     </application-component>`,
   data: {
     requiresAuth: true,
@@ -90,6 +94,39 @@ const applicationState = {
     linkTitle: 'Home',
     addToMenu: true
   }
+  // ,resolve: {
+  //   someVal: ($timeout) => {
+  //     'ngInject';
+  //     $timeout(() => {
+  //       debugger;
+  //       return 'foo';
+  //     }, 2000)
+  //   },
+  //   appData: (appData) => {
+  //     debugger;
+  //     return appData;
+  //   },
+  //   rules: (rules) => {
+  //     debugger;
+  //     return rules;
+  //   },
+  //   options: (options) => {
+  //     debugger;
+  //     return options;
+  //   },
+  //   statesArray: (statesArray) => {
+  //     debugger;
+  //     return statesArray;
+  //   },
+  //   appId: (appData) => {
+  //     debugger;
+  //     return appData.appId;
+  //   },
+  //   quoteId: (appData) => {
+  //     debugger;
+  //     return appData.quoteId;
+  //   }
+  // }
 };
 
 const rootStates = [rootState, loginState, notFoundState, applicationState];

@@ -9,9 +9,8 @@
  */
  
 import angular from 'angular';
-import sgAppRoot from '../../../root/sgApp.component.root'; //this service is defined on the root module and injected there
 
-class GroupsizeComponentSvc {
+export default class GroupsizeComponentSvc {
 
   /*@ngInject*/
   constructor($log, UtilsSvc, $filter) {
@@ -95,7 +94,3 @@ function makeNumArrWithZero(length) {
   }
   return returnArr;
 }
-
-export default angular
-  .module('sgAppRoot')
-  .service('GroupsizeComponentSvc', GroupsizeComponentSvc);

@@ -7,18 +7,15 @@
  * Login component of the Small Group Application app.
  */
 
-import angular from 'angular';
 import loginTemplate from './login.html';
 
-export default angular
-  .module('sgAppLogin', [])
-  .component('loginComponent', {
-    templateUrl: loginTemplate,
-    bindings: {
-      setRouteReady: '&'
-    },
-    controller: LoginCtrl
-  });
+export const loginComponent = {
+  templateUrl: loginTemplate,
+  bindings: {
+    setRouteReady: '&'
+  },
+  controller: LoginCtrl
+};
 
 /*@ngInject*/
 function LoginCtrl($transitions, ConstantsSvc, XdMessagingSvc, AuthenticationSvc, ApplicationSvc, $log, $sce, $window) {

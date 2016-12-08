@@ -9,9 +9,8 @@
  */
 
 import angular from 'angular';
-import sgAppRoot from '../../../root/sgApp.component.root'; //this service is defined on the root module and injected there
 
-class GroupinfoComponentSvc {
+export default class GroupinfoComponentSvc {
 
   /*@ngInject*/
   constructor($log, $timeout, UtilsSvc, RulesSvc, CachingSvc) {
@@ -233,7 +232,3 @@ function zeroContributions(vm, callback) {
   }
   angular.isFunction(callback) && callback({ callback: true });
 }
-
-export default angular
-  .module('sgAppRoot')
-  .service('GroupinfoComponentSvc', GroupinfoComponentSvc);

@@ -21,21 +21,19 @@ let quoteId;
 let appId;
 let ein;
 
-export default angular
-  .module('sgAppRoot', [])
-  .component('sgaRoot', {
-    templateUrl: rootTemplate,
-    transclude: true,
-    controller: sgAppCtrl,
-    bindings: {
-      appData: '=',
-      rules: '<',
-      options: '<'
-    }
-    //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
-    //,
-    //$routeConfig: routeConfigFn.call(sgAppCtrl)
-  });
+export const sgaRoot = {
+  templateUrl: rootTemplate,
+  transclude: true,
+  controller: sgAppCtrl,
+  bindings: {
+    appData: '=',
+    rules: '<',
+    options: '<'
+  }
+  //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
+  //,
+  //$routeConfig: routeConfigFn.call(sgAppCtrl)
+};
 
 /*@ngInject*/
 function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $rootScope, $timeout, $location, UtilsSvc, 

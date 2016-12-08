@@ -9,10 +9,9 @@
  */
  
 import angular from 'angular';
-import sgAppRoot from '../../root/sgApp.component.root'; //this service is defined on the root module and injected there
 const routeConfig = require('json!./routes.json');
 
-class ApplicationComponentSvc {
+export default class ApplicationComponentSvc {
 
   /*@ngInject*/
   constructor($log, $state, $timeout, SpinnerControlSvc, UtilsSvc, DialogSvc, DataSvc, REGEXS, toArrayFilter, RulesSvc, OptionsSvc, ApplicationSvc, MessagesSvc, SGA_CLIENT_KEYS) {
@@ -337,7 +336,3 @@ function enrollDialog(vm) {
     }
   );
 }
-
-export default angular
-  .module('sgAppRoot')
-  .service('ApplicationComponentSvc', ApplicationComponentSvc);

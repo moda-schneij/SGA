@@ -11,20 +11,17 @@
 
 import angular from 'angular';
 import agentSalesTemplate from './agent_sales.html';
-import sgAppRoot from '../../../root/sgApp.component.root';
 
-export default angular
-  .module(sgAppRoot.name)
-  .component('agentSalesFormComponent', {
-    templateUrl: agentSalesTemplate,
-    bindings: {
-      $router: '<'
-    },
-    require: {
-      appCtrl: '^applicationComponent'
-    },
-    controller: AgentSalesFormCtrl
-  });
+export const agentSalesFormComponent = {
+  templateUrl: agentSalesTemplate,
+  bindings: {
+    $router: '<'
+  },
+  require: {
+    appCtrl: '^applicationComponent'
+  },
+  controller: AgentSalesFormCtrl
+};
 
 /*@ngInject*/
 function AgentSalesFormCtrl($log, $rootScope, SidebarSvc, OptionsSvc, DataSvc) {

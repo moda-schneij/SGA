@@ -12,25 +12,22 @@
 import angular from 'angular';
 import planSelectTemplate from './planselect.html';
 import ratesTable from './ratecalculations.html';
-import sgAppRoot from '../../../root/sgApp.component.root';
 const vmVars = {};
 let appdata;
 let plansObj;
 let medPlans;
 let denPlans;
 
-export default angular
-  .module(sgAppRoot.name)
-  .component('planSelectFormComponent', {
-    templateUrl: planSelectTemplate,
-    bindings: {
-      $router: '<'
-    },
-    require: {
-      appCtrl: '^applicationComponent'
-    },
-    controller: PlanSelectFormCtrl
-  });
+export const planSelectFormComponent = {
+  templateUrl: planSelectTemplate,
+  bindings: {
+    $router: '<'
+  },
+  require: {
+    appCtrl: '^applicationComponent'
+  },
+  controller: PlanSelectFormCtrl
+};
 
 /*@ngInject*/
 function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, OptionsSvc, $log, ApplicationSvc, $rootScope, $scope, $timeout, $window, REGEXS, toArrayFilter) {

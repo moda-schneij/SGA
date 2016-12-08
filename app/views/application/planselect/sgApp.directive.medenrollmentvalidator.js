@@ -8,13 +8,9 @@
  */
 
 import angular from 'angular';
-import sgAppRoot from '../../../root/sgApp.component.root'; //this directive is defined on the root module and injected there
-
-export default angular.module(sgAppRoot.name)
-  .directive('medEnrollmentValidator', medEnrollmentValidatorDirectiveFn);
 
 /*@ngInject*/
-function medEnrollmentValidatorDirectiveFn($parse, $timeout) {
+export default function medEnrollmentValidatorDirectiveFn($parse, $timeout) {
   return {
     require: 'ngModel',
     restrict: 'A',

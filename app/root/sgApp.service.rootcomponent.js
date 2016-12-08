@@ -10,7 +10,7 @@
  
 import angular from 'angular';
 
-class RootComponentSvc {
+export default class RootComponentSvc {
 
   /*@ngInject*/
   constructor($log, $state, $q, $sce, StorageSvc, UtilsSvc, UserSvc, ContentSvc, ApplicationSvc, STORAGE_KEYS) {
@@ -200,7 +200,3 @@ function footerContentError(error) {
   $log.error(error);
   return true;
 }
-
-export default angular
-  .module('sgAppRoot')
-  .service('RootComponentSvc', RootComponentSvc);

@@ -11,26 +11,26 @@
 
 import angular from 'angular';
 import groupSizeTemplate from './groupsize.html';
-import sgAppRoot from '../../../root/sgApp.component.root';
 
 const tipContentAK = require('!html!./groupsizeinfoAK.html');
 const tipContentOR = require('!html!./groupsizeinfoOR.html');
 
 let appdata = {};
 
-export default angular
-  .module(sgAppRoot.name)
-  .component('groupSizeFormComponent', {
-    templateUrl: groupSizeTemplate,
-    bindings: {
-      $router: '<',
-      appData: '<'
-    },
-    require: {
-      appCtrl: '^applicationComponent'
-    },
-    controller: GroupSizeFormCtrl
-  });
+export const groupSizeFormComponent = {
+  templateUrl: groupSizeTemplate,
+  bindings: {
+    $router: '<',
+    appData: '<',
+    statesArray: '<',
+    rules: '<',
+    options: '<'
+  },
+  require: {
+    appCtrl: '^applicationComponent'
+  },
+  controller: GroupSizeFormCtrl
+};
 
 /*@ngInject*/
 function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sce, $timeout, ConstantsSvc, GroupsizeComponentSvc) {
@@ -94,7 +94,6 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
   vm.stateSelected = '';
   vm.stateCountSelected = '';
   vm.stateCountsArray = [];
-  vm.statesArray = [];
 
   vm.appCtrl = {}; //this will be set in onInit
 
@@ -163,29 +162,43 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     $log.debug(vm);
     $log.debug('I am in the groupsize component controller');
     
+    updateViewValues.call(bindingObj);
+    if (!vm.output) {
+      getOutput.call(bindingObj, {init: true});
+    }
+    vm.groupOR = vm.appCtrl.groupOR;
+    vm.groupAK = vm.appCtrl.groupAK;
+    // vm.appData.fullTimeEmployees = angular.copy(vm.appData.totalActiveEmpCount);
+    vm.originalFTCount = angular.copy(vm.appData.totalActiveEmpCount);
+    vm.onInitComplete = true;
+    GroupsizeComponentSvc.setComputedProps(vm);
+    checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
+    deregisterInitDataWatch();
+    vm.appCtrl.resetPristineState();
+
     deregisterInitDataWatch = $scope.$watchGroup([
       () => vm.appData, () => vm.appCtrl.statesArray
     ], (newVal) => {
-      if (UtilsSvc.notNullOrEmptyObj(newVal[0]) && UtilsSvc.notNullOrEmptyObj(newVal[1])) {
-        updateViewValues.call(bindingObj);
-        angular.forEach(vm.appCtrl.statesArray, (value, key) => {
-          if (value.value !== "HI") {
-            vm.statesArray.push(value);
-          }
-        });
-        if (!vm.output) {
-          getOutput.call(bindingObj, {init: true});
-        }
-        vm.groupOR = vm.appCtrl.groupOR;
-        vm.groupAK = vm.appCtrl.groupAK;
-        // vm.appData.fullTimeEmployees = angular.copy(vm.appData.totalActiveEmpCount);
-        vm.originalFTCount = angular.copy(vm.appData.totalActiveEmpCount);
-        vm.onInitComplete = true;
-        GroupsizeComponentSvc.setComputedProps(vm);
-        checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
-        deregisterInitDataWatch();
-        vm.appCtrl.resetPristineState();
-      }
+      // if (UtilsSvc.notNullOrEmptyObj(newVal[0]) && UtilsSvc.notNullOrEmptyObj(newVal[1])) {
+      //   updateViewValues.call(bindingObj);
+      //   angular.forEach(vm.appCtrl.statesArray, (value, key) => {
+      //     if (value.value !== "HI") {
+      //       vm.statesArray.push(value);
+      //     }
+      //   });
+      //   if (!vm.output) {
+      //     getOutput.call(bindingObj, {init: true});
+      //   }
+      //   vm.groupOR = vm.appCtrl.groupOR;
+      //   vm.groupAK = vm.appCtrl.groupAK;
+      //   // vm.appData.fullTimeEmployees = angular.copy(vm.appData.totalActiveEmpCount);
+      //   vm.originalFTCount = angular.copy(vm.appData.totalActiveEmpCount);
+      //   vm.onInitComplete = true;
+      //   GroupsizeComponentSvc.setComputedProps(vm);
+      //   checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
+      //   deregisterInitDataWatch();
+      //   vm.appCtrl.resetPristineState();
+      // }
     });
 
     deregisterAppDataWatch = $scope.$watch(

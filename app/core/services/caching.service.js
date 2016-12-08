@@ -40,17 +40,18 @@ export default class CachingSvc {
     //in the application component, i've instead moved the call to getStates until the app object is returned from that XHR
     //so this really shouldn't be an issue
     function statesRequest() {
+      const {$timeout, DataSvc} = this;
       if (!!$ && $.hasOwnProperty('active')) {
         if ($.active === 0) {
-          this.DataSvc.getStates().then(statesSuccess.bind(this), statesFailure.bind(this));
+          DataSvc.getStates().then(statesSuccess.bind(this), statesFailure.bind(this));
           if (reqTimeout) {
-            this.$timeout.cancel(reqTimeout.bind(this));
+            $timeout.cancel(reqTimeout.bind(this));
           }
         } else {
-          reqTimeout = this.$timeout(statesRequest.bind(this), 1000);
+          reqTimeout = $timeout(statesRequest.bind(this), 1000);
         }
       } else {
-        this.DataSvc.getStates().then(statesSuccess.bind(this), statesFailure.bind(this));
+        DataSvc.getStates().then(statesSuccess.bind(this), statesFailure.bind(this));
       }
     } 
 

@@ -9,9 +9,8 @@
  */
  
 import angular from 'angular';
-import sgAppRoot from '../../../root/sgApp.component.root'; //this service is defined on the root module and injected there
 
-class CobraComponentSvc {
+export default class CobraComponentSvc {
 
   /*@ngInject*/
   constructor($log, UtilsSvc, RulesSvc, OptionsSvc) {
@@ -69,7 +68,3 @@ class CobraComponentSvc {
   }
 
 }
-
-export default angular
-  .module('sgAppRoot')
-  .service('CobraComponentSvc', CobraComponentSvc);

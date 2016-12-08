@@ -11,22 +11,19 @@
 
 import angular from 'angular';
 import cobraTemplate from './cobra.html';
-import sgAppRoot from '../../../root/sgApp.component.root';
 let forward = false;
 
-export default angular
-  .module(sgAppRoot.name)
-  .component('cobraFormComponent', {
-    templateUrl: cobraTemplate,
-    bindings: {
-      $router: '<'
-    },
-    require: {
-      appCtrl: '^applicationComponent'
-    },
-    controller: CobraFormCtrl,
-    $canActivate: canActivateFn
-  });
+export const cobraFormComponent = {
+  templateUrl: cobraTemplate,
+  bindings: {
+    $router: '<'
+  },
+  require: {
+    appCtrl: '^applicationComponent'
+  },
+  controller: CobraFormCtrl,
+  $canActivate: canActivateFn
+};
 
 /*@ngInject*/
 function canActivateFn($nextInstruction, $prevInstruction, UserSvc) {

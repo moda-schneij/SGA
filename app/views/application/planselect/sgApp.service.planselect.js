@@ -9,7 +9,6 @@
  */
  
 import angular from 'angular';
-import sgAppRoot from '../../../root/sgApp.component.root'; //this service is defined on the root module and injected there
 import { 
   generateMaxRule, 
   generatePlaceholder, 
@@ -24,7 +23,7 @@ import {
   addDOMaxCounts
 } from './sgApp.private.planselect';
 
-class PlanSelectSvc {
+export default class PlanSelectSvc {
 
   /*@ngInject*/
   constructor($log, UtilsSvc, ApplicationSvc, OptionsSvc, RulesSvc, $rootScope, $timeout, $window, REGEXS, toArrayFilter) {
@@ -648,7 +647,3 @@ class PlanSelectSvc {
     return this.REGEXS.dental.test(plan.planCategory) && plan.isRider && !this.REGEXS.directOption.test(plan.planType);
   }
 }
-
-export default angular
-  .module(sgAppRoot.name)
-  .service('PlanSelectSvc', PlanSelectSvc);
