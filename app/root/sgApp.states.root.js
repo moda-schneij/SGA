@@ -20,9 +20,14 @@ const PROD = __PROD__ ;
 
 const rootState = {
   name: 'Root',
-  redirectTo: __SER_CONTEXT__ ? 'ApplicationView' : 'LoginView',
   component: 'sgaRoot',
-  url: '',
+  redirectTo: !(__SER_CONTEXT__) ? 'LoginView' : '',
+  url: ''
+};
+
+const authState = {
+  name: 'LoggedIn',
+  component: 'sgaRoot',
   resolve: {
     appData: ($transition$, ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
       'ngInject';
@@ -47,7 +52,7 @@ const rootState = {
     }
   },
   data: {
-    requiresAuth: false
+    requiresAuth: true
   }
 };
 
@@ -73,7 +78,6 @@ const notFoundState = {
   url: '/oops',
   template: '<p>Sorry, but you\'ve reached an invalid page. <a ui-sref=\'home\'>Return home</a>.</p>',
   data: {
-    requiresAuth: false,
     title: 'Oops!',
     addToMenu: false,
     doNotBlock: true,
@@ -83,39 +87,39 @@ const notFoundState = {
 
 const applicationState = {
   name: 'ApplicationView',
-  parent: 'Root',
+  parent: 'LoggedIn',
   url: '/application',
-  component: 'applicationComponent',
-  /*template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray">
-    </application-component>`,*/
+  //component: 'applicationComponent',
+  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray">
+    </application-component>`,
   data: {
     requiresAuth: true,
     title: 'Welcome to the small group application form',
     linkTitle: 'Home',
     addToMenu: true
-  },
-  resolve: {
-    appData: (appData) => {
-      return appData;
-    },
-    rules: (rules) => {
-      return rules;
-    },
-    options: (options) => {
-      return options;
-    },
-    statesArray: (statesArray) => {
-      return statesArray;
-    },
-    appId: (appData) => {
-      return appData.appId;
-    },
-    quoteId: (appData) => {
-      return appData.quoteId;
-    }
   }
+  // , resolve: {
+  //   appData: (appData) => {
+  //     return appData;
+  //   },
+  //   rules: (rules) => {
+  //     return rules;
+  //   },
+  //   options: (options) => {
+  //     return options;
+  //   },
+  //   statesArray: (statesArray) => {
+  //     return statesArray;
+  //   },
+  //   appId: (appData) => {
+  //     return appData.appId;
+  //   },
+  //   quoteId: (appData) => {
+  //     return appData.quoteId;
+  //   }
+  // }
 };
 
-const rootStates = [rootState, loginState, notFoundState, applicationState];
+const rootStates = [rootState, loginState, authState, notFoundState, applicationState];
 
 export default rootStates;

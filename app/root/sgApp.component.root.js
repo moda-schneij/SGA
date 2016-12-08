@@ -28,7 +28,8 @@ export const sgaRoot = {
   bindings: {
     appData: '=',
     rules: '<',
-    options: '<'
+    options: '<',
+    statesArray: '<'
   }
   //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
   //,
