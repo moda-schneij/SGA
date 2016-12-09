@@ -17,7 +17,10 @@ const _get = require('lodash/get');
 export const groupInfoFormComponent = {
   templateUrl: groupInfoTemplate,
   bindings: {
-    $router: '<'
+    appData: '<',
+    statesArray: '<',
+    rules: '<',
+    options: '<'
   },
   require: {
     appCtrl: '^applicationComponent'
@@ -81,7 +84,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
 
   vm.setNAICSCode = (item, model) => {
     vm.selectedNAICS = item;
-    vm.appCtrl.appdata.group.naicsCode = model;
+    vm.appData.group.naicsCode = model;
   }
 
   vm.checkNAICSChanged = (isOpen) => {
@@ -111,7 +114,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
    ** Eligibility section
    **********************/
 
-  vm.eligibility = {}; //container for holding model values that persist to appdata on action
+  vm.eligibility = {}; //container for holding model values that persist to appData on action
 
   vm.eligPeriodArray = [];
   vm.domesticPartnerTypes = ConstantsSvc.DOMESTIC_PARTNER_TYPES;
@@ -122,8 +125,8 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
 
   //toggle reset of domestic partner type dropdown
   vm.onDpCoverageSelect = function() {
-    $log.debug('triggered onDpCoverageSelect : ' + vm.appCtrl.appdata.domesticPartner);
-    if ((vm.appCtrl.appdata.domesticPartner === 'N' || !vm.appCtrl.appdata.domesticPartner) && vm.appCtrl.groupOR) {
+    $log.debug('triggered onDpCoverageSelect : ' + vm.appData.domesticPartner);
+    if ((vm.appData.domesticPartner === 'N' || !vm.appData.domesticPartner) && vm.appCtrl.groupOR) {
       vm.groupinfoform.eligibilityform.dpselect.$setPristine();
       vm.groupinfoform.eligibilityform.dpselect.$setUntouched();
     }
@@ -137,18 +140,18 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
    ** Prior coverage section
    *************************/
 
-  vm.priorcoverage = {}; //container for holding model values that persist to appdata on action
+  vm.priorcoverage = {}; //container for holding model values that persist to appData on action
 
   /*****************************
    ** End Prior coverage section
    *****************************/
   //copy or update primary address
   vm.copyPrimaryAddress = () => {
-    if (angular.isArray(vm.appCtrl.appdata.group.address)) {
-      if (vm.appCtrl.appdata.group.primaryAddressSame) {
-        const primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
+    if (angular.isArray(vm.appData.group.address)) {
+      if (vm.appData.group.primaryAddressSame) {
+        const primAddrCopy = angular.copy(vm.appData.group.address[0]);
         primAddrCopy.addressType = 'PRIM';
-        vm.appCtrl.appdata.group.address[1] = primAddrCopy;
+        vm.appData.group.address[1] = primAddrCopy;
       } else {
         GroupinfoComponentSvc.clearPrimaryAddress(vm);
       }
@@ -157,8 +160,8 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
 
   //copy or update primary address or contact to billing
   vm.copyToBillingAddress = () => {
-    if (angular.isArray(vm.appCtrl.appdata.group.address)) {
-      if (vm.appCtrl.appdata.group.billingAddressSame) {
+    if (angular.isArray(vm.appData.group.address)) {
+      if (vm.appData.group.billingAddressSame) {
         GroupinfoComponentSvc.copyBillingAddress(vm);
       } else {
         GroupinfoComponentSvc.clearBillingAddress(vm);
@@ -167,11 +170,11 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
   };
 
   vm.copyBillingContact = () => {
-    if (angular.isArray(vm.appCtrl.appdata.group.contact)) {
-      if (vm.appCtrl.appdata.group.billContactSame) {
-        const primContactCopy = angular.copy(vm.appCtrl.appdata.group.contact[0]);
+    if (angular.isArray(vm.appData.group.contact)) {
+      if (vm.appData.group.billContactSame) {
+        const primContactCopy = angular.copy(vm.appData.group.contact[0]);
         primContactCopy.contactType = 'BILL';
-        vm.appCtrl.appdata.group.contact[1] = primContactCopy;
+        vm.appData.group.contact[1] = primContactCopy;
       } else {
         GroupinfoComponentSvc.clearBillingContact(vm);
       }
@@ -212,56 +215,51 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
   });
 
   vm.$onInit = function() {
-    $log.debug(vm);
-    $log.debug('I am in the cobra component controller');
-
     const originalSave = vm.appCtrl.saveAppData;
     const originalNext = vm.appCtrl.next;
     const originalPrev = vm.appCtrl.prev;
-    if (vm.appCtrl.statesArray) {
-      const states = vm.appCtrl.statesArray;
-      states.map(function(stateObj) {
-        stateObj.available = true;
-        return stateObj;
+    vm.statesArray.map(function(stateObj) {
+      stateObj.available = true;
+      return stateObj;
+    });
+
+
+    // deregisterAppDataWatch = $rootScope.$watchCollection(function() {
+    //   return vm.appCtrl.appData;
+    // }, function(newVal) {
+    //   if (UtilsSvc.notNullOrEmptyObj(newVal)) {
+
+    GroupinfoComponentSvc.updateEmployerContributions(vm, { set: true });
+    //checkOtherPlans.call(bindingObj);
+    GroupinfoComponentSvc.setComputedProps(vm);
+    GroupinfoComponentSvc.checkHasOtherPlans(vm);
+    GroupinfoComponentSvc.updateViewValues(vm);
+    GroupinfoComponentSvc.restoreNAICS(vm);
+
+    //deregisterAppDataWatch();
+
+    if (vm.hasSelectedMedPlans === true) {
+      angular.forEach(ConstantsSvc.ELIGIBILITY_PERIODS, (value, key) => {
+        if (!value.value.startsWith("NINETY_DAYS")) {
+          vm.eligPeriodArray.push(value);
+        }
       });
+    } else {
+      vm.eligPeriodArray = ConstantsSvc.ELIGIBILITY_PERIODS;
     }
 
+    // // Calling set-pristine on the main form and groupcodes subform after digest cycle.
+    // vm.appCtrl.resetPristineState();
 
-    deregisterAppDataWatch = $rootScope.$watchCollection(function() {
-      return vm.appCtrl.appdata;
-    }, function(newVal) {
-      if (UtilsSvc.notNullOrEmptyObj(newVal)) {
-        GroupinfoComponentSvc.updateEmployerContributions(vm, { set: true });
-        //checkOtherPlans.call(bindingObj);
-        GroupinfoComponentSvc.setComputedProps(vm);
-        GroupinfoComponentSvc.checkHasOtherPlans(vm);
-        GroupinfoComponentSvc.updateViewValues(vm);
-        GroupinfoComponentSvc.restoreNAICS(vm);
-
-        deregisterAppDataWatch();
-        vm.appCtrl.setRouteReady();
-
-        if (vm.hasSelectedMedPlans === true) {
-          angular.forEach(ConstantsSvc.ELIGIBILITY_PERIODS, (value, key) => {
-            if (!value.value.startsWith("NINETY_DAYS")) {
-              vm.eligPeriodArray.push(value);
-            }
-          });
-        } else {
-          vm.eligPeriodArray = ConstantsSvc.ELIGIBILITY_PERIODS;
-        }
-
-        // Calling set-pristine on the main form and groupcodes subform after digest cycle.
-        vm.appCtrl.resetPristineState();
-      }
-    });
+    //   }
+    // });
 
     //override application controller's save to update values before save, then save on callback
     vm.appCtrl.saveAppData = (option) => {
       const callback = option && option.callback;
       const next = option && option.next;
       const prev = option && option.prev;
-      CachingSvc.getNAICS(vm.appCtrl.appdata.group.naicsCode);
+      CachingSvc.getNAICS(vm.appData.group.naicsCode);
       if (callback || next || prev) {
         originalSave(option); //pass the option, which may contain the instruction to navigate
       } else {
@@ -272,7 +270,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
     //override application controller's navigate to update values before navigate, then save and navigate on callback
     vm.appCtrl.next = (option) => {
       const callback = option && option.callback;
-      CachingSvc.getNAICS(vm.appCtrl.appdata.group.naicsCode);
+      CachingSvc.getNAICS(vm.appData.group.naicsCode);
       if (callback) {
         originalNext(option);
       } else {
@@ -288,6 +286,13 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
         GroupinfoComponentSvc.updateEmployerContributions(vm, { save: true }, originalPrev);
       }
     };
+  };
+
+  vm.$postLink = () => {
+    $timeout(() => { //evalAsync?
+      // Calling set-pristine on the main form and groupcodes subform after digest cycle.
+      vm.appCtrl.resetPristineState();
+    });
   };
 }
 

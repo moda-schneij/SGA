@@ -20,7 +20,6 @@ let appdata = {};
 export const groupSizeFormComponent = {
   templateUrl: groupSizeTemplate,
   bindings: {
-    $router: '<',
     appData: '<',
     statesArray: '<',
     rules: '<',

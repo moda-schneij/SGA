@@ -28,52 +28,51 @@ export default class GroupinfoComponentSvc {
   setComputedProps(vm) {
     //Computed properties
     Object.defineProperty(vm, 'hasSelectedMedPlans', {
-      get: () => vm.appCtrl.appdata.groupPlan.categories.medical.plans.filter((plan) => plan.selected).length > 0,
+      get: () => vm.appData.groupPlan.categories.medical.plans.filter((plan) => plan.selected).length > 0,
       configurable: true,
       enumerable: true
     });
     Object.defineProperty(vm, 'hasSelectedDenPlans', {
-      get: () => vm.appCtrl.appdata.groupPlan.categories.dental.plans.filter((plan) => plan.selected).length > 0,
+      get: () => vm.appData.groupPlan.categories.dental.plans.filter((plan) => plan.selected).length > 0,
       configurable: true,
       enumerable: true
     });
   }
 
   updateViewValues(vm) {
-    if (this.UtilsSvc.isNonEmptyString(vm.appCtrl.appdata.group.naicsCode)) {
+    if (this.UtilsSvc.isNonEmptyString(vm.appData.group.naicsCode)) {
       vm.selectedNAICS = { //prevent invalid state by temporarily setting just the code in a temp object
-        code: vm.appCtrl.appdata.group.naicsCode
+        code: vm.appData.group.naicsCode
       };
     }
     vm.primaryAddressSame = false;
   }
 
   checkHasOtherPlans(vm) { //onInit, set booleans based on whether there are values for other plans in the data
-    const appdata = vm.appCtrl.appdata;
     vm.otherCoverage = {
-      medical: appdata.currentMedCarrier && appdata.currentMedCarrier !== '',
-      dental: appdata.currentDenCarrier && appdata.currentDenCarrier !== ''
+      medical: vm.appData.currentMedCarrier && vm.appData.currentMedCarrier !== '',
+      dental: vm.appData.currentDenCarrier && vm.appData.currentDenCarrier !== ''
     };
   }
 
   //this is all to avoid having the values for percentages overwrite dollar values, or vice-versa
   updateEmployerContributions(vm, action, callback) {
-    const appdata = vm.appCtrl.appdata;
+    const appData = vm.appData;
     const set = action && action.set; //this is a param passed onInit, so we don't proceed as though we were saving
     const save = action && action.save;
-    const empContribKey = appdata.employerContribIsPct ? 'percentages' : 'dollars';
+    const empContribKey = appData.employerContribIsPct ? 'percentages' : 'dollars';
     const contribObj = vm.employerContributions[empContribKey];
     angular.forEach(contribObj, function(value, key) {
       const contribObjKey = contribObj[key];
-      const appdataVal = appdata[key];
+      const appDataVal = appData[key];
       const rulesKey = this.RulesSvc.rules.groupRules[key];
       if (set) {
-        contribObjKey.amount = appdataVal;
+        contribObjKey.amount = appDataVal;
         contribObjKey.minContribPct = rulesKey.minContribPct;
         contribObjKey.minContribDol = rulesKey.minContribDol;
       }
       if (save) {
-        appdata[key] = contribObjKey.amount;
+        appData[key] = contribObjKey.amount;
       }
     }, this);
     if (!set) {
@@ -120,7 +119,7 @@ export default class GroupinfoComponentSvc {
 
   clearPrimaryAddress(vm) {
 
-    const primAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'PRIM')[0];
+    const primAddress = vm.appData.group.address.filter((address) => address.addressType === 'PRIM')[0];
 
     if (this.UtilsSvc.notNullOrEmptyObj(primAddress)) {
       Object.keys(primAddress)
@@ -132,7 +131,7 @@ export default class GroupinfoComponentSvc {
   }
 
   clearBillingAddress(vm) {
-    const billAddress = vm.appCtrl.appdata.group.address.filter((address) => address.addressType === 'BILL')[0];
+    const billAddress = vm.appData.group.address.filter((address) => address.addressType === 'BILL')[0];
 
     if (this.UtilsSvc.notNullOrEmptyObj(billAddress)) {
       Object.keys(billAddress)
@@ -141,28 +140,28 @@ export default class GroupinfoComponentSvc {
           billAddress[key] = '';
         });
       //also clear billing name
-      vm.appCtrl.appdata.group.billingName = '';
+      vm.appData.group.billingName = '';
     }
   }
   
   copyBillingAddress(vm) {
       let primAddrCopy = null;
   
-      vm.appCtrl.appdata.group.billingName = angular.copy(vm.appCtrl.appdata.group.employerLegalName);
+      vm.appData.group.billingName = angular.copy(vm.appData.group.employerLegalName);
 
       if (!(/2016/).test(vm.appCtrl.effDate.getFullYear())) {
-        primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[1]);
+        primAddrCopy = angular.copy(vm.appData.group.address[1]);
         primAddrCopy.addressType = 'BILL';
-        vm.appCtrl.appdata.group.address[2] = primAddrCopy;
+        vm.appData.group.address[2] = primAddrCopy;
       } else {
-        primAddrCopy = angular.copy(vm.appCtrl.appdata.group.address[0]);
+        primAddrCopy = angular.copy(vm.appData.group.address[0]);
         primAddrCopy.addressType = 'BILL';
-        vm.appCtrl.appdata.group.address[1] = primAddrCopy;
+        vm.appData.group.address[1] = primAddrCopy;
       }
   }
 
   clearBillingContact(vm) {
-    const billContact = vm.appCtrl.appdata.group.contact.filter((contact) => contact.contactType === 'BILL')[0];
+    const billContact = vm.appData.group.contact.filter((contact) => contact.contactType === 'BILL')[0];
     if (this.UtilsSvc.notNullOrEmptyObj(billContact)) {
       Object.keys(billContact)
         .filter((key) => key !== 'contactType' && key !== 'id')
@@ -174,10 +173,10 @@ export default class GroupinfoComponentSvc {
 
   restoreNAICS(vm) {
     //if we're re-populating the previously set NAICS selection
-    if (this.UtilsSvc.isNonEmptyString(vm.appCtrl.appdata.group.naicsCode)) {
+    if (this.UtilsSvc.isNonEmptyString(vm.appData.group.naicsCode)) {
       vm.searchingNAICS = true;
       //this should either return a cached version from storage or get the specific NAICS result via ajax
-      this.CachingSvc.getNAICS(vm.appCtrl.appdata.group.naicsCode)
+      this.CachingSvc.getNAICS(vm.appData.group.naicsCode)
         .then((response) => {
           vm.selectedNAICS = angular.isDefined(response) ? response : {};
           vm.noNAICSResults = angular.isUndefined(response);
@@ -207,7 +206,7 @@ export default class GroupinfoComponentSvc {
 function zeroContributions(vm, callback) {
   const groupRules = this.RulesSvc.rules.groupRules;
   const isNumberOrNumString = this.UtilsSvc.isNumberOrNumString;
-  const appdata = vm.appCtrl.appdata;
+  const appData = vm.appData;
   const noMedical = !vm.appCtrl.hasMedical;
   const noDental = !vm.appCtrl.hasDental;
   const noMedDeps = !vm.appCtrl.hasMedDependents;
@@ -216,19 +215,19 @@ function zeroContributions(vm, callback) {
   let empMedZero = '0';
   let depDenZero = '0';
   let empDenZero = '0';
-  if (!appdata.employerContribIsPct) {
+  if (!appData.employerContribIsPct) {
     depMedZero = this.UtilsSvc.toFixedTwo(groupRules.medPremiumDepContribution.minContribDol);
     empMedZero = this.UtilsSvc.toFixedTwo(groupRules.medPremiumEmpContribution.minContribDol);
     depDenZero = this.UtilsSvc.toFixedTwo(groupRules.denPremiumDepContribution.minContribDol);
     empDenZero = this.UtilsSvc.toFixedTwo(groupRules.denPremiumEmpContribution.minContribDol);
   }
   if (noMedical) {
-    appdata.medPremiumEmpContribution = empMedZero;
-    appdata.medPremiumDepContribution = depMedZero;
+    appData.medPremiumEmpContribution = empMedZero;
+    appData.medPremiumDepContribution = depMedZero;
   }
   if (noDental) {
-    appdata.denPremiumEmpContribution = empDenZero;
-    appdata.denPremiumDepContribution = depDenZero;
+    appData.denPremiumEmpContribution = empDenZero;
+    appData.denPremiumDepContribution = depDenZero;
   }
   angular.isFunction(callback) && callback({ callback: true });
 }
