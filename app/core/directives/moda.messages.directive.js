@@ -7,7 +7,7 @@
  * ModaMessages directive of the Small Group Application app.
  */
 
-/* This direcvie is a currently called by a messages component and, AFAIK, I could 
+/* This direcvie is a currently called by a messages component and, AFAIK, I could
 dispense of the component altogether and just use this directive, but I've used up too much time working
 on this task ATM, so may put it down as technical debt to refactor. Also, ng-messages... (not used yet
 in an Angular app here)*/
@@ -16,7 +16,7 @@ import angular from 'angular';
 
 class ModaMessagesDirective {
   constructor($window) {
-    this.restrict = ['A', 'E'];
+    this.restrict = 'AE';
     this.templateUrl = './app/core/directives/templates/messages.html';
     this.scope = {};
     this.bindToController = {
@@ -75,7 +75,7 @@ class ModaMessagesCtrl {
     ];
     this.hideMessages = this.hideMessagesFn.bind(this);
   }
-  
+
   //the new messages directive has a close button, and all it does is set the message booleans all to false
   hideMessagesFn(displayVal) {
     this.parentctrl[displayVal] = false;

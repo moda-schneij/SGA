@@ -63,11 +63,20 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   //let deregisterAppCtrlDataWatch;
   let deregisterConfigWatch;
 
-  // //attempt to use ui-router 
-  // $transitions.onSuccess({}, () => {
-  //   ApplicationComponentSvc.configNav(vm); //set up nav buttons
-  //   vm.navigating = false;
-  // });
+  // //attempt to use ui-router
+  $transitions.onSuccess({}, () => {
+    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    // vm.navigating = false;
+    $log.debug('TRANSITIONS SUCCESS');
+    $log.debug('application form', vm.applicationform);
+  });
+
+  $transitions.onRetain({}, () => {
+    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    // vm.navigating = false;
+    $log.debug('TRANSITIONS RETAIN');
+  $log.debug('application form', vm.applicationform);
+});
 
   // const deregisterRouterWatch = $rootScope.$watch(function() {
   //   return vm.$router.currentInstruction;
@@ -217,15 +226,16 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   vm.$onInit = () => {
     $log.debug(vm);
     $log.debug('APPLICATIONCOMPONENT.$onInit');
+    $log.debug('appformctrl', vm.applicationform);
     //these values were set on the root component, which grabbed them from the URL query string
     //set application component controller appData object (if it doesn't already exist) from root component
     ApplicationComponentSvc.setRulesAndOptions(vm);
     ApplicationComponentSvc.updateViewValues(vm); //static props
     ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
     // ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    // ApplicationComponentSvc.returnToLastStep(vm);
-    // vm.navigating = false;
-  
+    ApplicationComponentSvc.returnToLastStep(vm);
+    vm.navigating = false;
+
     // CachingSvc.getStates()
     //   .then((states) => {
     //     if (angular.isArray(states)) {
@@ -246,9 +256,13 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
 
   vm.$postLink = () => {
     $log.debug('APPLICATIONCOMPONENT.$postLink');
-    ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    ApplicationComponentSvc.returnToLastStep(vm);
-    vm.navigating = false;
+    $log.debug('appformctrl', vm.applicationform);
+    $timeout(() => {
+      ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    });
+
+    // ApplicationComponentSvc.returnToLastStep(vm);
+    // vm.navigating = false;
     // $timeout(() => {
     //   ApplicationComponentSvc.setRulesAndOptions(vm);
     //   ApplicationComponentSvc.updateViewValues(vm); //static props

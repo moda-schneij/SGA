@@ -39,9 +39,9 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
   ConstantsSvc.TIPSOCONFIG = {width: 500};
   const TIPSOCONFIG = angular.copy(ConstantsSvc.TIPSOCONFIG);
   let deregisterAppDataWatch;
-  let deregisterInitDataWatch;
+  //let deregisterInitDataWatch;
   const bindingObj = { vm, ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sce, $timeout, ConstantsSvc, GroupsizeComponentSvc };
-  
+
   vm.onInitComplete = false; //use this value to signal to init-val-dependent directives that they can be rendered when onInit completes
 
   //a tooltip explaining why the user cannot choose employee-only for either LOB
@@ -54,12 +54,12 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
 
 
   vm.tipsoConfig = {
-    OR: angular.extend(TIPSOCONFIG, { 
+    OR: angular.extend(TIPSOCONFIG, {
       tooltipHover: true,
       content: tipContentOR,
       offsetX: 164 //offset hand calculated because of time -- add a directive to determine the offset?
     }),
-    AK: angular.extend(angular.copy(TIPSOCONFIG), { 
+    AK: angular.extend(angular.copy(TIPSOCONFIG), {
       tooltipHover: true,
       content: tipContentAK,
       offsetX: 164 //offset hand calculated because of time -- add a directive to determine the offset?
@@ -161,7 +161,7 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
   vm.$onInit = function() {
     $log.debug(vm);
     $log.debug('I am in the groupsize component controller');
-    
+
     updateViewValues.call(bindingObj);
     if (!vm.output) {
       getOutput.call(bindingObj, {init: true});
@@ -173,33 +173,33 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     vm.onInitComplete = true;
     GroupsizeComponentSvc.setComputedProps(vm);
     checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
-    deregisterInitDataWatch();
+    //deregisterInitDataWatch();
     vm.appCtrl.resetPristineState();
 
-    deregisterInitDataWatch = $scope.$watchGroup([
-      () => vm.appData, () => vm.appCtrl.statesArray
-    ], (newVal) => {
-      // if (UtilsSvc.notNullOrEmptyObj(newVal[0]) && UtilsSvc.notNullOrEmptyObj(newVal[1])) {
-      //   updateViewValues.call(bindingObj);
-      //   angular.forEach(vm.appCtrl.statesArray, (value, key) => {
-      //     if (value.value !== "HI") {
-      //       vm.statesArray.push(value);
-      //     }
-      //   });
-      //   if (!vm.output) {
-      //     getOutput.call(bindingObj, {init: true});
-      //   }
-      //   vm.groupOR = vm.appCtrl.groupOR;
-      //   vm.groupAK = vm.appCtrl.groupAK;
-      //   // vm.appData.fullTimeEmployees = angular.copy(vm.appData.totalActiveEmpCount);
-      //   vm.originalFTCount = angular.copy(vm.appData.totalActiveEmpCount);
-      //   vm.onInitComplete = true;
-      //   GroupsizeComponentSvc.setComputedProps(vm);
-      //   checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
-      //   deregisterInitDataWatch();
-      //   vm.appCtrl.resetPristineState();
-      // }
-    });
+    // deregisterInitDataWatch = $scope.$watchGroup([
+    //   () => vm.appData, () => vm.appCtrl.statesArray
+    // ], (newVal) => {
+    //   // if (UtilsSvc.notNullOrEmptyObj(newVal[0]) && UtilsSvc.notNullOrEmptyObj(newVal[1])) {
+    //   //   updateViewValues.call(bindingObj);
+    //   //   angular.forEach(vm.appCtrl.statesArray, (value, key) => {
+    //   //     if (value.value !== "HI") {
+    //   //       vm.statesArray.push(value);
+    //   //     }
+    //   //   });
+    //   //   if (!vm.output) {
+    //   //     getOutput.call(bindingObj, {init: true});
+    //   //   }
+    //   //   vm.groupOR = vm.appCtrl.groupOR;
+    //   //   vm.groupAK = vm.appCtrl.groupAK;
+    //   //   // vm.appData.fullTimeEmployees = angular.copy(vm.appData.totalActiveEmpCount);
+    //   //   vm.originalFTCount = angular.copy(vm.appData.totalActiveEmpCount);
+    //   //   vm.onInitComplete = true;
+    //   //   GroupsizeComponentSvc.setComputedProps(vm);
+    //   //   checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
+    //   //   deregisterInitDataWatch();
+    //   //   vm.appCtrl.resetPristineState();
+    //   // }
+    // });
 
     deregisterAppDataWatch = $scope.$watch(
       () => vm.appData,
