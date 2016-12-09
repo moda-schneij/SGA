@@ -22,6 +22,7 @@ const NODE_ENV = __NODE_ENV__ || null;
 const BUILD_TARGET = __BUILD_TARGET__ || null;
 const SER_CONTEXT = __SER_CONTEXT__ || false;
 const PROD = __PROD__ || false;
+const hasWSHost = !!__WS_HOST__ && __WS_HOST__ !== '' && (/modahealth|odshp/).test(__WS_HOST__);
 
 /* eslint-enable no-undef */
 
@@ -60,7 +61,7 @@ export default class ConstantsSvc {
     //     STG3_URL + SER_LOGIN_PATH;
     // }());
     
-    this.API_URL = '//' + $location.host() + WS_PORT + API_ROOT_PATH;
+    this.API_URL = '//' + (hasWSHost ? __WS_HOST__ : $location.host()) + WS_PORT + API_ROOT_PATH;
     this.SER_ROOT_URL = $location.protocol() + '://' + $location.host() + SER_PORT + '/' + SER_APPNAME;
     this.SER_URL = $location.protocol() + '://' + $location.host() + SER_PORT + SER_LOGIN_PATH;
 
