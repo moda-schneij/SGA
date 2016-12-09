@@ -25,10 +25,10 @@ const PORTS = {
   APP: argv.appport,
   SER: argv.serport
 };
-const MODA_ENV = argv.wshost;
+const MODA_ENV = argv.env;
 const hasMachineName = !!MACHINE_NAME;
 const hasWSPort = !!PORTS.WS;
-const hasWSHost = !!MODA_ENV;
+const hasRemoteHost = !!MODA_ENV;
 const hasAppPort = !!PORTS.APP;
 const hasSERPort = !!PORTS.SER;
 
@@ -43,7 +43,7 @@ _console.log('here be my app port number');
 _console.log(PORTS.APP);
 _console.log('here be my web service port number');
 _console.log(PORTS.WS);
-_console.log('here be my web service host environment');
+_console.log('here be my remote host environment');
 _console.log(MODA_ENV);
 _console.log('here be my SpeedE port number');
 _console.log(PORTS.SER);
@@ -61,10 +61,10 @@ const prodEnvRegEx = /production/;
 const serEnvRegEx = /(ser|production)/;
 
 const WEB_PORT = hasAppPort ? PORTS.APP : config.get('WEB_PORT') ? config.get('WEB_PORT') : '9090';
-const WS_PORT = hasWSPort ? PORTS.WS : config.get('WS_PORT') ? config.get('WS_PORT') : '80';
-const SER_PORT = hasSERPort ? PORTS.SER : config.get('SER_PORT') ? config.get('SER_PORT') : '80';
+const WS_PORT = hasWSPort && !hasRemoteHost ? PORTS.WS : config.get('WS_PORT') ? config.get('WS_PORT') : '80';
+const SER_PORT = hasSERPort && !hasRemoteHost ? PORTS.SER : config.get('SER_PORT') ? config.get('SER_PORT') : '80';
 const WEB_HOST = hasMachineName && (isIpAddress | isLocalhost) ? MACHINE_NAME : hasMachineName ? MACHINE_NAME + '.pdx.odshp.com' : config.get('WEB_HOST') ? config.get('WEB_HOST') : '0.0.0.0';
-const WS_HOST = hasWSHost ? 'wasapp1' + MODA_ENV + '.pdx.odshp.com' : WEB_HOST;
+const REMOTE_HOST = hasRemoteHost ? 'wasapp1' + MODA_ENV + '.odshp.com' : WEB_HOST;
 const WEB_PROTOCOL = config.get('WEB_PROTOCOL') || 'http://';
 const NODE_ENV = config.util.getEnv('NODE_ENV');
 const NODE_ENV_STR = JSON.stringify(NODE_ENV);
@@ -76,7 +76,7 @@ _console.log('SER_CONTEXT: ' + SER_CONTEXT);
 _console.log('WEB_HOST: ' + WEB_HOST);
 _console.log('WEB_PORT: ' + WEB_PORT);
 _console.log('WS_PORT: ' + WS_PORT);
-_console.log('WS_HOST: ' + WS_HOST);
+_console.log('REMOTE_HOST: ' + REMOTE_HOST);
 _console.log('SER_PORT: ' + SER_PORT);
 _console.log('TARGET: ' + TARGET);
 _console.log('PROD: ' + PROD);
@@ -97,7 +97,8 @@ const commonsChunkVendorAssets = new webpack.optimize.CommonsChunkPlugin({
 const extractCSS = new ExtractTextPlugin('[name].css');
 const cleanBuild = new CleanPlugin([PATHS.build]);
 const openBrowser = new OpenBrowserPlugin({
-  url: 'http://' + WEB_HOST + ':' + WEB_PORT
+  url: 'http://' + WEB_HOST + ':' + WEB_PORT,
+  browser: 'chrome'
 });
 
 const setGlobals = new webpack.DefinePlugin({ //pass values to modules as constants
@@ -105,7 +106,7 @@ const setGlobals = new webpack.DefinePlugin({ //pass values to modules as consta
   __WEB_PROTOCOL__: JSON.stringify(WEB_PROTOCOL),
   __WEB_HOST__: JSON.stringify(WEB_HOST),
   __SER_PORT__: JSON.stringify(SER_PORT),
-  __WS_HOST__: JSON.stringify(WS_HOST),
+  __REMOTE_HOST__: JSON.stringify(REMOTE_HOST),
   __WS_PORT__: JSON.stringify(WS_PORT),
   __NODE_ENV__: NODE_ENV_STR, /* eslint angular/json-functions: "off" */
   __BUILD_TARGET__: JSON.stringify(TARGET),

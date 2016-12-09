@@ -22,7 +22,12 @@ const NODE_ENV = __NODE_ENV__ || null;
 const BUILD_TARGET = __BUILD_TARGET__ || null;
 const SER_CONTEXT = __SER_CONTEXT__ || false;
 const PROD = __PROD__ || false;
-const hasWSHost = !!__WS_HOST__ && __WS_HOST__ !== '' && (/modahealth|odshp/).test(__WS_HOST__);
+const hasRemoteHost = !!__REMOTE_HOST__ && __REMOTE_HOST__ !== '' && (/modahealth|odshp/).test(__REMOTE_HOST__);
+const hostForSERAndWS = hasRemoteHost ? __REMOTE_HOST__ : $location.host();
+const hostPlusProtocol = (hasRemoteHost ? 'http' : $location.protocol()) + '://' + hostForSERAndWS;
+function portToUse(port) {
+  return (!hasRemoteHost ? port : '');
+}
 
 /* eslint-enable no-undef */
 
@@ -61,9 +66,9 @@ export default class ConstantsSvc {
     //     STG3_URL + SER_LOGIN_PATH;
     // }());
     
-    this.API_URL = '//' + (hasWSHost ? __WS_HOST__ : $location.host()) + WS_PORT + API_ROOT_PATH;
-    this.SER_ROOT_URL = $location.protocol() + '://' + $location.host() + SER_PORT + '/' + SER_APPNAME;
-    this.SER_URL = $location.protocol() + '://' + $location.host() + SER_PORT + SER_LOGIN_PATH;
+    this.API_URL = (!hasRemoteHost ? '//' : 'http://') + hostForSERAndWS + portToUse(WS_PORT) + API_ROOT_PATH;
+    this.SER_ROOT_URL = hostPlusProtocol + portToUse(SER_PORT) + '/' + SER_APPNAME;
+    this.SER_URL = hostPlusProtocol + portToUse(SER_PORT) + SER_LOGIN_PATH;
 
     //this.APP_URL = $location.protocol() + '://' + $location.host() + WEB_PORT + '/' + SER_APPNAME + SGA_PATH;
     //I think what's commented out above is incorrect. Not sure this is being used anywhere yet, anyway, but seems it should just be an addition to the SpeedE root URL
