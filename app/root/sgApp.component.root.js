@@ -23,13 +23,14 @@ let ein;
 
 export const sgaRoot = {
   templateUrl: rootTemplate,
-  transclude: true,
+  //transclude: true,
   controller: sgAppCtrl,
   bindings: {
     appData: '=',
     rules: '<',
     options: '<',
-    statesArray: '<'
+    statesArray: '<',
+    footerContent: '<'
   }
   //this would be unnecessary with ui-router, but see the routeConfigFn for revising sgApp.states.root.js
   //,
@@ -83,9 +84,9 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $q, $scope, $ro
       initView();
     }
     //if the current state says to not block the route, go ahead and resolve it, the hacky way that's in this root controller
-    if ($state.current && $state.current.data && $state.current.data.doNotBlock === true) {
-      RootComponentSvc.setRouteValuesAndReady(vm);   
-    }    
+    // if ($state.current && $state.current.data && $state.current.data.doNotBlock === true) {
+    //   RootComponentSvc.setRouteValuesAndReady(vm);
+    // }
   };
 
   //I will be calling this from the nested application component controller, which has a binding to this controller

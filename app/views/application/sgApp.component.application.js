@@ -12,8 +12,6 @@
 import angular from 'angular';
 import applicationTemplate from './application.html';
 
-const routeConfig = require('json!./routes.json');
-
 export const applicationComponent = {
   templateUrl: applicationTemplate,
   bindings: {
@@ -22,17 +20,15 @@ export const applicationComponent = {
     options: '<',
     statesArray: '<',
     appId: '<',
-    quoteId: '<'
+    quoteId: '<',
+    groupOR: '<',
+    groupAK: '<'
   },
-  require: {
-    rootCtrl: '^sgaRoot'
-  },
-  controller: ApplicationCtrl,
-  $routeConfig: routeConfig
+  controller: ApplicationCtrl
 };
 
 /*@ngInject*/
-function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $scope) {
+function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $interval, $scope) {
   const vm = this;
   const args = Array.prototype.slice.call(arguments);
   $log.debug('THE ARGS ARRAY');
@@ -56,12 +52,13 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
     $rootScope,
     $window,
     $timeout,
+    $interval,
     $scope
   };
 
-  let deregisterDataWatch;
+  //let deregisterDataWatch;
   //let deregisterAppCtrlDataWatch;
-  let deregisterConfigWatch;
+  //let deregisterConfigWatch;
 
   // //attempt to use ui-router
   $transitions.onSuccess({}, () => {
@@ -75,8 +72,8 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
     // ApplicationComponentSvc.configNav(vm); //set up nav buttons
     // vm.navigating = false;
     $log.debug('TRANSITIONS RETAIN');
-  $log.debug('application form', vm.applicationform);
-});
+    $log.debug('application form', vm.applicationform);
+  });
 
   // const deregisterRouterWatch = $rootScope.$watch(function() {
   //   return vm.$router.currentInstruction;
@@ -159,27 +156,35 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   vm.saveAppData = (actionObj) => {
     $log.debug('save was called from child');
     $log.debug(vm.appData);
+    const appRouteEntries = $state.get().filter((state) =>
+      state.parent && state.parent === 'ApplicationView');
+    const thisOrder = $state.current.data.order;
     if (actionObj && actionObj.next) {
-      const nextOrder = vm.$router.currentInstruction.component.routeData.data.order;
-      const hasNextRoute = routeConfig[nextOrder];
+      const nextOrder = thisOrder + 1;
+      const nextRoute = appRouteEntries.filter((route) => route.data && route.data.order &&
+        route.data.order === nextOrder)[0];
+      const hasNextRoute = Boolean(nextRoute);
       if (hasNextRoute) {
         //the next route's name is defined by the order of the current route (the order is one behind)
-        const nextRouteName = routeConfig[vm.$router.currentInstruction.component.routeData.data.order].name;
+        const nextRouteName = nextRoute.name;
         //TODO - testing save without setting the route name for coming back
         ApplicationComponentSvc.updateProgress(vm, nextRouteName);
       }
     } else if (actionObj && actionObj.prev) {
-      const prevOrder = vm.$router.currentInstruction.component.routeData.data.order - 2;
-      const hasPrevRoute = routeConfig[prevOrder];
+      const prevOrder = thisOrder - 1;
+      const prevRoute = appRouteEntries.filter((route) => route.data && route.data.order &&
+       route.data.order === prevOrder)[0];
+      const hasPrevRoute = Boolean(prevRoute);
       if (hasPrevRoute) {
         //the next route's name is defined by the order of the current route (the order is one behind)
-        const prevRouteName = routeConfig[(vm.$router.currentInstruction.component.routeData.data.order - 2)].name;
+        const prevRouteName = prevRoute.name;
         //TODO - testing save without setting the route name for coming back
         ApplicationComponentSvc.updateProgress(vm, prevRouteName);
       }
     } else {
       //this represents the current view, where the order is one ahead of current
-      const thisRouteName = routeConfig[vm.$router.currentInstruction.component.routeData.data.order - 1].name;
+      const thisRouteName = appRouteEntries.filter((route) => route.data && route.data.order &&
+        route.data.order === thisOrder)[0].name;
       ApplicationComponentSvc.updateProgress(vm, thisRouteName);
     }
     DataSvc.application.save(vm.appData).then((response) => {
@@ -215,83 +220,37 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
     vm.applicationform.$setValidity(value, bool);
   };
 
-  // vm.setRouteReady = () => { //this is called from nested routes (or should be)
-  //   vm.rootCtrl.setRouteReady();
-  // };
-
   vm.resetPristineState = () => {
-    ApplicationComponentSvc.resetPristineState(vm);
+    const formCtrl = vm.applicationform;
+    // $rootScope.$evalAsync(() => {
+    //   ApplicationComponentSvc.resetPristineState(applicationform);
+    // });
   };
 
   vm.$onInit = () => {
-    $log.debug(vm);
-    $log.debug('APPLICATIONCOMPONENT.$onInit');
-    $log.debug('appformctrl', vm.applicationform);
-    //these values were set on the root component, which grabbed them from the URL query string
-    //set application component controller appData object (if it doesn't already exist) from root component
-    ApplicationComponentSvc.setRulesAndOptions(vm);
-    ApplicationComponentSvc.updateViewValues(vm); //static props
-    ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
-    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    ApplicationComponentSvc.returnToLastStep(vm);
-    vm.navigating = false;
-
-    // CachingSvc.getStates()
-    //   .then((states) => {
-    //     if (angular.isArray(states)) {
-    //       vm.statesArray = states;
-    //     }
-    //   }, (error) => {
-    //     $log.error('No states were returned');
-    //     $log.error(error);
-    //   })
-    //   .finally(() => {
-    //     ApplicationComponentSvc.updateViewValues(vm); //static props
-    //     ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
-    //     ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    //     ApplicationComponentSvc.returnToLastStep(vm);
-    //     vm.navigating = false;
-    //   });
+    $rootScope.$evalAsync(() => {
+      $log.debug(vm);
+      $log.debug('APPLICATIONCOMPONENT.$onInit');
+      $log.debug('appformctrl', vm.applicationform);
+      //these values were set on the root component, which grabbed them from the URL query string
+      //set application component controller appData object (if it doesn't already exist) from root component
+      ApplicationComponentSvc.setRulesAndOptions(vm);
+      ApplicationComponentSvc.updateViewValues(vm); //static props
+      ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
+      ApplicationComponentSvc.configNav(vm); //set up nav buttons
+      ApplicationComponentSvc.returnToLastStep(vm);
+      vm.navigating = false;
+    });
   };
 
   vm.$postLink = () => {
-    $log.debug('APPLICATIONCOMPONENT.$postLink');
-    $log.debug('appformctrl', vm.applicationform);
-    $timeout(() => {
-      ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    });
-
-    // ApplicationComponentSvc.returnToLastStep(vm);
-    // vm.navigating = false;
-    // $timeout(() => {
-    //   ApplicationComponentSvc.setRulesAndOptions(vm);
-    //   ApplicationComponentSvc.updateViewValues(vm); //static props
-    //   ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
-    //   ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    //   ApplicationComponentSvc.returnToLastStep(vm);
-    //   vm.navigating = false;
-    // }, 100);
-    // ApplicationComponentSvc.setRulesAndOptions(vm);
-    // ApplicationComponentSvc.updateViewValues(vm); //static props
-    // ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
-    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    // ApplicationComponentSvc.returnToLastStep(vm);
-    // vm.navigating = false;
-  };
-
-  // //copy data back to root controller if it changes in the app component
-  // deregisterAppCtrlDataWatch = $rootScope.$watchCollection(() => vm.appData,
-  // (newVal) => {
-  //   if (newVal) {
-  //     vm.rootCtrl.appdata = vm.appdata;
-  //   }
-  // });
-
-  vm.$onDestroy = () => {
-    //deregisterAppCtrlDataWatch();
-    if (angular.isFunction(deregisterConfigWatch)) {
-      deregisterConfigWatch();
-    }
+    // ApplicationComponentSvc.resetPristineState(vm.applicationform);
+    // const resetPristine = $interval(() => {
+    //   if (this.applicationform && angular.isFunction(this.applicationform.$setPristine)) {
+    //     ApplicationComponentSvc.resetPristineState(vm);
+    //     $interval.cancel(resetPristine);
+    //   }
+    // },50);
   };
 
 }

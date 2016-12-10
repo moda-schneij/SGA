@@ -58,7 +58,7 @@ class SidebarSvc {
           const sections = vm.sections = this.ApplicationSvc.populateSections(sidebarObj); //this is used only by the sidebar component
           //for any other component calling the sidebar service, we need to broadcast an event for the root component to handle
           //this.$rootScope.$emit('sidebarUpdated', {sections: sections});
-          //TODO - probably remove - sidebar should already update when appdata is changed and persisted
+          //TODO - probably remove - sidebar should already update when appData is changed and persisted
           if (vm.setDisplaySidebar) {
             vm.setDisplaySidebar(true);
           }
@@ -112,14 +112,15 @@ function init(vm) {
 
 function getSidebarObj(viewModel) { //make singleton-ish?
   const vm = viewModel ? viewModel : this.vm;
-  const appdata = vm.appCtrl && vm.appCtrl.appdata ? vm.appCtrl.appdata : this.ApplicationSvc.getApplication();
-  if (this.UtilsSvc.notNullOrEmptyObj(appdata)) {
+  const appData = vm.appData ? vm.appData : (vm.appCtrl && vm.appCtrl.appData) ? vm.appCtrl.appData :
+      (vm.rootCtrl && vm.rootCtrl.appData) ? vm.rootCtrl.appData : this.ApplicationSvc.getApplication();
+  if (this.UtilsSvc.notNullOrEmptyObj(appData)) {
     //test
-    //delete appdata.agentLastName; //tested, working - the agent block only shows up if that info comes from appdata (SER or afterward)
+    //delete appData.agentLastName; //tested, working - the agent block only shows up if that info comes from appData (SER or afterward)
     //test
-    const group = appdata.group;
-    const addr1 = appdata.group.address[0];
-    const effDate = new Date(appdata.effectiveDate);
+    const group = appData.group;
+    const addr1 = appData.group.address[0];
+    const effDate = new Date(appData.effectiveDate);
     let sidebarArr = angular.fromJson([{
       "title": "Group",
       "content": {
@@ -133,13 +134,13 @@ function getSidebarObj(viewModel) { //make singleton-ish?
     }, {
       "title": "Quote",
       "content": {
-        "ID": appdata.applicationNumber, //for some reason, quoteId becomes applicationNumber between SER and SGA
+        "ID": appData.applicationNumber, //for some reason, quoteId becomes applicationNumber between SER and SGA
         "Effective date": this.$filter('date')(effDate, 'MM/dd/yyyy')
       }
     }, {
       "title": "Application",
       "content": {
-        "ID": appdata.applicationId
+        "ID": appData.applicationId
       }
     }]);
     sidebarArr = checkSelectedPlans.apply(this, [vm, sidebarArr]);

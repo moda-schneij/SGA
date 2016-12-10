@@ -88,12 +88,6 @@ export default class RootComponentSvc {
       vm.appdata = storedAppData;
       promises.appdata = $q.when(storedAppData);
     }
-    if (!storedFooterContent) {
-      promises.footerContent = ContentSvc.getFooterContent();
-    } else {
-      vm.footerContent = storedFooterContent;
-      promises.footerContent = $q.when(storedFooterContent);
-    }
     $q.all(promises)
       .then((responses) => {
         if (UtilsSvc.notNullOrEmptyObj(responses.appdata)) {
@@ -102,66 +96,17 @@ export default class RootComponentSvc {
           handleAppDataError.call(this, 'No application returned from server.');
           deferred.resolve(false);
         }
-        if (responses.footerContent) {
-          footerContentSuccess.apply(this, [responses.footerContent, vm]);
-        }
         deferred.resolve(true);
       }, (reasons) => {
         $log.error(reasons);
         if (reasons.appdata) {
           handleAppDataError.call(this, reasons.appdata);
         }
-        if (reasons.footerContent) {
-          footerContentError.call(this, reasons.footerContent);
-        }
         deferred.resolve(true); //TODO - evaluate how this entire chain of logic is handling errors - test!
         //this still blocks the UI if one fails, so try different handlers - inspect q.all documentation
       });
     return deferred.promise;
   }
-
-  routeConfigFn() {
-    const config = [];
-    const startRouteConfig = {
-      path: '/login',
-      name: 'LoginView',
-      component: 'loginComponent',
-      useAsDefault: true,
-      data: {
-        loginRequired: false,
-        title: 'Login',
-        linkTitle: 'Home',
-        addToMenu: false
-      }
-    };
-    const homeRouteConfig = {
-      path: '/application/...',
-      name: 'ApplicationView',
-      component: 'applicationComponent',
-      data: {
-        loginRequired: true,
-        title: 'Welcome to the small group application form',
-        linkTitle: 'Home',
-        addToMenu: true
-      }
-    };
-
-    if (__SER_CONTEXT__) {
-      startRouteConfig.path = '/application/...';
-      startRouteConfig.name = 'ApplicationView';
-      startRouteConfig.component = 'applicationComponent';
-      startRouteConfig.data.loginRequired = true;
-      startRouteConfig.data.title = 'Welcome to the small group application form';
-      startRouteConfig.data.addToMenu = true;
-    } else {
-      config.unshift(homeRouteConfig);
-    }
-
-    config.unshift(startRouteConfig);
-
-    return config;
-  }
-
 }
 
 function setAppData(response, vm) {

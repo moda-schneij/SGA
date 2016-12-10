@@ -20,7 +20,8 @@ import rootStates from '../root/sgApp.states.root';
 import applicationStates from '../views/application/sgApp.states.application';
 
 /*@ngInject*/
-const sgaConfig = (CONFIGS, $httpProvider, $urlRouterProvider, $stateProvider, $logProvider, $locationProvider, $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) => {
+const sgaConfig = (CONFIGS, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider, $logProvider, $locationProvider, $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) => {
+  $qProvider.errorOnUnhandledRejections(false);
   $httpProvider.interceptors.push('AuthInterceptorSvc');
   $logProvider.debugEnabled(!PROD); //disable debug logging in production
   $locationProvider.html5Mode(false);

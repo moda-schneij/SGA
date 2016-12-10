@@ -21,7 +21,8 @@
 
 .tooltip-standard {
   background-image: url(../assets/images/moda-sprite.svg);
-  background-position: 100% -148px;
+  background-position: 100% 15%;
+  background-size: 250%;
   padding-bottom: 3px;
   .no-svg & {
     background-image: url(../assets/images/moda-sprite.png);

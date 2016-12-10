@@ -59,7 +59,7 @@ export default class UserSvc {
 
 function confirmSuccess() {
   this.$rootScope.$emit('loginSuccess');
-  this.$state.go('ApplicationView');
+  this.$state.go('RootLoggedIn');
 }
 
 function confirmError(e) {

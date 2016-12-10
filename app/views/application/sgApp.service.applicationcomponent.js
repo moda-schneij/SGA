@@ -9,7 +9,6 @@
  */
  
 import angular from 'angular';
-const routeConfig = require('json!./routes.json');
 
 export default class ApplicationComponentSvc {
 
@@ -51,37 +50,37 @@ export default class ApplicationComponentSvc {
 
     Object.defineProperty(vm, 'enableSubmit', {
       get: () => !vm.applicationform.$invalid && 
-        vm.rootCtrl.appData && 
-        vm.rootCtrl.appData.appStatus === 'P' && 
+        vm.appData && 
+        vm.appData.appStatus === 'P' && 
         ((!vm.applicationform.$pristine && vm.applicationform.modified) || vm.allowSubmit),
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'inProgressApp', {
-      get: () => vm.rootCtrl.appData && 
-        vm.rootCtrl.appData.appStatus === 'P',
+      get: () => vm.appData && 
+        vm.appData.appStatus === 'P',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'completedApp', {
-      get: () => vm.rootCtrl.appData && 
-        vm.rootCtrl.appData.appStatus === 'C',
+      get: () => vm.appData && 
+        vm.appData.appStatus === 'C',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'failedApp', {
-      get: () => vm.rootCtrl.appData && 
-        vm.rootCtrl.appData.appStatus === 'F',
+      get: () => vm.appData && 
+        vm.appData.appStatus === 'F',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'enrolledApp', {
-      get: () => vm.rootCtrl.appData && 
-        vm.rootCtrl.appData.appStatus === 'S',
+      get: () => vm.appData && 
+        vm.appData.appStatus === 'S',
       enumerable: true,
       configurable: true
     });
@@ -130,15 +129,18 @@ export default class ApplicationComponentSvc {
 
   }
 
-  resetPristineState(vm) {
-    this.$timeout(() => {
-      vm.applicationform.$setPristine();
-      if (vm.applicationform.modifiedChildFormsCount > 1) {
-        vm.applicationform.modifiedChildForms.forEach((formCtrl) => {
-          formCtrl.$setPristine();
-        });
-      }
-    }, 50);
+  resetPristineState(formCtrl) {
+    this.$log.error('THE APPLICATION FORM', formCtrl);
+    if (formCtrl && angular.isFunction(formCtrl.$setPristine)) {
+      formCtrl.$setPristine();
+    }
+    if (formCtrl.modifiedChildFormsCount > 1) {
+      formCtrl.modifiedChildForms.forEach((ctrl) => {
+        if (angular.isFunction(ctrl.$setPristine)) {
+          ctrl.$setPristine();
+        }
+      });
+    }
   }
 
   setRulesAndOptions(vm) {
@@ -245,7 +247,7 @@ export default class ApplicationComponentSvc {
       const enroll = actionObj && actionObj.enroll;
       const newAppData = response.data.application;
       this.$log.debug(response);
-      vm.appData = vm.rootCtrl.appData = newAppData; //get appData consistent across components
+      vm.appData = vm.appData = newAppData; //get appData consistent across components
       this.ApplicationSvc.setApplication(response.data.application); //save to client storage
       vm.rootCtrl.persistAppData(); //update root component's appData object
       vm.applicationform.$setPristine();

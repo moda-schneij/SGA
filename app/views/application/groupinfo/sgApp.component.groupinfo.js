@@ -20,7 +20,8 @@ export const groupInfoFormComponent = {
     appData: '<',
     statesArray: '<',
     rules: '<',
-    options: '<'
+    options: '<',
+    quoteId: '<'
   },
   require: {
     appCtrl: '^applicationComponent'
@@ -29,10 +30,12 @@ export const groupInfoFormComponent = {
 };
 
 /*@ngInject*/
-function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $log, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, $rootRouter, $rootScope, $sce, $timeout, STORAGE_KEYS) {
+function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $state, $scope, $log, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, $rootScope, $sce, $timeout, STORAGE_KEYS) {
   const vm = this;
+  vm.foo = 'bar';
+  vm.form = {};
   let deregisterAppDataWatch;
-  const bindingObj = { vm, GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $log, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, $rootRouter, $rootScope, $sce, $timeout, STORAGE_KEYS };
+  const bindingObj = { vm, GroupinfoComponentSvc, DataSvc, UtilsSvc, $state, $scope, $log, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, $rootScope, $sce, $timeout, STORAGE_KEYS };
   const maxLegalNameChars = _get(RulesSvc, 'rules.groupRules.employerLegalName.maxLength', 0);
   const empMinContribPctArr = _get(RulesSvc, 'rules.groupRules.medPremiumEmpContribution.minContribPct', '')
     .toString()
@@ -46,7 +49,7 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
 
   vm.minHoursRequired = _get(RulesSvc, 'rules.eligibilityRules.minHoursRequired', 0);
   vm.serUrl = ConstantsSvc.SER_URL;
-  vm.quoteId = $rootRouter.currentInstruction.component.routeData.data.quoteId;
+  //vm.quoteId = $rootRouter.currentInstruction.component.routeData.data.quoteId;
 
   /***************
    ** NAICS section
@@ -228,13 +231,15 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
     //   return vm.appCtrl.appData;
     // }, function(newVal) {
     //   if (UtilsSvc.notNullOrEmptyObj(newVal)) {
-
-    GroupinfoComponentSvc.updateEmployerContributions(vm, { set: true });
-    //checkOtherPlans.call(bindingObj);
-    GroupinfoComponentSvc.setComputedProps(vm);
-    GroupinfoComponentSvc.checkHasOtherPlans(vm);
-    GroupinfoComponentSvc.updateViewValues(vm);
-    GroupinfoComponentSvc.restoreNAICS(vm);
+    // $rootScope.$evalAsync(() => {
+    //   GroupinfoComponentSvc.updateEmployerContributions(vm, { set: true });
+    //   //checkOtherPlans.call(bindingObj); //purposely removed
+    //   GroupinfoComponentSvc.setComputedProps(vm);
+    //   GroupinfoComponentSvc.checkHasOtherPlans(vm);
+    //   GroupinfoComponentSvc.updateViewValues(vm);
+    //   GroupinfoComponentSvc.restoreNAICS(vm);
+    //   vm.appCtrl.resetPristineState();
+    // });
 
     //deregisterAppDataWatch();
 
@@ -288,12 +293,16 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $scope, $lo
     };
   };
 
-  vm.$postLink = () => {
-    $timeout(() => { //evalAsync?
-      // Calling set-pristine on the main form and groupcodes subform after digest cycle.
-      vm.appCtrl.resetPristineState();
-    });
+  vm.$postLink = function() {
+    GroupinfoComponentSvc.updateEmployerContributions(vm, { set: true });
+    //checkOtherPlans.call(bindingObj); //purposely removed
+    GroupinfoComponentSvc.setComputedProps(vm);
+    GroupinfoComponentSvc.checkHasOtherPlans(vm);
+    GroupinfoComponentSvc.updateViewValues(vm);
+    GroupinfoComponentSvc.restoreNAICS(vm);
+    vm.appCtrl.resetPristineState();
   };
+
 }
 
 function eligArrSuccess(response) {

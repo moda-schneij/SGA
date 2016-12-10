@@ -17,13 +17,11 @@ export default angular
   .component('sidebar', {
     templateUrl: sidebarTemplate,
     bindings: {
-      $router: '<',
-      isloggedin: '<',
-      routeconfig: '<',
-      appdata: '<',
-      sidebarobj: '<',
-      groupor: '<',
-      groupak: '<'
+      isLoggedIn: '<',
+      appData: '<',
+      sidebarObj: '<',
+      groupOR: '<',
+      groupAK: '<'
     },
     require: {
       rootCtrl: '^sgaRoot'
@@ -33,7 +31,7 @@ export default angular
   });
 
 /*@ngInject*/
-function SidebarCtrl($log, $scope, $filter, SidebarSvc, UtilsSvc, $timeout) {
+function SidebarCtrl($log, $scope, SidebarSvc, UtilsSvc) {
 //I am offloading stuff onto a coupled service (SidebarSvc), and directly passing in the vm to each method
 //Not sure this is worth it, because it's entirely not reusable, but easier to read here
   const vm = this;

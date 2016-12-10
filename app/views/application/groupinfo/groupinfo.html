@@ -1,8 +1,8 @@
 <ng-form novalidate class="form-styled" name="$ctrl.groupinfoform" form-on-change="$ctrl.validateGroupInfo()">
   <fieldset>
     <legend>Adresses and contacts</legend>
-    
-    <!-- Group primary business address added for 2017 changes -->   
+
+    <!-- Group primary business address added for 2017 changes -->
     <ng-form novalidate name="primarybusinessaddress" ng-if="$ctrl.appCtrl.effDate.getFullYear() !== 2016" check-form-empty>
       <h3 class="section-fieldset">Principal business address</h3>
       <ul class="address address-primarybusiness form-container">
@@ -48,8 +48,8 @@
         </li>
       </ul>
     </ng-form>
-    
-    <!-- Group primary address -->    
+
+    <!-- Group primary address -->
     <ng-form novalidate name="primaryaddress" ng-if="!$ctrl.appData.group.primaryAddressSame" check-form-empty>
       <h3 class="section-fieldset">Primary address</h3>
       <ul class="address address-primary form-container">
@@ -112,7 +112,7 @@
         </li>
       </ul>
     </ng-form>
-    
+
     <!-- Billing address -->
     <ng-form novalidate name="billingaddress" check-form-empty ng-if="!$ctrl.appData.group.billingAddressSame" form-on-change="$ctrl.validateBillingAddress()" class="form-empty-validate">
       <h3 class="section-fieldset">Billing address</h3>
@@ -415,7 +415,7 @@
         <!-- ERISA -->
         <li class="form-row">
           <label for="erisa" class="required">Is this group subject to ERISA?</label>
-          <div class="container-pretty-radio">    
+          <div class="container-pretty-radio">
             <pretty-radio name="erisa" id="erisaYes" ng-model="$ctrl.appData.erisa" value="'Y'" label="'Yes'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
             <pretty-radio name="erisa" id="erisaNo" ng-model="$ctrl.appData.erisa" value="'N'" label="'No'" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
           </div>

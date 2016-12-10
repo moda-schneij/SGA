@@ -39,7 +39,7 @@ const groupinfo = {
   parent: 'ApplicationView',
   name: 'GroupInfo',
   //component: 'groupInfoFormComponent',
-  template: '<group-info-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray"></group-info-form-component>',
+  template: `<group-info-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId"></group-info-form-component>`,
   data: {
     order: 3,
     requiresAuth: true,
@@ -69,7 +69,7 @@ const agent_sales = {
   parent: 'ApplicationView',
   name: 'AgentSales',
   //component: 'agentSalesFormComponent',
-  template: '<agent-sales-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray"></agent-sales-form-component>',
+  template: '<agent-sales-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></agent-sales-form-component>',
   data: {
     order: 5,
     requiresAuth: true,

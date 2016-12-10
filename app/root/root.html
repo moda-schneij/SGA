@@ -6,7 +6,7 @@
   <div class="sga-container container-main container-grid" id="main">
 
     <!-- layout not-in-progress -->
-    <sidebar id="sidebar" class="sidebar" isloggedin="$ctrl.isLoggedIn" appdata="$ctrl.appData" sidebarobj="$ctrl.addToSidebarObj" groupor="$ctrl.groupOR" groupak="$ctrl.groupAK" ng-show="$ctrl.displaySidebar" ng-if="!$ctrl.inProgress"></sidebar>
+    <sidebar id="sidebar" class="sidebar" is-logged-in="$ctrl.isLoggedIn" app-data="$ctrl.appData" sidebar-obj="$ctrl.addToSidebarObj" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK" ng-show="$ctrl.displaySidebar" ng-if="!$ctrl.inProgress"></sidebar>
 
     <ng-form novalidate name="$ctrl.rootform" id="content" class="sga-container container-content">
       <messages id="messages" isloggedin="$ctrl.isLoggedIn" class="sga-container container-messages"></messages>
@@ -17,7 +17,7 @@
     </ng-form>
 
     <!-- layout in-progress -->
-    <sidebar id="sidebar" class="sidebar" isloggedin="$ctrl.isLoggedIn" appdata="$ctrl.appData" sidebarobj="$ctrl.addToSidebarObj" groupor="$ctrl.groupOR" groupak="$ctrl.groupAK" ng-show="$ctrl.displaySidebar" ng-if="$ctrl.inProgress"></sidebar>
+    <sidebar id="sidebar" class="sidebar" is-logged-in="$ctrl.isLoggedIn" app-data="$ctrl.appData" sidebar-obj="$ctrl.addToSidebarObj" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK" ng-show="$ctrl.displaySidebar" ng-if="$ctrl.inProgress"></sidebar>
 
     <stepwise id="stepwise" class="navigation navigation-stepwise"></stepwise>
 
@@ -27,7 +27,7 @@
   
 </div><!--#header-content-->
 
-<div id="footer" class="footer" ng-bind-html="$ctrl.footerContent" ng-show="$ctrl.pageReady && $ctrl.routeReady">
+<div id="footer" class="footer" ng-bind-html="$ctrl.footerContent">
 </div>
 
 <iframe id="serframe" ng-src="{{::$ctrl.serFrameUrl}}">
