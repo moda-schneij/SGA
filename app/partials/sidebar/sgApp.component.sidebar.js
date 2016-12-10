@@ -42,19 +42,19 @@ function SidebarCtrl($log, $scope, SidebarSvc, UtilsSvc) {
 
   vm.$onInit = function() {
     $log.debug('this is the application object inside the sidebar: ');
-    $log.debug(vm.appdata);
+    $log.debug(vm.appData);
     //the rootCtrl (parent controller) is only available during $onInit, not before
     vm.setDisplaySidebar = function(bool) { //tells the parent controller to switch display of the sidebar
       vm.rootCtrl.setDisplaySidebar(bool);
     };
     //initilaize the sidebar with no data, just empty sections
     SidebarSvc.initSidebar(vm);
-    if (UtilsSvc.notNullOrEmptyObj(vm.appdata)) {
+    if (UtilsSvc.notNullOrEmptyObj(vm.appData)) {
       SidebarSvc.populateSidebar(vm);
     }
     //watch the application data state that's passed down from the parent (root component) as a prop
     deregisterAppdataWatch = $scope.$watch(
-      () => vm.appdata,
+      () => vm.appData,
       (newVal, oldVal) => {
         if (UtilsSvc.notNullOrEmptyObj(newVal)) {
           if (newVal !== oldVal) {
@@ -68,7 +68,7 @@ function SidebarCtrl($log, $scope, SidebarSvc, UtilsSvc) {
       }, true //deep watch
     );
     deregisterSidebarObjWatch = $scope.$watchCollection(
-      () => [vm.sidebarobj],
+      () => [vm.sidebarObj],
       (sidebarObj) => {
         const isObj = angular.isObject(sidebarObj) && !angular.isArray(sidebarObj);
         const isArray = angular.isArray(sidebarObj);
@@ -77,7 +77,7 @@ function SidebarCtrl($log, $scope, SidebarSvc, UtilsSvc) {
           isArray ? //if an array, check length and that it isn't an array containing only undefined
           (sidebarObj.length === 0 || !sidebarObj[0]) : 
           true;
-        if (UtilsSvc.notNullOrEmptyObj(vm.appdata)) { //only proceed if there's appdata to work with
+        if (UtilsSvc.notNullOrEmptyObj(vm.appData)) { //only proceed if there's appdata to work with
           if ((isObj || isArray) && !isEmpty) {
             SidebarSvc.addToSidebar(vm, sidebarObj);
           } else {

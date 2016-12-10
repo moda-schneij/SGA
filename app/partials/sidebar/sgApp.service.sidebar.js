@@ -119,7 +119,7 @@ function getSidebarObj(viewModel) { //make singleton-ish?
     //delete appData.agentLastName; //tested, working - the agent block only shows up if that info comes from appData (SER or afterward)
     //test
     const group = appData.group;
-    const addr1 = appData.group.address[0];
+    const addr1 = appData.group.address[1]; //this is now the primary address (?)
     const effDate = new Date(appData.effectiveDate);
     let sidebarArr = angular.fromJson([{
       "title": "Group",
@@ -151,15 +151,15 @@ function getSidebarObj(viewModel) { //make singleton-ish?
 }
 
 function checkAgent(vm, sidebarArr) {
-  if (this.UtilsSvc.notNullOrEmptyObj(vm.appdata)) {
+  if (this.UtilsSvc.notNullOrEmptyObj(vm.appData)) {
     const sidebarArrCopy = angular.copy(sidebarArr);
-    if (vm.appdata.agentLastName && vm.appdata.agentLastName !== '' && !vm.appdata.directSaleIndicator) { //use this property as the proxy for existence of agent info from SER
+    if (vm.appData.agentLastName && vm.appData.agentLastName !== '' && !vm.appData.directSaleIndicator) { //use this property as the proxy for existence of agent info from SER
       const agentObj = angular.fromJson({
         "title": "Agent",
         "content": {
-          "Name": vm.appdata.agentFirstName + ' ' + vm.appdata.agentLastName,
-          "Agency": vm.appdata.agencyName,
-          "Tax ID": vm.appdata.agentTaxId
+          "Name": vm.appData.agentFirstName + ' ' + vm.appData.agentLastName,
+          "Agency": vm.appData.agencyName,
+          "Tax ID": vm.appData.agentTaxId
         }
       });
       sidebarArrCopy.splice(1, 0, agentObj);
@@ -172,12 +172,12 @@ function checkAgent(vm, sidebarArr) {
 }
 
 function checkSelectedPlans(vm, sidebarArr) {
-  if (this.UtilsSvc.notNullOrEmptyObj(vm.appdata)) {
+  if (this.UtilsSvc.notNullOrEmptyObj(vm.appData)) {
     let sidebarArrCopy = angular.copy(sidebarArr);
-    const medPlans = vm.appdata.groupPlan.categories.medical.plans;
-    const denPlans = vm.appdata.groupPlan.categories.dental.plans;
-    const medRiders = vm.appdata.groupPlan.categories.medical.riders;
-    const denRiders = vm.appdata.groupPlan.categories.dental.riders;
+    const medPlans = vm.appData.groupPlan.categories.medical.plans;
+    const denPlans = vm.appData.groupPlan.categories.dental.plans;
+    const medRiders = vm.appData.groupPlan.categories.medical.riders;
+    const denRiders = vm.appData.groupPlan.categories.dental.riders;
     let plansArr = [].concat(
       medPlans.filter((plan) => plan.selected), 
       denPlans.filter((plan) => plan.selected),

@@ -167,7 +167,9 @@ const applicationState = {
 
 function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
   'ngInject';
-  let storedFooterContent = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer;
+  const checkSavedFooter = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) &&
+    StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer;
+  let storedFooterContent = checkSavedFooter ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
   if (!storedFooterContent) {
     ContentSvc.getFooterContent().then((response) => {
       if (response.footerContent) {
