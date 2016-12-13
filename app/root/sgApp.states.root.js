@@ -65,34 +65,11 @@ const rootLoggedInState = {
   redirectTo: 'ApplicationView',
   url: '',
   resolve: {
-    appData: ($transition$, ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
-      'ngInject';
-      const savedAppData = ApplicationSvc.getApplication();
-      if (savedAppData) {
-        return savedAppData;
-      } else {
-        const idObj = {};
-        const existingAppId = ApplicationSvc.getAppID();
-        idObj.appId = existingAppId ? existingAppId :
-          ($stateParams.id ? $stateParams.id : null);
-        idObj.quoteId = $stateParams.quote_id || null;
-        idObj.ein = $stateParams.ein || null;
-        return ApplicationSvc.getInitialApplication(idObj);
-      }
-    },
-    rules: ($transition$, RulesSvc) => {
-      'ngInject';
-      return RulesSvc.rulesAsync;
-    },
-    options: ($transition$, OptionsSvc) => {
-      'ngInject'
-      return OptionsSvc.optionsAsync;
-    },
-    statesArray: ($transition$, CachingSvc) => {
-      'ngInject';
-      return CachingSvc.getStates();
-    },
-    footerContent: getFooterContent
+    appData: getInitialData.appData,
+    rules: getInitialData.rules,
+    options: getInitialData.options,
+    statesArray: getInitialData.statesArray,
+    footerContent: getInitialData.footerContent
   },
   data: {
     requiresAuth: true
@@ -116,6 +93,13 @@ const applicationState = {
     title: 'Welcome to the small group application form',
     linkTitle: 'Home',
     addToMenu: true
+  },
+  resolve: {
+    appData: (getInitialData) => getInitialData.appData,
+    rules: (getInitialData) => getInitialData.rules,
+    options: (getInitialData) => getInitialData.options,
+    statesArray: (getInitialData) => getInitialData.statesArray,
+    footerContent: (getInitialData) => getInitialData.footerContent
   }
   // ,
   // resolve: {
@@ -153,6 +137,40 @@ function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
       }
     });
   }
+}
+
+function getInitialData() {
+  const returnObj = {
+    appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
+      'ngInject';
+      const savedAppData = ApplicationSvc.getApplication();
+      if (savedAppData) {
+        return savedAppData;
+      } else {
+        const idObj = {};
+        const existingAppId = ApplicationSvc.getAppID();
+        idObj.appId = existingAppId ? existingAppId :
+          ($stateParams.id ? $stateParams.id : null);
+        idObj.quoteId = $stateParams.quote_id || null;
+        idObj.ein = $stateParams.ein || null;
+        return ApplicationSvc.getInitialApplication(idObj);
+      }
+    },
+    rules: (RulesSvc) => {
+      'ngInject';
+      return RulesSvc.rulesAsync;
+    },
+    options: (OptionsSvc) => {
+      'ngInject'
+      return OptionsSvc.optionsAsync;
+    },
+    statesArray: (CachingSvc) => {
+      'ngInject';
+      return CachingSvc.getStates();
+    },
+    footerContent: getFooterContent
+  };
+  return returnObj;
 }
 
 const rootStates = [rootState, loginState, logoutState, rootLoggedInState, notFoundState, applicationState];
