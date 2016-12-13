@@ -18,10 +18,12 @@ class FormOnChangeDirective {
     this.$log = $log;
   }
   linkFn($scope, $element, $attrs, $controller) {
+
     /* no isolate scope here, do not parse the attribute 
     ** (a callback function 
     ** on the parent controller) against scope 
     */
+
     const cb = this.$parse($attrs.formOnChange);
     $element.on('change select input', () => {
       this.$log.debug($controller);

@@ -72,7 +72,7 @@
                   <div ng-if="$ctrl.multiMed">(combined plan enrollments must equal total medical enrollments)</div>
                 </th>
               </tr>
-              <tr ng-if="$ctrl.multiMed && $index === 0" class="table-heading-subhead table-heading-enrollments" ng-init="medEnrollments = $ctrl.appdata.groupPlan.categories.medical.enrollments">
+              <tr ng-if="$ctrl.multiMed && $index === 0" class="table-heading-subhead table-heading-enrollments" ng-init="medEnrollments = $ctrl.appDataClone.groupPlan.categories.medical.enrollments">
                 <th>Total enrollments <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.mustMatchTotals"></span></th>
                 <th ng-repeat="(key, value) in medEnrollments track by $index" ng-bind="value"></th>
                 <th ng-bind="$ctrl.appCtrl.medTotalEnrollment"></th>
@@ -82,22 +82,22 @@
               </tr>
             </thead>
             <tfoot>
-              <tr ng-init="medEnrollments = $ctrl.appdata.groupPlan.categories.medical.enrollments">
+              <tr ng-init="medEnrollments = $ctrl.appDataClone.groupPlan.categories.medical.enrollments">
                 <th><span ng-if="$ctrl.singleMed">Subtotal medical</span><span ng-if="$ctrl.multiMed">Plan subtotal</span></th>
                 <td ng-if="$ctrl.multiMed" ng-repeat="rateType in plan.rates track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{(rateType.value + $ctrl.combinedMedRiderRates[$index].$value) * (rateType.count ? rateType.count : 0) | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{$ctrl.empOnly(rateType.name, ((rateType.value + $ctrl.combinedMedRiderRates[$index].$value) * (rateType.count ? rateType.count : 0) | currency))}}
                   </span>
                   <input bind-input-val name="medsubtotal_{{$index}}" ng-show="false" ng-model="plan.subtotalArr[$index]" ng-value="(rateType.value + $ctrl.combinedMedRiderRates[$index].$value) * (rateType.count ? rateType.count : 0) | number:2">
                 </td>
                 <td ng-if="$ctrl.singleMed" ng-repeat="(enrollKey, enrollVal) in medEnrollments track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{(plan.rates[$index].value + $ctrl.combinedMedRiderRates[$index].$value) * enrollVal | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{$ctrl.empOnly($ctrl.rateNamesArr[$index], ((plan.rates[$index].value + $ctrl.combinedMedRiderRates[$index].$value) * enrollVal | currency))}}
                   </span>
                   <input bind-input-val name="medsubtotal_{{$index}}" ng-show="false" ng-model="plan.subtotalArr[$index]" ng-value="plan.subtotalArr[$index] = (plan.rates[$index].value + $ctrl.combinedMedRiderRates[$index].$value) * enrollVal | number:2">
@@ -112,7 +112,7 @@
             </tfoot>
             <tbody>
               <!--Enrollments, multiple-->
-              <tr ng-if="$ctrl.multiMed" ng-init="medEnrollments = $ctrl.appdata.groupPlan.categories.medical.enrollments">
+              <tr ng-if="$ctrl.multiMed" ng-init="medEnrollments = $ctrl.appDataClone.groupPlan.categories.medical.enrollments">
                 <th>Enrollments <span class="tooltip tooltip-right tooltip-standard" ng-tipso="$ctrl.tipsoConfig.noEnrollments" ng-if="plan.planTotalCount === 0"></span></th>
                 <th ng-repeat="rateType in plan.rates track by $index">
                   <input type="text" class="input-show-invalid-untouched" med-enrollment-validator="{rateTypeTotalTest: rateType.matchesTotalCount, planTotalTest: plan.planTotalCount > 0}" ng-model="rateType.count" ng-change="$ctrl.updateAndValidateMedEnrollments(plan)" ng-disabled="!$ctrl.appCtrl.hasMedDependents && $ctrl.notEmp(rateType.name)">
@@ -120,7 +120,7 @@
                 <th class="input-styled">{{plan.planTotalCount}}</th>
               </tr>
               <!--Enrollments, single-->
-              <tr ng-if="$ctrl.singleMed" ng-init="medEnrollments = $ctrl.appdata.groupPlan.categories.medical.enrollments">
+              <tr ng-if="$ctrl.singleMed" ng-init="medEnrollments = $ctrl.appDataClone.groupPlan.categories.medical.enrollments">
                 <th>Enrollments</th>
                 <th ng-repeat="(key, value) in medEnrollments track by $index" ng-bind="value"></th>
                 <th ng-bind="$ctrl.plans.medTotalEnrollment"></th>
@@ -129,10 +129,10 @@
               <tr>
                 <th>Rates</th>
                 <td ng-repeat="rateType in plan.rates track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{rateType.value | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{$ctrl.empOnly(rateType.name, (rateType.value | currency))}}
                   </span>
                 </td>
@@ -142,10 +142,10 @@
               <tr ng-repeat="medRider in $ctrl.plans.medical.riders.selected | orderBy : 'planType'">
                 <th ng-bind="medRider.planName"></th>
                 <td ng-repeat="rateType in medRider.rates track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{rateType.value | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{$ctrl.empOnly(rateType.name, (rateType.value | currency))}}
                   </span>
                 </td>
@@ -155,10 +155,10 @@
               <tr ng-if="$ctrl.plans.medical.riders.selected.length > 0">
                 <th>Combined cost</th>
                 <td ng-repeat="(rateIdx, rateType) in plan.rates track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{rateType.value + $ctrl.combinedMedRiderRates[$index].$value | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.medical"> 
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
                     {{$ctrl.empOnly(rateType.name, (rateType.value + $ctrl.combinedMedRiderRates[$index].$value | currency))}}
                   </span>
                 <td>&nbsp;</td>
@@ -169,11 +169,11 @@
       </tr>
       <tr ng-if="$ctrl.multiMed">
         <th>Subtotal medical</th>
-        <td ng-repeat="rateType in $ctrl.appdata.groupPlan.categories.medical.enrollments track by $index">
-          <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+        <td ng-repeat="rateType in $ctrl.appDataClone.groupPlan.categories.medical.enrollments track by $index">
+          <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
             {{$ctrl.medSubtotalsArr[$index] | currency}}
           </span>
-          <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.medical">
+          <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.medical">
             {{$ctrl.empOnly($ctrl.rateNamesArr[$index], ($ctrl.medSubtotalsArr[$index] | currency))}}
           </span>
         </td>
@@ -198,7 +198,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-init="denEnrollments = $ctrl.appdata.groupPlan.categories.dental.enrollments">
+              <tr ng-init="denEnrollments = $ctrl.appDataClone.groupPlan.categories.dental.enrollments">
                 <th>Enrollments</th>
                 <th ng-if="!$ctrl.showDirectOption" ng-repeat="(key, value) in denEnrollments track by $index" ng-bind="value"></th>
                 <th ng-if="$ctrl.showDirectOption" ng-repeat="(key, value) in denEnrollments track by $index">
@@ -209,10 +209,10 @@
               <tr>
                 <th>Rates</th>
                 <td ng-repeat="rateType in plan.rates track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{rateType.value | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{$ctrl.empOnly(rateType.name, (rateType.value | currency))}}
                   </span>
                 </td>
@@ -221,10 +221,10 @@
               <tr ng-if="$ctrl.denRider">
                 <th ng-bind="$ctrl.denRider.planName"></th>
                 <td ng-repeat="rateType in $ctrl.denRider.rates track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{rateType.value | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{$ctrl.empOnly(rateType.name, (rateType.value | currency))}}
                   </span>
                 </td>
@@ -233,31 +233,31 @@
               <tr ng-if="$ctrl.denRider">
                 <th>Combined cost</th>
                 <td ng-repeat="(rateIdx, rateType) in plan.rates track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{rateType.value + $ctrl.denRider.rates[$index].value | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{$ctrl.empOnly(rateType.name, (rateType.value + $ctrl.denRider.rates[$index].value | currency))}}
                   </span>
                 </td>
                 <td>&nbsp;</td>
               </tr>
-              <tr ng-init="denEnrollments = $ctrl.appdata.groupPlan.categories.dental.enrollments">
+              <tr ng-init="denEnrollments = $ctrl.appDataClone.groupPlan.categories.dental.enrollments">
                 <th>Subtotal dental</th>
                 <td ng-if="$ctrl.denRider" ng-repeat="(enrollKey, enrollVal) in denEnrollments track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{(plan.rates[$index].value + $ctrl.denRider.rates[$index].value) * (enrollVal - $ctrl.plans.dental.directOption.selected[0].rates[$index].count) | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{$ctrl.empOnly(plan.rates[$index].name, ((plan.rates[$index].value + $ctrl.denRider.rates[$index].value) * (enrollVal - $ctrl.plans.dental.directOption.selected[0].rates[$index].count) | currency))}}
                   </span>
                   <input bind-input-val name="densubtotal_{{$index}}" ng-show="false" ng-model="plan.subtotalArr[$index]" ng-value="(plan.rates[$index].value + $ctrl.denRider.rates[$index].value) * (enrollVal - $ctrl.plans.dental.directOption.selected[0].rates[$index].count) | number:2">
                 </td>
                 <td ng-if="!$ctrl.denRider" ng-repeat="(enrollKey, enrollVal) in denEnrollments track by $index">
-                  <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{plan.rates[$index].value * (enrollVal  - $ctrl.plans.dental.directOption.selected[0].rates[$index].count) | currency}}
                   </span>
-                  <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                  <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                     {{$ctrl.empOnly(plan.rates[$index].name, (plan.rates[$index].value * (enrollVal  - $ctrl.plans.dental.directOption.selected[0].rates[$index].count) | currency))}}
                   </span>
                   <input bind-input-val name="densubtotal_{{$index}}" ng-show="false" ng-model="plan.subtotalArr[$index]" ng-value="plan.rates[$index].value * (enrollVal  - $ctrl.plans.dental.directOption.selected[0].rates[$index].count) | number:2">
@@ -287,10 +287,10 @@
                       <tr>
                         <th>Subtotal DirectOption</th>
                         <td ng-repeat="rateType in plan.rates track by $index">
-                          <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                          <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                             {{rateType.value * rateType.count | currency}}
                           </span>
-                          <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                          <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                             {{$ctrl.empOnly(rateType.name, (rateType.value * rateType.count | currency))}}
                           </span>
                           <input bind-input-val name="dosubtotal_{{$index}}" ng-show="false" ng-model="plan.subtotalArr[$index]" ng-value="plan.subtotalArr[$index] = rateType.value * rateType.count | number:2">
@@ -311,10 +311,10 @@
                       <tr>
                         <th>Rates</th>
                         <td ng-repeat="rateType in plan.rates track by $index">
-                          <span ng-if="!$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                          <span ng-if="!$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                             {{rateType.value | currency}}
                           </span>
-                          <span ng-if="$ctrl.appCtrl.appdata.employeeOnlyPlan.dental">
+                          <span ng-if="$ctrl.appCtrl.appData.employeeOnlyPlan.dental">
                             {{$ctrl.empOnly(rateType.name, (rateType.value | currency))}}
                           </span>
                         </td>

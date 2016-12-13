@@ -20,6 +20,7 @@ const PROD = __PROD__ ;
 
 const rootState = {
   name: 'Root',
+  abstract: true,
   component: 'sgaRoot',
   redirectTo: (trans) => {
     const UserSvc = trans.injector().get('UserSvc');
@@ -28,6 +29,17 @@ const rootState = {
   url: '',
   resolve: {
     footerContent: getFooterContent
+  }
+};
+
+const authState = {
+  name: 'LoggedIn',
+  abstract: true,
+  resolve: {
+    authResolve: getInitialData
+  },
+  data: {
+    requiresAuth: true
   }
 };
 
@@ -61,49 +73,96 @@ const notFoundState = {
 
 const rootLoggedInState = {
   name: 'RootLoggedIn',
+  // abstract: true,
+  // parent: 'LoggedIn',
   component: 'sgaRoot',
-  redirectTo: 'ApplicationView',
+  // redirectTo: 'ApplicationView',
   url: '',
+  // resolve: {
+  //   appData: (authResolve) => authResolve.appData,
+  //   rules: (authResolve) => authResolve.rules,
+  //   options: (authResolve) => authResolve.options,
+  //   statesArray: (authResolve) => authResolve.statesArray,
+  //   footerContent: (authResolve) => authResolve.footerContent
+  // },
   resolve: {
-    appData: getInitialData.appData,
-    rules: getInitialData.rules,
-    options: getInitialData.options,
-    statesArray: getInitialData.statesArray,
-    footerContent: getInitialData.footerContent
+    appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
+      'ngInject';
+      const savedAppData = ApplicationSvc.getApplication();
+      if (savedAppData) {
+        return savedAppData;
+      } else {
+        const idObj = {};
+        const existingAppId = ApplicationSvc.getAppID();
+        idObj.appId = existingAppId ? existingAppId :
+          ($stateParams.id ? $stateParams.id : null);
+        idObj.quoteId = $stateParams.quote_id || null;
+        idObj.ein = $stateParams.ein || null;
+        return ApplicationSvc.getInitialApplication(idObj);
+      }
+    },
+    rules: (RulesSvc) => {
+      'ngInject';
+      return RulesSvc.rulesAsync;
+    },
+    options: (OptionsSvc) => {
+      'ngInject'
+      return OptionsSvc.optionsAsync;
+    },
+    statesArray: (CachingSvc) => {
+      'ngInject';
+      return CachingSvc.getStates();
+    },
+    footerContent: getFooterContent
   },
   data: {
     requiresAuth: true
-  },
-  resolvePolicy: {
-    when: 'EAGER'
   }
-}
+};
 
 const applicationState = {
   name: 'ApplicationView',
+  abstract: true,
   parent: 'RootLoggedIn',
   url: '/application',
   //component: 'applicationComponent',
-  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" 
-    app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray" 
-    group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK">
-    </application-component>`,
+  template: `<application-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"
+  states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK">
+  </application-component>`,
   data: {
     requiresAuth: true,
     title: 'Welcome to the small group application form',
     linkTitle: 'Home',
     addToMenu: true
-  },
-  resolve: {
-    appData: (getInitialData) => getInitialData.appData,
-    rules: (getInitialData) => getInitialData.rules,
-    options: (getInitialData) => getInitialData.options,
-    statesArray: (getInitialData) => getInitialData.statesArray,
-    footerContent: (getInitialData) => getInitialData.footerContent
   }
-  // ,
   // resolve: {
-  //   appData: appData
+  //   appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
+  //     'ngInject';
+  //     const savedAppData = ApplicationSvc.getApplication();
+  //     if (savedAppData) {
+  //       return savedAppData;
+  //     } else {
+  //       const idObj = {};
+  //       const existingAppId = ApplicationSvc.getAppID();
+  //       idObj.appId = existingAppId ? existingAppId :
+  //         ($stateParams.id ? $stateParams.id : null);
+  //       idObj.quoteId = $stateParams.quote_id || null;
+  //       idObj.ein = $stateParams.ein || null;
+  //       return ApplicationSvc.getInitialApplication(idObj);
+  //     }
+  //   },
+  //   rules: (RulesSvc) => {
+  //     'ngInject';
+  //     return RulesSvc.rulesAsync;
+  //   },
+  //   options: (OptionsSvc) => {
+  //     'ngInject'
+  //     return OptionsSvc.optionsAsync;
+  //   },
+  //   statesArray: (CachingSvc) => {
+  //     'ngInject';
+  //     return CachingSvc.getStates();
+  //   }
   // }
 };
 
@@ -112,7 +171,7 @@ const logoutState = {
   name: 'Logout',
   parent: 'Root',
   redirectTo: 'NotFoundView'
-}
+};
 
 function rootRedirect(UserSvc) {
   const isLoggedIn = UserSvc.getIsLoggedIn();
@@ -126,8 +185,7 @@ function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
   if (!StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY)) {
     StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, {}); //set to an empty object if there is no key set here
   }
-  const checkSavedFooter = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer; //check for existing content
-  let storedFooterContent = checkSavedFooter ? checkSavedFooter : null;
+  const storedFooterContent = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer; //check for existing content
   if (storedFooterContent) {
     return $sce.trustAsHtml(storedFooterContent);
   } else {
@@ -173,6 +231,6 @@ function getInitialData() {
   return returnObj;
 }
 
-const rootStates = [rootState, loginState, logoutState, rootLoggedInState, notFoundState, applicationState];
+const rootStates = [authState, rootState, loginState, logoutState, rootLoggedInState, notFoundState, applicationState];
 
 export default rootStates;

@@ -42,6 +42,8 @@ export default class ApplicationSvc {
     this.setApplication = this.setApplication.bind(this);
     this.checkin = this.checkin.bind(this);
     this.setManualProcess = this.setManualProcess.bind(this);
+    this.getNextStep = this.getNextStep.bind(this);
+    this.returnToLastStep = this.returnToLastStep.bind(this);
   }
 
   getApplication() {
@@ -49,11 +51,11 @@ export default class ApplicationSvc {
     const isLoggedIn = this.UserSvc.getIsLoggedIn();
     if (isLoggedIn && existingApp) {
       return existingApp; //return an existing application
-    } 
+    }
     return; //user is not logged in or there is no existing app
   }
 
-  /*this method is used to refresh the application from the server if 
+  /*this method is used to refresh the application from the server if
   navigating without persistence (e.g., Go Back), after making local changes*/
   restoreApplication() {
     const deferred = this.$q.defer();
@@ -76,7 +78,7 @@ export default class ApplicationSvc {
     const isLoggedIn = this.UserSvc.getIsLoggedIn();
     if (isLoggedIn && existingAppID) {
       return existingAppID; //return an existing application
-    } 
+    }
     return; //user is not logged in
   }
 
@@ -124,7 +126,7 @@ export default class ApplicationSvc {
             this.SpinnerControlSvc.stopSpin();
             this.AuthenticationSvc.logout();
           } else {
-          /*if we're in development, use a fake id 
+          /*if we're in development, use a fake id
           (but this has mostly been supplanted by the ability to login with an ID during dev)*/
             this.DataSvc.application.get(this.FAKE_APPID).then(
               fetchApplicationSuccess.bind(angular.extend({}, {fakeApp: true}, thisObj)),
@@ -171,7 +173,7 @@ export default class ApplicationSvc {
               (response) => {
                 this.setApplication(null); //just set to null here instead of response, in case the appObj is still there
                 this.AuthenticationSvc.returnToSER(); //do not call with context, since this is in another service, which has its own class context
-              }, 
+              },
               (response) => {
                 this.setApplication(null); //just set to null here instead of response, because the appObj should still be there
                 failedCheckinDialog.call(this, response);
@@ -190,7 +192,7 @@ export default class ApplicationSvc {
       }
     } else {
       thankYouDialog.apply(this, [`<p>You are being logged out. 
-        Please log back in to SpeedERates to return to Small Group Application.</p>`, 
+        Please log back in to SpeedERates to return to Small Group Application.</p>`,
         {
           logout: true
         }]);
@@ -216,10 +218,10 @@ export default class ApplicationSvc {
       (value) => {
         this.DataSvc.application.delete(_appdata).then(
           (response) => {
-            actionSuccess.apply(this, [response, {delete: true}]); 
+            actionSuccess.apply(this, [response, {delete: true}]);
           }, (reason) => {
             actionFailure.apply(this, [reason, {delete: true}]);
-          }          
+          }
         );
       },
       (reason) => {
@@ -229,15 +231,15 @@ export default class ApplicationSvc {
   }
 
   setManualProcess(vm, dialogOptions) {
-    const headingText = dialogOptions && dialogOptions.headingText ? 
+    const headingText = dialogOptions && dialogOptions.headingText ?
       dialogOptions.headingText : this.DIALOGS.manualProcess.heading;
-    const dialogText = dialogOptions && dialogOptions.dialogText ? 
+    const dialogText = dialogOptions && dialogOptions.dialogText ?
       dialogOptions.dialogText : this.DIALOGS.manualProcess.text;
-    const cancelButton = dialogOptions && dialogOptions.cancelButton ? 
+    const cancelButton = dialogOptions && dialogOptions.cancelButton ?
       dialogOptions.cancelButton : 'Back to SpeedERates';
-    const confirmButton = dialogOptions && dialogOptions.confirmButton ? 
+    const confirmButton = dialogOptions && dialogOptions.confirmButton ?
       dialogOptions.confirmButton : 'Manual process';
-    const cancel = angular.isObject(dialogOptions) && dialogOptions.hasOwnProperty('cancel') ? 
+    const cancel = angular.isObject(dialogOptions) && dialogOptions.hasOwnProperty('cancel') ?
       dialogOptions.cancel : false;
     this.DialogSvc.confirm({
       heading: headingText,
@@ -323,7 +325,7 @@ function dataSvcCheckin(option) {
       (response) => {
         this.setApplication(response.data.application);
         actionFailure.apply(this, [response, option]);
-      }      
+      }
     );
 }
 
@@ -348,27 +350,27 @@ function actionSuccess(response, option) {
       medGrgrId = response.data.application.group.medGrgrId;
     }
     const grgrIdsMsgInfo = 'Group ID - (' + medGrgrId + ' ' + denGrgrId + ')';
-    const infoMsgs = response && response.data 
-      response.data.responseStatus && 
-      angular.isArray(response.data.responseStatus.infoMsg) ? 
+    const infoMsgs = response && response.data
+      response.data.responseStatus &&
+      angular.isArray(response.data.responseStatus.infoMsg) ?
       response.data.responseStatus.infoMsg.filter((msg) => !(msg.toLowerCase === 'ok')) : [];
     const hasInfoMessages = infoMsgs.length > 0;
     const enrollMsg = '<p>You have successfully enrolled your application in Facets.</p> <p>' + grgrIdsMsgInfo + '.</p>' +
-      (hasInfoMessages ? createMessageList(response.data.responseStatus.infoMsg) : '') + 
+      (hasInfoMessages ? createMessageList(response.data.responseStatus.infoMsg) : '') +
       '<p>You will now return to SpeedERates.</p>';
     //TODO - actually inspect the response before treating as success
     this.$log.debug('Your application action was handled successfully.');
     this.$log.debug(response.data);
     const dialogText = logout ? //different text for logout, delete, and plain checkin (return to SER)
       `<p>You have logged out. 
-      You will now return to SpeedERates login.</p>` : 
+      You will now return to SpeedERates login.</p>` :
       deleteOpt ? //delete is a reserved word
       `<p>The application has been successfully deleted. 
-      You will now return to SpeedERates.</p>` : 
-      enroll ? enrollMsg : 
-      manual ? 
+      You will now return to SpeedERates.</p>` :
+      enroll ? enrollMsg :
+      manual ?
       `<p>Your application was set to manual process status. 
-      You will now return to SpeedERates.</p>` : 
+      You will now return to SpeedERates.</p>` :
       `<p>You have checked in your application. 
       You will now return to SpeedERates.</p>`;
     if (!prompt) {
@@ -390,28 +392,28 @@ function actionFailure(error, option) {
   const vm = option && option.vm; //the viewmodel passed from a calling component or service that itself is called from a component
   const headingText = 'We\'re sorry';
   const errorMsg = error && error.data && angular.isString(error.data) ? '<p>' + error.data + '</p>' : //there is just a single error
-    error && error.data && 
-    error.data.responseStatus && 
-    angular.isArray(error.data.responseStatus.errorMsg) && 
+    error && error.data &&
+    error.data.responseStatus &&
+    angular.isArray(error.data.responseStatus.errorMsg) &&
     error.data.responseStatus.errorMsg.filter((msg) => msg && angular.isDefined(msg)).length > 0 ? //there are multiple errors in the errorMsg array
     createMessageList(error.data.responseStatus.errorMsg.filter((msg) => msg && angular.isDefined(msg))) :
     '<p>Unknown error. Please consult application logs.</p>'
   const dialogText = deleteOpt ?
     `<p>Deletion of this application failed.</p>
     <p>Please contact the web team for assitance. 
-    You will now return to SpeedERates.</p>` : 
+    You will now return to SpeedERates.</p>` :
     checkin ? failedCheckinMessage :
     enroll ?
     `<p>The application failed to enroll in Facets. 
     Please inspect the following error(s), and report to the web team.</p>
     ${errorMsg}
     <p>You may choose to set this application for "Manual process" or simply return to SpeedERates,
-    where you can take further action or delete this application and create a new one.</p>` : 
+    where you can take further action or delete this application and create a new one.</p>` :
     manual ?
     `<p>The application could not be set to manual process. 
     Please contact the web team for assitance. 
-    You will now return to SpeedERates</p>` : 
-    getApplication ? 
+    You will now return to SpeedERates</p>` :
+    getApplication ?
     `<p>The application failed to load. 
     Please inspect the following error(s), and report to the web team.</p>
     <p>${errorMsg}</p>
@@ -464,9 +466,9 @@ function checkinLogoutOrReturnSER(option) {
   const hasAppObj = angular.isObject(appObj) && appObj !== 'null';
   const appId = this.getAppID();
   const hasAppId = this.UtilsSvc.isNumberOrNumString(appId);
-  logout ? 
-    this.AuthenticationSvc.logout({error: false, expired: false}) : 
-    (hasAppObj && hasAppId) ? 
+  logout ?
+    this.AuthenticationSvc.logout({error: false, expired: false}) :
+    (hasAppObj && hasAppId) ?
     this.checkin({appId: appId, prompt: false}) : //if the appObj still exists, checkin hasn't happened yet
     this.AuthenticationSvc.returnToSER();
 }

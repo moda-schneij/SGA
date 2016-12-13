@@ -13,15 +13,17 @@ import angular from 'angular';
 import planSelectTemplate from './planselect.html';
 import ratesTable from './ratecalculations.html';
 const vmVars = {};
-let appdata;
 let plansObj;
 let medPlans;
 let denPlans;
+let appData;
 
 export const planSelectFormComponent = {
   templateUrl: planSelectTemplate,
   bindings: {
-    $router: '<'
+    appData: '<',
+    rules: '<',
+    options: '<'
   },
   require: {
     appCtrl: '^applicationComponent'
@@ -32,7 +34,7 @@ export const planSelectFormComponent = {
 /*@ngInject*/
 function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, OptionsSvc, $log, ApplicationSvc, $rootScope, $scope, $timeout, $window, REGEXS, toArrayFilter) {
   const vm = this;
-  let deregisterAppDataWatch;
+  vm.appDataClone = {};
   let deregisterComputedMedTotals;
   const bindingObj = { vm, ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, $log, ApplicationSvc, $rootScope, $scope, $timeout, $window, REGEXS, toArrayFilter };
 
@@ -47,10 +49,6 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
   vm.foo = 'bar';
 
   vm.ratesTableUrl = ratesTable;
-
-  //create empty object to hold a copy of the main application data (from the app component) for view purposes
-  //to be populated within or after onInit
-  vm.appdata = {};
 
   //wanky way of delaying output
   vm.showTable = false;
@@ -86,10 +84,10 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
   };
 
   vm.tipsoConfig = {
-    noEnrollments: angular.extend(angular.copy(defaultTipsoConfig), { 
+    noEnrollments: angular.extend(angular.copy(defaultTipsoConfig), {
       content: tipContentNoEnrollment
     }),
-    mustMatchTotals: angular.extend(angular.copy(defaultTipsoConfig), { 
+    mustMatchTotals: angular.extend(angular.copy(defaultTipsoConfig), {
       content: tipContentMustMatchTotal
     })
   };
@@ -114,11 +112,11 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
     //TODO - disable preselection of DO plans when this rule applies, but debug effects on Delta enrollments (all zeroes in the model)
       doPlan = selectedPlan.selected ? //we are adding a plan from the paylaod
         //but use the clone of the payload to avoid issues with DO view values getting in the payload
-        angular.copy(vm.appdata.groupPlan.categories.dental.plans).filter((thisPlan) => 
-          thisPlan.dualId === selectedPlan.dualId && thisPlan.dual && REGEXS.directOption.test(thisPlan.planId))[0] : 
-          //we are removing a plan from the view
-          vm.plans.dental.directOption.selected[0];
-      if (doPlan) { 
+        vm.appDataClone.groupPlan.categories.dental.plans.filter((thisPlan) =>
+          thisPlan.dualId === selectedPlan.dualId && thisPlan.dual && REGEXS.directOption.test(thisPlan.planId))[0] :
+        //we are removing a plan from the view
+        vm.plans.dental.directOption.selected[0];
+      if (doPlan) {
         doPlan.selected = selectedPlan.selected; //toggle the direct option plan if there is one
       }
     }
@@ -142,7 +140,7 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
 
   vm.onChangePlanOption = (model) => { //triggered by checkboxes to add rider plans
     if (!model.add) { //if the rider option is unchecked
-      angular.forEach(model.selected, (plan) => { 
+      angular.forEach(model.selected, (plan) => {
         plan.selected = false;
         PlanSelectSvc.updatePlans(vm, plan);
       }); //unselect all plans
@@ -151,8 +149,8 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
   };
 
   vm.onChangeDirectOptionEnrollment = () => {
-    $timeout(() => { 
-      PlanSelectSvc.updateDeltaDentalPlan(vm); 
+    $timeout(() => {
+      PlanSelectSvc.updateDeltaDentalPlan(vm);
     });
   };
 
@@ -180,13 +178,13 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
   //force re-validation on the table when one input is updated
   vm.updateAndValidateMedEnrollments = (plan) => {
     if (vm.planratesform) {
-      const invalidMatchesTotal = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$error.matchestotalenrollment) ? 
+      const invalidMatchesTotal = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$error.matchestotalenrollment) ?
         vm.planratesform.$error.matchestotalenrollment : [];
-      const validMatchesTotal = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$$success.matchestotalenrollment) ? 
+      const validMatchesTotal = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$$success.matchestotalenrollment) ?
         vm.planratesform.$$success.matchestotalenrollment : [];
-      const invalidNoEnrollments = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$error.noplanenrollments) ? 
+      const invalidNoEnrollments = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$error.noplanenrollments) ?
         vm.planratesform.$error.noplanenrollments : [];
-      const validNoEnrollments = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$$success.noplanenrollments) ? 
+      const validNoEnrollments = UtilsSvc.isArrayOfOneOrMore(vm.planratesform.$$success.noplanenrollments) ?
         vm.planratesform.$$success.noplanenrollments : [];
       //concatenate the inputs in error or valid, so we re-run validations on all of them
       // const medCountInputs = invalidInputs.concat(validInputs);
@@ -215,24 +213,17 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
   vm.$onInit = () => {
     $log.debug(vm);
     $log.debug('I am in the plan selection component controller');
-    deregisterAppDataWatch = $scope.$watch(
-      () => vm.appCtrl.appdata, 
-      (newVal) => {
-        if (newVal) {
-          //set up a clone of the main application data object
-          appDataClone.call(bindingObj);
-          PlanSelectSvc.setRules(vm); //call this first, as there are dependencies on rules in other calls
-          PlanSelectSvc.setOptions(vm);
-          updateAppData.call(bindingObj); //this just updates the module-global vars for use throught the controller
-          PlanSelectSvc.populatePlans(vm, vmVars);
-          PlanSelectSvc.anyPlansAdded(vm); //also calls setTableValues at the right time
-          PlanSelectSvc.setStaticValues(vm);
-          //let the route complete
-          vm.appCtrl.setRouteReady();
-          deregisterAppDataWatch();
-          vm.appCtrl.resetPristineState();
-        }
-    });
+
+    //set up a clone of the main application data object
+    appDataClone.call(bindingObj);
+    PlanSelectSvc.setRules(vm); //call this first, as there are dependencies on rules in other calls
+    PlanSelectSvc.setOptions(vm);
+    updateAppData.call(bindingObj); //this just updates the module-global vars for use throughout the controller
+    PlanSelectSvc.populatePlans(vm, vmVars);
+    PlanSelectSvc.anyPlansAdded(vm); //also calls setTableValues at the right time
+    PlanSelectSvc.setStaticValues(vm);
+    $rootScope.$evalAsync(vm.appCtrl.resetPristineState);
+
     deregisterComputedMedTotals = $scope.$watch(
       () => vm.plans.medical.selected,
       (selMedPlans) => {
@@ -243,18 +234,20 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
   };
 
   vm.$onDestroy = function() {
-    deregisterComputedMedTotals();
+    if (angular.isFunction(deregisterComputedMedTotals)) {
+      deregisterComputedMedTotals();
+    }
   };
 }
 
 function appDataClone() {
-  angular.copy(this.vm.appCtrl.appdata, this.vm.appdata);
+  angular.copy(this.vm.appCtrl.appData, this.vm.appDataClone);
 }
 
 function updateAppData() {
   vmVars.totalMedEnroll = 0;
   vmVars.totalDenEnroll = 0;
-  appdata = this.vm.appCtrl.appdata;
+  appdata = this.vm.appCtrl.appData;
   plansObj = vmVars.plansObj = appdata.groupPlan.categories;
   medPlans = vmVars.medPlans = plansObj.medical;
   denPlans = vmVars.denPlans = plansObj.dental;

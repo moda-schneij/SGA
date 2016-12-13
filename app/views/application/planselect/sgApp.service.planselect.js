@@ -7,15 +7,15 @@
  * # PlanSelect
  * Service of the Small Group Application app
  */
- 
+
 import angular from 'angular';
-import { 
-  generateMaxRule, 
-  generatePlaceholder, 
+import {
+  generateMaxRule,
+  generatePlaceholder,
   assignRateKeyName,
   addTableRateCategories,
   createSidebarObj,
-  setTableValues, 
+  setTableValues,
   updatePlan,
   addPlanViewValues,
   checkDOCountExceedsDental,
@@ -52,7 +52,7 @@ export default class PlanSelectSvc {
   }
 
   setStaticValues(vm) {
-    vm.rateNamesArr = Object.keys(vm.appCtrl.appdata.groupPlan.categories.medical.enrollments)
+    vm.rateNamesArr = Object.keys(vm.appCtrl.appData.groupPlan.categories.medical.enrollments)
       .map((name) => name.replace('Count', 'Rate'));
   }
 
@@ -83,47 +83,47 @@ export default class PlanSelectSvc {
     });
 
     Object.defineProperty(vm.plans, 'minPlansSelected', {
-      get: () => (vm.appCtrl.rules.groupPlanRules.dentalOnlyAllowed && 
-        angular.isArray(vm.plans.dental.selected) && vm.plans.dental.selected.length > 0) || 
+      get: () => (vm.appCtrl.rules.groupPlanRules.dentalOnlyAllowed &&
+        angular.isArray(vm.plans.dental.selected) && vm.plans.dental.selected.length > 0) ||
         (angular.isArray(vm.plans.medical.selected) && vm.plans.medical.selected.length > 0),
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'showVisionRider', {
-      get: () => vm.rules.maxMed > 0 && 
-        vm.rules.maxVis > 0 && 
-        vm.plans.medical.selected && 
-        vm.plans.medical.selected.length > 0 && 
+      get: () => vm.rules.maxMed > 0 &&
+        vm.rules.maxVis > 0 &&
+        vm.plans.medical.selected &&
+        vm.plans.medical.selected.length > 0 &&
         medPlans && medPlans.riders.filter((rider) => re.vision.test(rider.planType)).length > 0,
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'showHearingRider', {
-      get: () => vm.rules.maxMed > 0 && 
-        vm.rules.maxHe > 0 && 
-        vm.plans.medical.selected && 
-        vm.plans.medical.selected.length > 0 && 
+      get: () => vm.rules.maxMed > 0 &&
+        vm.rules.maxHe > 0 &&
+        vm.plans.medical.selected &&
+        vm.plans.medical.selected.length > 0 &&
         medPlans && medPlans.riders.filter((rider) => re.hearing.test(rider.planType)).length > 0,
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'showOrthoRider', {
-      get: () => vm.rules.maxDen > 0 && 
-        vm.rules.maxOrth > 0 && 
-        vm.plans.dental.selected && 
-        vm.plans.dental.selected.length > 0 && 
+      get: () => vm.rules.maxDen > 0 &&
+        vm.rules.maxOrth > 0 &&
+        vm.plans.dental.selected &&
+        vm.plans.dental.selected.length > 0 &&
         denPlans && denPlans.riders.filter((rider) => re.orthodontia.test(rider.planType)).length > 0,
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'showDirectOption', { //test that there's a selected dual dental (delta) whose planId is NOT 'WDG'
-      get: () => vm.rules.maxDen > 0 && 
-        vm.plans.dental.selected && 
-        vm.plans.dental.selected.length > 0 && 
+      get: () => vm.rules.maxDen > 0 &&
+        vm.plans.dental.selected &&
+        vm.plans.dental.selected.length > 0 &&
         vm.plans.dental.selected.filter((plan) => plan.dual && !re.directOption.test(plan.planId)).length > 0,
       enumerable: true,
       configurable: true
@@ -132,11 +132,11 @@ export default class PlanSelectSvc {
     Object.defineProperty(vm, 'directOptionPlanName', {
       get: () => {
         //find the selected dental plan and filter on dual and NOT WDG, then find the associated WDG
-        const selectedDen = vm.plans.dental.selected && 
-          vm.plans.dental.selected.length > 0 && 
+        const selectedDen = vm.plans.dental.selected &&
+          vm.plans.dental.selected.length > 0 &&
           vm.plans.dental.selected.filter((plan) => plan.dual && !re.directOption.test(plan.planId))[0];
         if (selectedDen) {
-          const thisDOPlan = denPlans.plans.filter((plan) => plan.dualId === selectedDen.dualId && 
+          const thisDOPlan = denPlans.plans.filter((plan) => plan.dualId === selectedDen.dualId &&
             re.directOption.test(plan.planId))[0];
           return thisDOPlan ? thisDOPlan.planName : '';
         }
@@ -175,7 +175,7 @@ export default class PlanSelectSvc {
         const vmDOPlan = angular.isArray(vm.plans.dental.directOption.selected) ? vm.plans.dental.directOption.selected[0] : null;
         if (vmDOPlan) {
           return vmDOPlan.rates.reduce((prevVal, currRateTypeObj) => { //iterate thru the rates array of the vm's selected directOption plan and add the counts
-            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(currRateTypeObj.count)) ? 
+            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(currRateTypeObj.count)) ?
               this.UtilsSvc.parseNums(currRateTypeObj.count) : 0;
             return count + prevVal;
           }, 0);
@@ -190,9 +190,9 @@ export default class PlanSelectSvc {
         const vmDOPlan = angular.isArray(vm.plans.dental.directOption.selected) ? vm.plans.dental.directOption.selected[0] : null;
         if (vmDOPlan && angular.isArray(vmDOPlan.rates)) {
           const doSubtotalVal = vmDOPlan.rates.reduce((prevVal, currRateTypeObj) => {
-            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(currRateTypeObj.count)) ? 
+            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(currRateTypeObj.count)) ?
               this.UtilsSvc.parseNums(currRateTypeObj.count) : 0;
-            const value = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(currRateTypeObj.value)) ? 
+            const value = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(currRateTypeObj.value)) ?
               this.UtilsSvc.parseFloats(currRateTypeObj.value) : 0;
             return (count * value) + prevVal;
           }, 0);
@@ -209,9 +209,9 @@ export default class PlanSelectSvc {
         if (vmDOPlan && angular.isArray(vmDOPlan.rates)) {
           return vmDOPlan.rates
             .map((rateTypeObj) => {
-              const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(rateTypeObj.count)) ? 
+              const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(rateTypeObj.count)) ?
                 this.UtilsSvc.parseNums(rateTypeObj.count) : 0;
-              const value = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(rateTypeObj.value)) ? 
+              const value = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(rateTypeObj.value)) ?
                 this.UtilsSvc.parseFloats(rateTypeObj.value) : 0;
               return parseFloat(count * value)
             });
@@ -226,7 +226,7 @@ export default class PlanSelectSvc {
         const vmDenPlan = this.UtilsSvc.isArrayOfOneOrMore(vm.plans.dental.selected) ? vm.plans.dental.selected[0] : null;
         if (vmDenPlan) {
           return vmDenPlan.rates.reduce((prevVal, currRateTypeObj) => {
-            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(currRateTypeObj.count)) ? 
+            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(currRateTypeObj.count)) ?
               this.UtilsSvc.parseNums(currRateTypeObj.count) : 0;
             return count + prevVal;
           }, 0);
@@ -250,12 +250,12 @@ export default class PlanSelectSvc {
           angular.forEach(vmDenPlan.rates, (rateTypeObj, idx) => {
             let riderVal = 0;
             if (hasVmDenRiderRates) {
-              riderVal = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(vmDenRider.rates[idx].value)) ? 
+              riderVal = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(vmDenRider.rates[idx].value)) ?
                 this.UtilsSvc.parseFloats(vmDenRider.rates[idx].value) : 0;
             }
-            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(rateTypeObj.count)) ? 
+            const count = this.UtilsSvc.isNumber(this.UtilsSvc.parseNums(rateTypeObj.count)) ?
               this.UtilsSvc.parseNums(rateTypeObj.count) : 0;
-            const value = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(rateTypeObj.value)) ? 
+            const value = this.UtilsSvc.isNumber(this.UtilsSvc.parseFloats(rateTypeObj.value)) ?
               this.UtilsSvc.parseFloats(rateTypeObj.value) : 0;
             returnArr[idx] = count * (value + riderVal);
           });
@@ -276,7 +276,7 @@ export default class PlanSelectSvc {
       enumerable: true,
       configurable: true
     });
-    
+
 
     /******************************************
     ** Big, fat set of medical computed vals **
@@ -287,14 +287,14 @@ export default class PlanSelectSvc {
     //the combined plan subtotal
     //the total count for each of multiple plans
     //the totals array for medical
-    Object.defineProperty(vm, 'medSubtotal', { 
+    Object.defineProperty(vm, 'medSubtotal', {
       get: () => {
         let medSubtotalVal = 0;
         const medSubtotalsArr = [];
         const UtilsSvc = this.UtilsSvc;
         const vmMedPlans = this.UtilsSvc.isArrayOfOneOrMore(vm.plans.medical.selected) && vm.plans.medical.selected;
-        const medEnrollments = vm.appdata.groupPlan.categories.medical.enrollments;
-        const selMedRiders = vm.appCtrl.appdata.groupPlan.categories.medical.riders.filter(
+        const medEnrollments = vm.appDataClone.groupPlan.categories.medical.enrollments;
+        const selMedRiders = vm.appCtrl.appData.groupPlan.categories.medical.riders.filter(
           (rider) => rider.selected
         );
         vm.medSubtotalsArr = []; //create a new vm subtotals array for medical
@@ -310,12 +310,12 @@ export default class PlanSelectSvc {
             if (UtilsSvc.isArrayOfOneOrMore(medPlan.rates)) {
               const thisMedSubtotal = medPlan.rates.reduce((prevVal, currRateTypeObj) => {
                 const countName = currRateTypeObj.name.replace(/rate/i, 'Count'); //property used to filter the med category enrollments for a single plan
-                const count = singlePlan ? 
-                  (UtilsSvc.isNumber(UtilsSvc.parseNums(medEnrollments[countName])) ? 
+                const count = singlePlan ?
+                  (UtilsSvc.isNumber(UtilsSvc.parseNums(medEnrollments[countName])) ?
                     UtilsSvc.parseNums(medEnrollments[countName]) : 0) :
-                  (UtilsSvc.isNumber(UtilsSvc.parseNums(currRateTypeObj.count)) ? 
+                  (UtilsSvc.isNumber(UtilsSvc.parseNums(currRateTypeObj.count)) ?
                     UtilsSvc.parseNums(currRateTypeObj.count) : 0);
-                const value = UtilsSvc.isNumber(UtilsSvc.parseFloats(currRateTypeObj.value)) ? 
+                const value = UtilsSvc.isNumber(UtilsSvc.parseFloats(currRateTypeObj.value)) ?
                   UtilsSvc.parseFloats(currRateTypeObj.value) : 0;
                 planTotalCount += count; //also set the plan's total count
                  //also set the rateType subtotal
@@ -345,8 +345,8 @@ export default class PlanSelectSvc {
           });
           //set the new totals array for medical, which is one total value for each ratetype
           angular.forEach(medSubtotalsArr, (planSubtotalsArr) => {
-            angular.forEach(planSubtotalsArr, (value, valIdx) => { 
-              vm.medSubtotalsArr[valIdx] += value; 
+            angular.forEach(planSubtotalsArr, (value, valIdx) => {
+              vm.medSubtotalsArr[valIdx] += value;
             });
           });
           return medSubtotalVal;
@@ -369,7 +369,7 @@ export default class PlanSelectSvc {
     //if this comes at the top of the computed props or maybe just before the medSubtotal computed, it breaks all of those
     //don't know why at this time, particularly since the data points aren't related and filter does not mutate anything
     Object.defineProperty(vm, 'groupHasAKMembers', {
-      get: () => vm.appCtrl.appdata.additionalState.filter((selectedState) => 
+      get: () => vm.appCtrl.appData.additionalState.filter((selectedState) =>
           selectedState.state === 'AK' && selectedState.noOfEmpPerState > 0)
           .length > 0,
       enumerable: true,
@@ -378,22 +378,22 @@ export default class PlanSelectSvc {
 
     //test values
     Object.defineProperty(vm, 'selectedPlans', {
-      get: () => vm.appCtrl.appdata.groupPlan.categories.medical.plans.filter((plan) => plan.selected)
-        .concat(vm.appCtrl.appdata.groupPlan.categories.dental.plans.filter((plan) => plan.selected),
-          vm.appCtrl.appdata.groupPlan.categories.medical.riders.filter((plan) => plan.selected), 
-          vm.appCtrl.appdata.groupPlan.categories.dental.riders.filter((plan) => plan.selected)),
+      get: () => vm.appCtrl.appData.groupPlan.categories.medical.plans.filter((plan) => plan.selected)
+        .concat(vm.appCtrl.appData.groupPlan.categories.dental.plans.filter((plan) => plan.selected),
+          vm.appCtrl.appData.groupPlan.categories.medical.riders.filter((plan) => plan.selected),
+          vm.appCtrl.appData.groupPlan.categories.dental.riders.filter((plan) => plan.selected)),
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'selectedMedPlans', {
-      get: () => vm.appCtrl.appdata.groupPlan.categories.medical.plans.filter((plan) => plan.selected),
+      get: () => vm.appCtrl.appData.groupPlan.categories.medical.plans.filter((plan) => plan.selected),
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'selectedMedRiders', {
-      get: () => vm.appCtrl.appdata.groupPlan.categories.medical.riders.filter((plan) => plan.selected),
+      get: () => vm.appCtrl.appData.groupPlan.categories.medical.riders.filter((plan) => plan.selected),
       enumerable: true,
       configurable: true
     });
@@ -463,14 +463,14 @@ export default class PlanSelectSvc {
   anyPlansAdded(vm) {
     return this.$timeout(returnFn.bind(this), 500); //need a delay to deal with ui debounce settings
     function returnFn() {
-      const medPlans = vm.appCtrl.appdata.groupPlan.categories.medical.plans;
-      const denPlans = vm.appCtrl.appdata.groupPlan.categories.dental.plans;
+      const medPlans = vm.appCtrl.appData.groupPlan.categories.medical.plans;
+      const denPlans = vm.appCtrl.appData.groupPlan.categories.dental.plans;
       const returnArr = [].concat(denPlans, medPlans).filter((plan) => plan.selected);
       vm.noPlansSelected = returnArr.length === 0;
       setTableValues.call(this, vm); //pass context to the private function, binding services, etc
     }
   }
-  
+
   /*****************************************
   ** Populate and update plans and riders **
   *****************************************/
@@ -522,7 +522,7 @@ export default class PlanSelectSvc {
     const isRider = !!updatedPlan.isRider;
     //determine the category of plan - also applies to riders
     const updatedPlanType = updatedPlan.planCategory.toLowerCase() === 'med' ? 'medical' : 'dental';
-    const plansObj = vm.appCtrl.appdata.groupPlan.categories;
+    const plansObj = vm.appCtrl.appData.groupPlan.categories;
     angular.forEach(plansObj, (planType, planTypeName) => { //iterate over the plan categories from the app object
       if (planTypeName === updatedPlanType) {
         const plansToUpdate = isRider ? planType.riders : planType.plans;
@@ -555,7 +555,7 @@ export default class PlanSelectSvc {
     const $log = this.$log;
     const doPlan = vm.plans.dental.directOption.selected[0];
     const dentalPlan = vm.plans.dental.selected[0];
-    const dentalEnrollments = this.toArrayFilter(vm.appdata.groupPlan.categories.dental.enrollments, false);
+    const dentalEnrollments = this.toArrayFilter(vm.appDataClone.groupPlan.categories.dental.enrollments, false);
     const doRatesArr = doPlan && angular.isArray(doPlan.rates) ? doPlan.rates : null;
     const dentalRatesArr = angular.isArray(dentalPlan.rates) ? dentalPlan.rates : null;
 
@@ -572,9 +572,9 @@ export default class PlanSelectSvc {
         const cCount = c_rateObj.count ? c_rateObj.count : UtilsSvc.isNumber(c_rateObj) ? c_rateObj : 0;
         return pCount + cCount;
       }, 0) : 0;
-    vm.plans.denTotalEnrollment = doRatesArr && 
-      vm.plans.doTotalEnrollment && 
-      vm.plans.initialDenTotalEnrollment ? 
+    vm.plans.denTotalEnrollment = doRatesArr &&
+      vm.plans.doTotalEnrollment &&
+      vm.plans.initialDenTotalEnrollment ?
       vm.plans.initialDenTotalEnrollment - vm.plans.doTotalEnrollment :
       vm.plans.denTotalEnrollment ? vm.plans.denTotalEnrollment : 0;
     doRatesArr && dentalRatesArr ? checkDOCountExceedsDental.apply(this, [vm, doRatesArr, dentalRatesArr]) : angular.noop();
@@ -584,15 +584,15 @@ export default class PlanSelectSvc {
   ** Compute medical totals **
   ***************************/
   //TODO - evaluate whether this needs to be used at all anymore - it may
-  computeMedicalTotals(plans, vm, vmVars) {    
+  computeMedicalTotals(plans, vm, vmVars) {
     //add constraints for multipleMed employee counts
     if (vm.multiMed) {
-      const medEnrollments = vm.appCtrl.appdata.groupPlan.categories.medical.enrollments;
+      const medEnrollments = vm.appCtrl.appData.groupPlan.categories.medical.enrollments;
       const totalsObj = {};
       //in basic terms, the following two blocks smash down enrollment counts across plans into one object with total counts by enrollment type
       //the result is the totalsObj
       const countsArr = plans.reduce((memo, plan) => {
-        const planCounts = plan && plan.rates && angular.isArray(plan.rates) && 
+        const planCounts = plan && plan.rates && angular.isArray(plan.rates) &&
           plan.rates.map((ratesObj , idx) => {
             const returnObj = {};
             const name = ratesObj.name.replace(/rate/i, 'Count'); //change the substring rate to 'Count' for the comparison to work
@@ -616,7 +616,7 @@ export default class PlanSelectSvc {
           }
         });
       });
-      angular.forEach(medEnrollments, 
+      angular.forEach(medEnrollments,
         (enrollVal, enrollKey) => {
           const enrollKeyPrefix = enrollKey.replace(/count/i, '');
           angular.forEach(plans, (plan) => {

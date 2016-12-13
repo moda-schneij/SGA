@@ -21,12 +21,12 @@ class ModelPercentageDirective {
       minValue: '@'
     };
     this.link = this.linkFn.bind(this);
-  };
+  }
   linkFn($scope, $element, $attrs, ngModelCtrl) {
     //if there is no boolean, default to true
     const percentageBool = this.$parse($attrs.modelPercentage)($scope);
-    const applyPercentage = angular.isDefined(percentageBool) ? 
-      percentageBool : 
+    const applyPercentage = angular.isDefined(percentageBool) ?
+      percentageBool :
       true;
 
     if (applyPercentage) {
@@ -49,7 +49,7 @@ class ModelPercentageDirective {
       }
       return stringVal + '%';
     }
-    
+
     function pctParser(value) {
       const stringVal = value || value === 0 ? value.toString().replace('%', '') : '';
       if (!value || stringVal === '') {

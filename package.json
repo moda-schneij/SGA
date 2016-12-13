@@ -13,7 +13,7 @@
     "settest": "export NODE_ENV=test|| set NODE_ENV=test&& ",
     "test": "mocha-webpack",
     "eslint": "eslint",
-    "lint-app": "npm run eslint './app/**/*.js' -- --ignore-pattern '**/*.spec.js' --ignore-pattern '**/index.js' --quiet",
+    "lint-app": "npm run eslint ./app/**/*.js -- --ignore-pattern **/*.spec.js --ignore-pattern **/index.js --quiet",
     "lint-tests": "npm run eslint './app/**/*.spec.js' -- --config mocha/test --env mocha:true --plugin chai --plugin mocha --rule mocha/no-exclusive-tests:2",
     "prebuild": "npm run lint-app && npm run test",
     "comment-pretest": "npm run lint-tests",

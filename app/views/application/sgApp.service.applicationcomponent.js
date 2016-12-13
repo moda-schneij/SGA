@@ -7,7 +7,7 @@
  * # ApplicationComponent
  * Service of the Small Group Application app
  */
- 
+
 import angular from 'angular';
 
 export default class ApplicationComponentSvc {
@@ -16,7 +16,7 @@ export default class ApplicationComponentSvc {
   constructor($log, $state, $timeout, SpinnerControlSvc, UtilsSvc, DialogSvc, DataSvc, REGEXS, toArrayFilter, RulesSvc, OptionsSvc, ApplicationSvc, MessagesSvc, SGA_CLIENT_KEYS) {
     this.$log = $log;
     this.$state = $state;
-    this.appRouteEntries = $state.get().filter((state) => 
+    this.appRouteEntries = $state.get().filter((state) =>
       state.parent && state.parent === 'ApplicationView');
     this.$timeout = $timeout;
     this.SpinnerControlSvc = SpinnerControlSvc;
@@ -34,7 +34,6 @@ export default class ApplicationComponentSvc {
     this.navigate = this.navigate.bind(this);
     this.updateProgress = this.updateProgress.bind(this);
     this.PROGRESS_KEY = SGA_CLIENT_KEYS.progress;
-    this.getNextStep = this.getNextStep.bind(this);
     this.enroll = this.enroll.bind(this);
     this.setComputedProps = this.setComputedProps.bind(this);
   }
@@ -49,37 +48,37 @@ export default class ApplicationComponentSvc {
     const utils = this.UtilsSvc;
 
     Object.defineProperty(vm, 'enableSubmit', {
-      get: () => !vm.applicationform.$invalid && 
-        vm.appData && 
-        vm.appData.appStatus === 'P' && 
+      get: () => !vm.applicationform.$invalid &&
+        vm.appData &&
+        vm.appData.appStatus === 'P' &&
         ((!vm.applicationform.$pristine && vm.applicationform.modified) || vm.allowSubmit),
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'inProgressApp', {
-      get: () => vm.appData && 
+      get: () => vm.appData &&
         vm.appData.appStatus === 'P',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'completedApp', {
-      get: () => vm.appData && 
+      get: () => vm.appData &&
         vm.appData.appStatus === 'C',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'failedApp', {
-      get: () => vm.appData && 
+      get: () => vm.appData &&
         vm.appData.appStatus === 'F',
       enumerable: true,
       configurable: true
     });
 
     Object.defineProperty(vm, 'enrolledApp', {
-      get: () => vm.appData && 
+      get: () => vm.appData &&
         vm.appData.appStatus === 'S',
       enumerable: true,
       configurable: true
@@ -118,9 +117,9 @@ export default class ApplicationComponentSvc {
       enumerable: true,
       configurable: true
     });
-    
+
     Object.defineProperty(vm, 'employeeOnlyForSelectedLines', {
-      get: () => (vm.appData.employeeOnlyPlan.medical && vm.appData.employeeOnlyPlan.dental) || 
+      get: () => (vm.appData.employeeOnlyPlan.medical && vm.appData.employeeOnlyPlan.dental) ||
         (vm.appData.employeeOnlyPlan.medical && (!vm.hasDental || !vm.anyPlanSelected.dental)) ||
         (vm.appData.employeeOnlyPlan.dental && (!vm.hasMedical || !vm.anyPlanSelected.medical)),
       enumerable: true,
@@ -155,7 +154,7 @@ export default class ApplicationComponentSvc {
   }
 
   //set *static* values for the view after appData is loaded in onInit
-  updateViewValues(vm) { 
+  updateViewValues(vm) {
     const appData = vm.appData;
     const medEnrollments = appData.groupPlan.categories.medical.enrollments;
     const denEnrollments = appData.groupPlan.categories.dental.enrollments;
@@ -173,7 +172,7 @@ export default class ApplicationComponentSvc {
     vm.hasMedical = vm.medTotalEnrollment > 0;
     vm.denTotalEnrollment = Object.keys(denEnrollments).reduce((prevVal, key) => (prevVal + denEnrollments[key]), 0);
     vm.hasDental = vm.denTotalEnrollment > 0;
-    vm.showEmployeeOnlySelection = (vm.hasMedical && !vm.hasMedDependents) || 
+    vm.showEmployeeOnlySelection = (vm.hasMedical && !vm.hasMedDependents) ||
       (vm.hasDental && !vm.hasDenDependents);
   }
 
@@ -186,7 +185,11 @@ export default class ApplicationComponentSvc {
   }
 
   //retrive the name of the next step to continue with
-  getNextStep(vm) {
+  getNextStep() {
+    const appData = this.ApplicationSvc.getApplication();
+    if (!appData) {
+      return null;
+    }
     const {$state} = this;
     const dummyState = {data: {order: -1}};
     const finalAppRoute = this.appRouteEntries.reduce((prevVal, currVal) => {
@@ -196,44 +199,45 @@ export default class ApplicationComponentSvc {
       return dummyState;
     }, dummyState);
     const finalAppRouteName = finalAppRoute && finalAppRoute.name ? finalAppRoute.name : null;
-    const sgaClientVal = vm.appData.sgaClient ? angular.fromJson(vm.appData.sgaClient) : {};
+    const sgaClientVal = appData.sgaClient ? angular.fromJson(appData.sgaClient) : {};
     //if this is an in-progress app, go back to last completed or saved step, otherwise to the end of the application form
-    return vm.appData.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalAppRouteName) ? 
+    return appData.appStatus === 'P' ? sgaClientVal[this.PROGRESS_KEY] : angular.isString(finalAppRouteName) ?
       finalAppRouteName : null; //should be a route name as a string or undefined
   }
 
-  returnToLastStep(vm) {
+  returnToLastStep() {
     const {$state} = this;
-    const routeName = this.getNextStep(vm)
+    const routeName = this.getNextStep()
     $state.go(routeName);
   }
 
   //navigation methods
   configNav(vm) {
     const {$state} = this;
-    const nextRouteId = $state.current.data.order;
-    const prevRouteId = $state.current.data.order - 2;
-    vm.hasNextRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && 
+    const nextRouteId = $state.current.data.order + 1;
+    const prevRouteId = $state.current.data.order - 1;
+    vm.hasNextRoute = this.appRouteEntries.filter((route) => route.data && route.data.order &&
       route.data.order === nextRouteId).length > 0;
-    vm.hasPrevRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && 
+    vm.hasPrevRoute = this.appRouteEntries.filter((route) => route.data && route.data.order &&
       route.data.order === prevRouteId).length > 0;
-    vm.applicationform.$setPristine();
-    vm.applicationform.$setUntouched();
+    // trying to set state on the application form fails here. matter of timing and/or instantiation of the form ctrl
+    // vm.applicationform.$setPristine();
+    // vm.applicationform.$setUntouched();
   }
 
   navigate(vm, config) {
     const {$state} = this;
     vm.navigating = true; //this is toggled by $routeChangeSuccess in the component controller
     const forward = config.direction === 'forward';
-    const nextRouteId = $state.current.data.order - (forward ? 0 : 2);
+    const nextRouteId = $state.current.data.order - (forward ? -1 : 1);
     const nextRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && route.data.order === nextRouteId);
-    const nextRouteName = nextRoute && nextRoute.length === 1 ? nextRoute.name : null;
+    const nextRouteName = nextRoute && nextRoute.length === 1 && nextRoute[0].name ? nextRoute[0].name : null;
     if (nextRouteName) {
       $state.go(nextRouteName);
       this.MessagesSvc.clearAll();
       this.configNav(vm);
     } else {
-      vm.navigating = false; 
+      vm.navigating = false;
     }
   }
 
@@ -305,7 +309,7 @@ export default class ApplicationComponentSvc {
         }.bind(this),
         function(reason) {
           this.ApplicationSvc.enrollFailure(reason, vm);
-        }.bind(this)      
+        }.bind(this)
       )
       .finally(function() {
         this.SpinnerControlSvc.stopSpin();

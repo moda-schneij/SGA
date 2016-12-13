@@ -21,6 +21,7 @@ import ContentSvc from './content.service';
 import DataSvc from './data.service';
 import DialogSvc from './dialog.service';
 import MessagesSvc from './messages.service';
+import NavigationSvc from './navigation.service';
 import OptionsSvc from './options.service';
 import RouteChangeSvc from './routechange.service';
 import RulesSvc from './rules.service';
@@ -44,6 +45,7 @@ export default angular
     .service(DataSvc.name, DataSvc)
     .service(DialogSvc.name, DialogSvc)
     .service(MessagesSvc.name, MessagesSvc)
+    .service(NavigationSvc.name, NavigationSvc)
     .service(OptionsSvc.name, OptionsSvc)
     .service(RouteChangeSvc.name, RouteChangeSvc)
     .service(RulesSvc.name, RulesSvc)

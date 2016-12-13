@@ -7,7 +7,7 @@
  * # ngTipso
  * Module of the Moda Small Group Application app
  */
- 
+
 import angular from 'angular';
 
 //Angular wrapper for jquery Tipso
@@ -15,7 +15,7 @@ import angular from 'angular';
 
 class NgTipsoDirective {
   constructor() {
-    this.restrict = 'A',
+    this.restrict = 'A';
     this.link = this.linkFn.bind(this);
   }
   linkFn(scope, element, attrs, modelCtrl) {

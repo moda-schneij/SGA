@@ -19,16 +19,19 @@ export const applicationComponent = {
     rules: '<',
     options: '<',
     statesArray: '<',
-    appId: '<',
     quoteId: '<',
+    appId: '<',
     groupOR: '<',
     groupAK: '<'
+  },
+  require: {
+    rootCtrl: '^sgaRoot'
   },
   controller: ApplicationCtrl
 };
 
 /*@ngInject*/
-function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $interval, $scope) {
+function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, NavigationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $interval, $scope) {
   const vm = this;
   const args = Array.prototype.slice.call(arguments);
   $log.debug('THE ARGS ARRAY');
@@ -45,6 +48,7 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
     UtilsSvc,
     ConstantsSvc,
     ApplicationSvc,
+    NavigationSvc,
     RulesSvc,
     OptionsSvc,
     MessagesSvc,
@@ -104,8 +108,8 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   };
 
   vm.getNextStep = () => {
-    $log.debug('next step is: ' + ApplicationComponentSvc.getNextStep(vm));
-    return ApplicationComponentSvc.getNextStep(vm);
+    $log.debug('next step is: ' + NavigationSvc.getNextStep());
+    return NavigationSvc.getNextStep();
   };
 
   //NAVIGATION actions
@@ -238,7 +242,7 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
       ApplicationComponentSvc.updateViewValues(vm); //static props
       ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
       ApplicationComponentSvc.configNav(vm); //set up nav buttons
-      ApplicationComponentSvc.returnToLastStep(vm);
+      NavigationSvc.returnToLastStep();
       vm.navigating = false;
     });
   };

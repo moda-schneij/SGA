@@ -10,7 +10,7 @@
                 {{$item.planName}}
             </ui-select-match>
             <ui-select-choices
-            ui-disable-choice="$ctrl.plans.medical.selected.length === $ctrl.rules.maxMed || plan.selected" repeat="plan in $ctrl.appdata.groupPlan.categories.medical.plans track by plan.uniqueId">
+            ui-disable-choice="$ctrl.plans.medical.selected.length === $ctrl.rules.maxMed || plan.selected" repeat="plan in $ctrl.appDataClone.groupPlan.categories.medical.plans track by plan.uniqueId">
                 <pretty-select-checkbox>
                     <pretty-checkbox name="selectedmedplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.medical.selected.length === $ctrl.rules.maxMed || plan.selected" ng-class="{'disabled': $ctrl.plans.medical.selected.length === $ctrl.rules.maxMed || plan.selected}"></pretty-checkbox>
                     <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
@@ -23,7 +23,7 @@
         <span class="output-label required">The group will utilize the following Network<span ng-if="!$ctrl.appCtrl.groupAK"> for Alaska enrollees</span></span>
         <!-- TODO: needs a real implementation with an enum from the back end -->
         <div class="container-pretty-checkable container-pretty-checkable-vertical">
-          <pretty-radio ng-repeat="network in $ctrl.akMedNetworks track by network.displayName" name="aknetwork" id="{{network.id}}" ng-model="$ctrl.appCtrl.appdata.alaskaNetworkSelection" value="network.value" label="network.displayName" ng-model-options="{updateOn: 'default'}" required></pretty-radio> 
+          <pretty-radio ng-repeat="network in $ctrl.akMedNetworks track by network.displayName" name="aknetwork" id="{{network.id}}" ng-model="$ctrl.appCtrl.appData.alaskaNetworkSelection" value="network.value" label="network.displayName" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
         </div>
       </li>
       <!-- Vision Rider -->
@@ -40,7 +40,7 @@
                 {{$item.planName}}
             </ui-select-match>
             <ui-select-choices
-            ui-disable-choice="$ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis || plan.selected" repeat="plan in ($ctrl.appdata.groupPlan.categories.medical.riders | filter: {planType: 'VIS'}) track by plan.uniqueId">
+            ui-disable-choice="$ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis || plan.selected" repeat="plan in ($ctrl.appDataClone.groupPlan.categories.medical.riders | filter: {planType: 'VIS'}) track by plan.uniqueId">
                 <pretty-select-checkbox>
                     <pretty-checkbox name="selectedvisionplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis || plan.selected" ng-class="{'disabled': $ctrl.plans.medical.riders.vis.selected.length === $ctrl.rules.maxVis || plan.selected}"></pretty-checkbox>
                     <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
@@ -62,7 +62,7 @@
                 {{$item.planName}}
             </ui-select-match>
             <ui-select-choices
-            ui-disable-choice="$ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe || plan.selected" repeat="plan in ($ctrl.appdata.groupPlan.categories.medical.riders | filter: {planType: 'HE'}) track by plan.uniqueId">
+            ui-disable-choice="$ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe || plan.selected" repeat="plan in ($ctrl.appDataClone.groupPlan.categories.medical.riders | filter: {planType: 'HE'}) track by plan.uniqueId">
                 <pretty-select-checkbox>
                     <pretty-checkbox name="selectedvisionplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe || plan.selected" ng-class="{'disabled': $ctrl.plans.medical.riders.he.selected.length === $ctrl.rules.maxHe || plan.selected}"></pretty-checkbox>
                     <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
@@ -80,7 +80,7 @@
                 {{$item.planName}}
             </ui-select-match>
             <ui-select-choices
-            ui-disable-choice="$ctrl.plans.dental.selected.length === $ctrl.rules.maxDen || plan.selected" repeat="plan in $ctrl.appdata.groupPlan.categories.dental.plans | filter: {planId: '!WDG'} track by plan.uniqueId">
+            ui-disable-choice="$ctrl.plans.dental.selected.length === $ctrl.rules.maxDen || plan.selected" repeat="plan in $ctrl.appDataClone.groupPlan.categories.dental.plans | filter: {planId: '!WDG'} track by plan.uniqueId">
                 <pretty-select-checkbox>
                     <pretty-checkbox name="selecteddenplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.dental.selected.length === $ctrl.rules.maxDen || plan.selected" ng-class="{'disabled': $ctrl.plans.dental.selected.length === $ctrl.rules.maxMed || plan.selected}"></pretty-checkbox>
                     <span ng-bind-html="::plan.planName | highlight: $select.search"></span>
@@ -107,7 +107,7 @@
                 {{$item.planName}}
             </ui-select-match>
             <ui-select-choices
-            ui-disable-choice="$ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth || plan.selected" repeat="plan in ($ctrl.appdata.groupPlan.categories.dental.riders | filter: !$select.selected) track by plan.uniqueId">
+            ui-disable-choice="$ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth || plan.selected" repeat="plan in ($ctrl.appDataClone.groupPlan.categories.dental.riders | filter: !$select.selected) track by plan.uniqueId">
                 <pretty-select-checkbox>
                     <pretty-checkbox name="selectedvisionplan" ng-model="plan.selected" label="false" ng-model-options="{updateOn: 'default'}" ng-disabled="$ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth || plan.selected" ng-class="{'disabled': $ctrl.plans.dental.riders.orth.selected.length === $ctrl.rules.maxOrth || plan.selected}"></pretty-checkbox>
                     <span ng-bind-html="::plan.planName | highlight: $select.search"></span>

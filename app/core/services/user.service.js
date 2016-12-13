@@ -11,10 +11,11 @@
 export default class UserSvc {
 
   /*@ngInject*/
-  constructor(StorageSvc, ConstantsSvc, DialogSvc, STORAGE_KEYS, $state, $log, $rootScope) {
+  constructor(StorageSvc, ConstantsSvc, DialogSvc, $injector, STORAGE_KEYS, $state, $log, $rootScope) {
     this.StorageSvc = StorageSvc;
     this.ConstantsSvc = ConstantsSvc;
     this.DialogSvc = DialogSvc;
+    this.$injector = $injector;
     this.LOGGED_IN_KEY = STORAGE_KEYS.LOGGED_IN_KEY;
     this.TOKEN_KEY = STORAGE_KEYS.TOKEN_KEY;
     this.$state = $state;
@@ -58,8 +59,11 @@ export default class UserSvc {
 }
 
 function confirmSuccess() {
+  const NavigationSvc = this.$injector.get('NavigationSvc');
   //this.$rootScope.$emit('loginSuccess');
-  this.$state.go('RootLoggedIn');
+  //this.$state.go('RootLoggedIn');
+  //this.$state.go('ApplicationView');
+  NavigationSvc.returnToLastStep();
 }
 
 function confirmError(e) {

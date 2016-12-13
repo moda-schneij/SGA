@@ -143,10 +143,10 @@ export default class GroupinfoComponentSvc {
       vm.appData.group.billingName = '';
     }
   }
-  
+
   copyBillingAddress(vm) {
       let primAddrCopy = null;
-  
+
       vm.appData.group.billingName = angular.copy(vm.appData.group.employerLegalName);
 
       if (!(/2016/).test(vm.appCtrl.effDate.getFullYear())) {
@@ -186,7 +186,10 @@ export default class GroupinfoComponentSvc {
         })
         .finally(() => {
           vm.searchingNAICS = false;
-          vm.appCtrl.resetPristineState();
+          //reset the containig form's pristine state
+          vm.groupinfoform.groupcodes.$setPristine();
+          vm.groupinfoform.groupcodes.$setUntouched();
+          //vm.appCtrl.resetPristineState();
         });
     }
   }

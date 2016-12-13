@@ -22,7 +22,7 @@ class BindTrustedHtmlDirective {
     });
   }
   static directiveFactory() {
-    return new bindTrustedHtmlDirective();
+    return new BindTrustedHtmlDirective();
   }
 }
 

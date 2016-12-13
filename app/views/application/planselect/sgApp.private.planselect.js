@@ -10,7 +10,7 @@ import angular from 'angular';
 
 export function checkDOCountExceedsDental(vm, doRatesArr, dentalRatesArr) { //called bound to the PlanSelectSvc, for other services, etc
   //get the original totals and filter the object to an array
-  const denErollmentsArr = this.toArrayFilter(vm.appdata.groupPlan.categories.dental.enrollments, false);
+  const denErollmentsArr = this.toArrayFilter(vm.appDataClone.groupPlan.categories.dental.enrollments, false);
   angular.forEach(denErollmentsArr, (count, idx) => {
     const dentalCount = parseInt(count, 10);
     const doCount = parseInt(doRatesArr[idx].count, 10);
@@ -30,7 +30,7 @@ export function generateMaxRule(vm, maxRule) {
   const medOnly = vm.medicalOnly;
   const denOnly = vm.dentalOnly;
   //TODO - debug, because I can't tell why medOnly and denOnly are values I set to false and have no ties to anything that changes them
-  return medOnly ? rules.groupPlanRules[maxRule].medicalOnly : 
+  return medOnly ? rules.groupPlanRules[maxRule].medicalOnly :
     denOnly ? rules.groupPlanRules[maxRule].medicalOnly :
     rules.groupPlanRules[maxRule].medicalPlusDental
 }
@@ -45,15 +45,15 @@ export function generatePlaceholder(vm, rule) {
 
 //called from addTableRateCategories
 //used to add rate category names
-export function assignRateKeyName(payloadName) { 
+export function assignRateKeyName(payloadName) {
   switch (payloadName) {
-    case 'ecRate': 
+    case 'ecRate':
       return 'EE + child';
     case 'efRate':
       return 'EE + family';
     case 'esRate':
       return 'EE + spouse';
-    case 'eeRate': 
+    case 'eeRate':
       return 'EE only';
     default:
       return 'EE only';
@@ -113,11 +113,11 @@ export function addTableRateCategories(vm, plan, opt) {
 //set max allowed values for DO dental plans
 export function addDOMaxCounts(vm, plan) {
   if (plan && angular.isArray(plan.rates)) {
-    const denErollmentsArr = this.toArrayFilter(vm.appdata.groupPlan.categories.dental.enrollments, false);
+    const denErollmentsArr = this.toArrayFilter(vm.appDataClone.groupPlan.categories.dental.enrollments, false);
     angular.forEach(denErollmentsArr, (count, idx) => {
       plan.rates[idx].maxCount = parseInt(denErollmentsArr[idx], 10);
     });
-  } 
+  }
 }
 
 /******************************************************
@@ -125,7 +125,7 @@ export function addDOMaxCounts(vm, plan) {
 ******************************************************/
 
 export function setTableValues(vm) { //'this' is being passed from PlanSelectSvc class, binding all injected services, etc
-  const planCategories = vm.appCtrl.appdata.groupPlan.categories;
+  const planCategories = vm.appCtrl.appData.groupPlan.categories;
   const initialMedEnrollments = planCategories.medical.enrollments;
   const initialDenEnrollments = planCategories.dental.enrollments;
   const selectedMedPlans = vm.plans.medical.selected;
@@ -133,7 +133,7 @@ export function setTableValues(vm) { //'this' is being passed from PlanSelectSvc
   let samplePlan;
   let medEnrollVal = 0;
   let denEnrollVal = 0;
-  angular.forEach(vm.appdata.groupPlan.categories, (planType) => { //use the clone of appdata for view-specific properties
+  angular.forEach(vm.appDataClone.groupPlan.categories, (planType) => { //use the clone of appdata for view-specific properties
     if (planType.plans[0]) { //set samplePlan to the first of whichever major category has at least one plan
       samplePlan = planType.plans[0];
     }
@@ -141,7 +141,7 @@ export function setTableValues(vm) { //'this' is being passed from PlanSelectSvc
   //add an array of rate objects for the view
   //grab the first available plan and use its rates keys and values to create a generic rates object array for the table headers
   addTableRateCategories.apply(this, [vm, samplePlan, {forTableHeaders: true}]); //pass context, binding all injected services, etc
-      
+
   //populate initial enrollment totals
   if (selectedMedPlans && selectedMedPlans.length === 1) {
     angular.forEach(initialMedEnrollments, (val, prop) => {
@@ -161,9 +161,9 @@ export function setTableValues(vm) { //'this' is being passed from PlanSelectSvc
 
   //set some convenience values - TODO - break out and get rules to apply here
   vm.medRider = vm.appCtrl.groupOR ? //assumes a rule about who gets what riders, may also apply to populate plans
-    vm.plans.medical.riders.vis.selected[0] : 
-    vm.appCtrl.groupAK ? 
-    vm.plans.medical.riders.he.selected[0] : 
+    vm.plans.medical.riders.vis.selected[0] :
+    vm.appCtrl.groupAK ?
+    vm.plans.medical.riders.he.selected[0] :
     false;
 
   vm.denRider = vm.plans.dental.riders.orth.selected.length > 0 ? vm.plans.dental.riders.orth.selected[0] : false;
@@ -182,7 +182,7 @@ function checkAndResetSelectedPlanObjects(vm, isRider, isDOPlan, planType, planT
 ** Manage Enrollment Counts **
 *****************************/
 
-/*copy enrollments from the primary plan properties (eg, eePlanCount, etc) 
+/*copy enrollments from the primary plan properties (eg, eePlanCount, etc)
 to the count property in the view-specific rates array, in each "rateType" object*/
 function copyUpdatedCounts(plan) {
   this.$log.debug('THE PLAN CALLED WITHIN COPYUPDATED COUNTS');
@@ -202,7 +202,7 @@ function copyUpdatedCounts(plan) {
 //subtract direct option dental enrollments when required (for delta dental and delta dental riders)
 function mapCategoryEnrollmentsToPlan(vm, plan, option) {
   const subtractDO = option && option.subtractDO ? option.subtractDO : false;
-  const categoryEnrollmentObj = vm.appdata.groupPlan.categories[this.getPlanCategory(plan)].enrollments;
+  const categoryEnrollmentObj = vm.appDataClone.groupPlan.categories[this.getPlanCategory(plan)].enrollments;
   let doPlan;
   let doPlanRateObj;
 
@@ -233,7 +233,7 @@ function zeroEnrollments(plan) {
     angular.forEach(ratesArr, (ratesObj) => {
       if (angular.isDefined(ratesObj.count)) {
         ratesObj.count = 0;
-      } 
+      }
     });
   }
   for (const prop in plan) {
@@ -248,13 +248,13 @@ function manageEnrollmentsOnRemove(vm, params) {
   //zero its enrollments
   zeroEnrollments(params.updatedPlan);
   //if a single other med plan is still selected, give it all the enrollments
-  if (params.isMedPlan && params.singleMedStillSelected) { 
+  if (params.isMedPlan && params.singleMedStillSelected) {
     mapCategoryEnrollmentsToPlan.apply(this, [vm, params.medPlanRemaining]);
     //recursively pass this plan back through the updatePlans cycle, to get enrollmments to update for the payload
-    params.updatePlansFn(vm, params.medPlanRemaining, null, {remainingMedPlanUpdate: true}); 
+    params.updatePlansFn(vm, params.medPlanRemaining, null, {remainingMedPlanUpdate: true});
   }
   //if we're removing a delta dental DO plan, remove enrollments from the DO plan, too
-  if (params.isDualDenPrimary) { 
+  if (params.isDualDenPrimary) {
     const associatedDO = vm.plans.dental.directOption.selected[0];
     if (associatedDO) {
       zeroEnrollments(associatedDO);
@@ -272,7 +272,7 @@ function manageEnrollmentsOnUpdateOrAdd(vm, params) {
   if (params.isRider) {
     //copy medical riders enrollments from category enrollments
     //the enrollments may be split among plans, but the totals should be the same
-    if (params.isDenPlan && params.dualPlanPrimaryAlreadySelected) { 
+    if (params.isDenPlan && params.dualPlanPrimaryAlreadySelected) {
       mapCategoryEnrollmentsToPlan.apply(this, [vm, params.updatedPlan, {subtractDO: params.preselectDirectOption}]);
     } else {
       mapCategoryEnrollmentsToPlan.apply(this, [vm, params.updatedPlan]);
@@ -296,7 +296,7 @@ function manageEnrollmentsOnUpdateOrAdd(vm, params) {
   }
 }
 
-//figure out which plan enrollments to zero out and which to copy from category enrollments 
+//figure out which plan enrollments to zero out and which to copy from category enrollments
 function determineEnrollentsToCopyOrWipe(vm, params) {
   //if the plan being updated is to be removed
   if (params.removeThisPlan) {
@@ -326,11 +326,11 @@ export function updatePlan(vm, plansToUpdate, planTypeName, updatedPlan, callbac
   const isDenPlan = !isRider && this.REGEXS.dental.test(updatedPlan.planCategory) && !this.REGEXS.directOption.test(updatedPlan.planId);
   const isMedPlan = !isRider && this.REGEXS.medical.test(updatedPlan.planCategory);
   const isDualDenPrimary = (isDenPlan && updatedPlan.dual) && !isDOPlan; //this is a Delta plan for groups with DO
-  const viewPlanToUpdate = vm.appdata.groupPlan.categories[planTypeName].plans
-    .concat(vm.appdata.groupPlan.categories[planTypeName].riders)
+  const viewPlanToUpdate = vm.appDataClone.groupPlan.categories[planTypeName].plans
+    .concat(vm.appDataClone.groupPlan.categories[planTypeName].riders)
     .filter((plan) => plan.uniqueId === updatedPlan.uniqueId)[0];
-  const payloadPlanToUpdate = vm.appCtrl.appdata.groupPlan.categories[planTypeName].plans
-    .concat(vm.appCtrl.appdata.groupPlan.categories[planTypeName].riders)
+  const payloadPlanToUpdate = vm.appCtrl.appData.groupPlan.categories[planTypeName].plans
+    .concat(vm.appCtrl.appData.groupPlan.categories[planTypeName].riders)
     .filter((plan) => plan.uniqueId === updatedPlan.uniqueId)[0];
 
   /*this option is passed down from the controller during the validation of medical enrollments within and across plans
@@ -341,14 +341,14 @@ export function updatePlan(vm, plansToUpdate, planTypeName, updatedPlan, callbac
   as they are added or removed*/
   const preselectDirectOption = this.RulesSvc.rules.groupPlanRules.preselectDirectOption;
   //another medical plan has already been selected
-  const multipleMedSelected = vm.appdata.groupPlan.categories[planTypeName].plans
+  const multipleMedSelected = vm.appDataClone.groupPlan.categories[planTypeName].plans
     .filter((plan) => plan.selected && !plan.isRider).length > 1;
-  const medPlanRemainingArr = vm.appdata.groupPlan.categories[planTypeName].plans
+  const medPlanRemainingArr = vm.appDataClone.groupPlan.categories[planTypeName].plans
     .filter((plan) => plan.selected && !plan.isRider);
   const medPlanRemaining = medPlanRemainingArr[0];
   const singleMedStillSelected = medPlanRemainingArr.length === 1;
   //a Delta dental (dual) plan has already been selected
-  const dualPlanPrimaryAlreadySelected = vm.appdata.groupPlan.categories.dental.plans
+  const dualPlanPrimaryAlreadySelected = vm.appDataClone.groupPlan.categories.dental.plans
     .filter((plan) => plan.dual && plan.selected && !this.REGEXS.directOption.test(plan.planId)).length > 0;
 
   const remainingMedPlanUpdate = option && option.remainingMedPlanUpdate;
@@ -387,30 +387,30 @@ export function updatePlan(vm, plansToUpdate, planTypeName, updatedPlan, callbac
 
   //nullify AK plan selection if all med plans are being removed
   if (removeThisPlan && isMedPlan && medPlanRemainingArr.length === 0) {
-    vm.appCtrl.appdata.alaskaNetworkSelection = null;
+    vm.appCtrl.appData.alaskaNetworkSelection = null;
   }
-  
+
   //remove values from the vm version that are used for display purposes only
   const updatedPlanCopy = removePlanViewValues(angular.copy(updatedPlan));
-  
-  //hacky way of resetting these lost selected arrays
-  checkAndResetSelectedPlanObjects(vm, isRider, isDOPlan, updatedPlan.planType, planTypeName); 
 
-  
+  //hacky way of resetting these lost selected arrays
+  checkAndResetSelectedPlanObjects(vm, isRider, isDOPlan, updatedPlan.planType, planTypeName);
+
+
   //use the copy of the updated plan to set values to the payload appdata (no view values)
   angular.copy(updatedPlanCopy, payloadPlanToUpdate);
 
-  //do the same to the same plan in the clone of appCtrl.appdata, which is used for the select in the view
+  //do the same to the same plan in the clone of appCtrl.appData, which is used for the select in the view
   angular.copy(updatedPlanCopy, viewPlanToUpdate);
 
   //filter out plans that aren't the one being selected
   filterBeforeAddBack(vm, updatedPlan, planTypeName, isRider, isDOPlan);
-  
+
   //then, add back the selected plan with its view values
   if (!removeThisPlan) { //if this plan is added or updated
     addBackPlan.apply(this, [vm, updatedPlan, planTypeName, isRider, isDOPlan]);
   }
-   
+
   if (!isRider && vm.plans[planTypeName].selected.length === 0) { //if the user has just emptied plans
     clearRiders(vm, planTypeName, updatePlansFn);
   }
@@ -430,13 +430,13 @@ export function updatePlan(vm, plansToUpdate, planTypeName, updatedPlan, callbac
 
 function filterBeforeAddBack(vm, updatedPlan, planTypeName, isRider, isDOPlan) {
   const updatedPlanId = updatedPlan.uniqueId;
-  isRider ? vm.plans[planTypeName].riders[getRiderTypeName(updatedPlan.planType)].selected = 
+  isRider ? vm.plans[planTypeName].riders[getRiderTypeName(updatedPlan.planType)].selected =
     vm.plans[planTypeName].riders[getRiderTypeName(updatedPlan.planType)].selected
-    .filter((plan) => !(plan.uniqueId === updatedPlanId)) : 
-  isDOPlan ? vm.plans[planTypeName].directOption.selected = 
+    .filter((plan) => !(plan.uniqueId === updatedPlanId)) :
+  isDOPlan ? vm.plans[planTypeName].directOption.selected =
     vm.plans[planTypeName].directOption.selected
-    .filter((plan) => !(plan.uniqueId === updatedPlanId)) : 
-  vm.plans[planTypeName].selected = 
+    .filter((plan) => !(plan.uniqueId === updatedPlanId)) :
+  vm.plans[planTypeName].selected =
     vm.plans[planTypeName].selected
     .filter((plan) => !(plan.uniqueId === updatedPlanId));
 }
@@ -444,7 +444,7 @@ function filterBeforeAddBack(vm, updatedPlan, planTypeName, isRider, isDOPlan) {
 function addBackPlan(vm, updatedPlan, planTypeName, isRider, isDOPlan) {
   addPlanViewValues.apply(this, [vm, updatedPlan, {isDOPlan: isDOPlan}]);
   isRider ? vm.plans[planTypeName].riders[getRiderTypeName(updatedPlan.planType)].selected.push(updatedPlan) :
-    isDOPlan ? vm.plans[planTypeName].directOption.selected.push(updatedPlan) : 
+    isDOPlan ? vm.plans[planTypeName].directOption.selected.push(updatedPlan) :
     vm.plans[planTypeName].selected.push(updatedPlan);
 }
 
@@ -479,7 +479,7 @@ function clearRiders(vm, planTypeName, updatePlans) {
     riderType.add = false;
   });
   angular.forEach(vm.plans[planTypeName].riders, (riderType) => {
-    angular.forEach(riderType.selected, (rider) => { 
+    angular.forEach(riderType.selected, (rider) => {
       rider.selected = false;
       updatePlans(vm, rider);
     });
