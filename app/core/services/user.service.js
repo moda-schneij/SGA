@@ -58,7 +58,7 @@ export default class UserSvc {
 }
 
 function confirmSuccess() {
-  this.$rootScope.$emit('loginSuccess');
+  //this.$rootScope.$emit('loginSuccess');
   this.$state.go('RootLoggedIn');
 }
 

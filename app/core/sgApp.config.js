@@ -19,12 +19,13 @@ import decorators from './sgApp.decorators';
 import rootStates from '../root/sgApp.states.root';
 import applicationStates from '../views/application/sgApp.states.application';
 
-/*@ngInject*/
 const sgaConfig = (CONFIGS, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider, $logProvider, $locationProvider, $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) => {
+  'ngInject';
   $qProvider.errorOnUnhandledRejections(false);
   $httpProvider.interceptors.push('AuthInterceptorSvc');
   $logProvider.debugEnabled(!PROD); //disable debug logging in production
   $locationProvider.html5Mode(false);
+  $locationProvider.hashPrefix('');
   $urlRouterProvider.otherwise('/oops');
   //!__SER_CONTEXT__ && $urlRouterProvider.deferIntercept();
   $sceDelegateProvider.resourceUrlWhitelist([

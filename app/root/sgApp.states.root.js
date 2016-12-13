@@ -16,51 +16,19 @@ const PROD = __PROD__ ;
  * This state's primary purposes are:
  * 1) Shows the outermost chrome (including the navigation and logout for authenticated users)
  * 2) Provide a viewport (ui-view) for a substate to plug into
-**/
+ **/
 
 const rootState = {
   name: 'Root',
   component: 'sgaRoot',
-  redirectTo: !(__SER_CONTEXT__) ? 'LoginView' : '',
+  redirectTo: (trans) => {
+    const UserSvc = trans.injector().get('UserSvc');
+    return rootRedirect(UserSvc);
+  },
   url: '',
   resolve: {
     footerContent: getFooterContent
   }
-};
-
-const authState = {
-  name: 'LoggedIn',
-  data: {
-    requiresAuth: true
-  }
-  // },
-  // resolve: {
-  //   appData: ($transition$, ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
-  //     'ngInject';
-  //     const idObj = {};
-  //     const savedAppData = ApplicationSvc.getApplication();
-  //     if ($stateParams.id) { idObj.appId = $stateParams.id };
-  //     if ($stateParams.quote_id) { idObj.quoteId = $stateParams.quote_id };
-  //     if ($stateParams.ein) { idObj.ein = $stateParams.ein };
-  //     return savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj);
-  //     //return UserSvc.getIsLoggedIn() ? (savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj)) : null;
-  //   },
-  //   rules: ($transition$, RulesSvc, UserSvc) => {
-  //     'ngInject';
-  //     return RulesSvc.rulesAsync;
-  //     //return UserSvc.getIsLoggedIn() ? RulesSvc.rulesAsync : null;
-  //   },
-  //   options: ($transition$, OptionsSvc, UserSvc) => {
-  //     'ngInject'
-  //     return OptionsSvc.optionsAsync;
-  //     //return UserSvc.getIsLoggedIn() ? OptionsSvc.optionsAsync : null;
-  //   },
-  //   statesArray: ($transition$, CachingSvc, UserSvc) => {
-  //     'ngInject';
-  //     return CachingSvc.getStates();
-  //     //return UserSvc.getIsLoggedIn() ? CachingSvc.getStates() : null;
-  //   }
-  // }
 };
 
 const loginState = {
@@ -93,40 +61,44 @@ const notFoundState = {
 
 const rootLoggedInState = {
   name: 'RootLoggedIn',
-  //parent: 'LoggedIn',
   component: 'sgaRoot',
   redirectTo: 'ApplicationView',
   url: '',
   resolve: {
     appData: ($transition$, ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
       'ngInject';
-      const idObj = {};
       const savedAppData = ApplicationSvc.getApplication();
-      if ($stateParams.id) { idObj.appId = $stateParams.id };
-      if ($stateParams.quote_id) { idObj.quoteId = $stateParams.quote_id };
-      if ($stateParams.ein) { idObj.ein = $stateParams.ein };
-      return savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj);
-      //return UserSvc.getIsLoggedIn() ? (savedAppData ? savedAppData : ApplicationSvc.getInitialApplication(idObj)) : null;
+      if (savedAppData) {
+        return savedAppData;
+      } else {
+        const idObj = {};
+        const existingAppId = ApplicationSvc.getAppID();
+        idObj.appId = existingAppId ? existingAppId :
+          ($stateParams.id ? $stateParams.id : null);
+        idObj.quoteId = $stateParams.quote_id || null;
+        idObj.ein = $stateParams.ein || null;
+        return ApplicationSvc.getInitialApplication(idObj);
+      }
     },
-    rules: ($transition$, RulesSvc, UserSvc) => {
+    rules: ($transition$, RulesSvc) => {
       'ngInject';
       return RulesSvc.rulesAsync;
-      //return UserSvc.getIsLoggedIn() ? RulesSvc.rulesAsync : null;
     },
-    options: ($transition$, OptionsSvc, UserSvc) => {
+    options: ($transition$, OptionsSvc) => {
       'ngInject'
       return OptionsSvc.optionsAsync;
-      //return UserSvc.getIsLoggedIn() ? OptionsSvc.optionsAsync : null;
     },
-    statesArray: ($transition$, CachingSvc, UserSvc) => {
+    statesArray: ($transition$, CachingSvc) => {
       'ngInject';
       return CachingSvc.getStates();
-      //return UserSvc.getIsLoggedIn() ? CachingSvc.getStates() : null;
     },
     footerContent: getFooterContent
   },
   data: {
     requiresAuth: true
+  },
+  resolvePolicy: {
+    when: 'EAGER'
   }
 }
 
@@ -135,7 +107,9 @@ const applicationState = {
   parent: 'RootLoggedIn',
   url: '/application',
   //component: 'applicationComponent',
-  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK">
+  template: `<application-component app-data="$ctrl.appData" quote-id="$ctrl.quoteId" 
+    app-id="$ctrl.appId" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray" 
+    group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK">
     </application-component>`,
   data: {
     requiresAuth: true,
@@ -143,43 +117,44 @@ const applicationState = {
     linkTitle: 'Home',
     addToMenu: true
   }
-  // , resolve: {
-  //   appData: (appData) => {
-  //     return appData;
-  //   },
-  //   rules: (rules) => {
-  //     return rules;
-  //   },
-  //   options: (options) => {
-  //     return options;
-  //   },
-  //   statesArray: (statesArray) => {
-  //     return statesArray;
-  //   },
-  //   appId: (appData) => {
-  //     return appData.appId;
-  //   },
-  //   quoteId: (appData) => {
-  //     return appData.quoteId;
-  //   }
+  // ,
+  // resolve: {
+  //   appData: appData
   // }
 };
 
+//TODO - revisit this
+const logoutState = {
+  name: 'Logout',
+  parent: 'Root',
+  redirectTo: 'NotFoundView'
+}
+
+function rootRedirect(UserSvc) {
+  const isLoggedIn = UserSvc.getIsLoggedIn();
+  const standalone = !(__SER_CONTEXT__);
+  return isLoggedIn ? 'ApplicationView' : (!(__SER_CONTEXT__) ? 'LoginView' : 'Logout');
+  //return isLoggedIn ? 'ApplicationView' : 'LoginView';
+}
+
 function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
   'ngInject';
-  const checkSavedFooter = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) &&
-    StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer;
-  let storedFooterContent = checkSavedFooter ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
-  if (!storedFooterContent) {
+  if (!StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY)) {
+    StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, {}); //set to an empty object if there is no key set here
+  }
+  const checkSavedFooter = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer; //check for existing content
+  let storedFooterContent = checkSavedFooter ? checkSavedFooter : null;
+  if (storedFooterContent) {
+    return $sce.trustAsHtml(storedFooterContent);
+  } else {
     ContentSvc.getFooterContent().then((response) => {
       if (response.footerContent) {
         return $sce.trustAsHtml(response.footerContent);
       }
     });
   }
-  return $sce.trustAsHtml(storedFooterContent);
 }
 
-const rootStates = [rootState, loginState, rootLoggedInState, notFoundState, applicationState];
+const rootStates = [rootState, loginState, logoutState, rootLoggedInState, notFoundState, applicationState];
 
 export default rootStates;
