@@ -247,8 +247,8 @@ function appDataClone() {
 function updateAppData() {
   vmVars.totalMedEnroll = 0;
   vmVars.totalDenEnroll = 0;
-  appdata = this.vm.appCtrl.appData;
-  plansObj = vmVars.plansObj = appdata.groupPlan.categories;
+  appData = this.vm.appCtrl.appData;
+  plansObj = vmVars.plansObj = appData.groupPlan.categories;
   medPlans = vmVars.medPlans = plansObj.medical;
   denPlans = vmVars.denPlans = plansObj.dental;
   angular.forEach(medPlans.enrollments, (val) => {

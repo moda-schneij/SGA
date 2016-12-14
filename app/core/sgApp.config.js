@@ -36,10 +36,8 @@ const sgaConfig = (CONFIGS, $qProvider, $httpProvider, $urlRouterProvider, $stat
   ]);
   usSpinnerConfigProvider.setDefaults(CONFIGS.spinner);
   ngDialogProvider.setDefaults(CONFIGS.dialogDefaults);
-  uiSelectConfig = angular.extend(uiSelectConfig, {
-    theme: 'select2',
-    resetSearchInput: true
-  });
+  uiSelectConfig.theme = 'select2';
+  uiSelectConfig.resetSearchInput = true;
   //decorate the number picker directive
   Object.keys(decorators).forEach((name) => $provide.decorator(name, decorators[name]));
   //rootStates.concat(applicationStates).forEach((state) => $stateProvider.state(state));

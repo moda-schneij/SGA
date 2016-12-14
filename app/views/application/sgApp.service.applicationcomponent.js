@@ -253,7 +253,7 @@ export default class ApplicationComponentSvc {
       this.$log.debug(response);
       vm.appData = vm.appData = newAppData; //get appData consistent across components
       this.ApplicationSvc.setApplication(response.data.application); //save to client storage
-      vm.rootCtrl.persistAppData(); //update root component's appData object
+      vm.rootCtrl.persistAppData(response.data.application); //update root component's appData object
       vm.applicationform.$setPristine();
       vm.applicationform.$setUntouched();
       this.MessagesSvc.clearAll();

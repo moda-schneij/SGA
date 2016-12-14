@@ -34,18 +34,17 @@ import medEnrollmentValidatorDirectiveFn from '../views/application/planselect/s
 
 const rootComponents = {sgaRoot, applicationComponent, loginComponent, groupSizeFormComponent, planSelectFormComponent, groupInfoFormComponent, cobraFormComponent, agentSalesFormComponent};
 
+//eslint-disable-next-line no-array-constructor
 const rootSvcs = new Array(RootComponentSvc, PlanSelectSvc, ApplicationComponentSvc, CobraComponentSvc, GroupsizeComponentSvc, GroupinfoComponentSvc);
 
+//eslint-disable-next-line angular/module-setter
 const rootModule = angular.module('sgAppRoot', []);
 
-Object.keys(rootComponents).forEach((name) => {
-  return rootModule.component(name, rootComponents[name])
-});
+Object.keys(rootComponents).forEach((name) => rootModule.component(name, rootComponents[name]));
 
-rootSvcs.forEach((service) => {
-  return rootModule.service(service.name, service);
-});
+rootSvcs.forEach((service) => rootModule.service(service.name, service));
 
+//eslint-disable-next-line angular/module-getter
 rootModule
   .directive('medEnrollmentValidator', medEnrollmentValidatorDirectiveFn)
   .config(($stateProvider) => {

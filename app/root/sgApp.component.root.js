@@ -82,8 +82,8 @@ function sgAppCtrl(RootComponentSvc, $transitions, $log, $scope, $rootScope, Spi
   };
 
   //I will be calling this from the nested application component controller, which has a binding to this controller
-  vm.persistAppData = function() {
-    setAppData(vm.appData);
+  vm.persistAppData = function(appData) {
+    RootComponentSvc.setAppData(appData, vm);
   };
 
   function initView() {

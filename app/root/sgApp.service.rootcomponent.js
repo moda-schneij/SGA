@@ -28,6 +28,8 @@ export default class RootComponentSvc {
     this.setRouteValues = this.setRouteValues.bind(this);
     this.setRouteValuesAndReady = this.setRouteValuesAndReady.bind(this);
     this.setPageValues = this.setPageValues.bind(this);
+    this.resetRootForm = this.resetRootForm.bind(this);
+    this.setAppData = this.setAppData.bind(this);
   }
 
   init(vm) {
@@ -81,23 +83,23 @@ export default class RootComponentSvc {
       vm.rootform.$setUntouched();
     }
   }
-}
 
-// function setAppData(data, vm) {
-//   const {$log, UtilsSvc} = this;
-//   $log.debug('setting appData in root component: ');
-//   $log.debug(response);
-//   if (UtilsSvc.notNullOrEmptyObj(data)) {
-//     //vm.appdata = data;
-//     //also to pass as props to the application, for forking behavior, etc
-//     vm.groupOR = data.group.clientState === 'OR';
-//     vm.groupAK = data.group.clientState === 'AK';
-//     this.setComputedProps(vm);
-//   } else {
-//     $log.error('no app data in root component');
-//   }
-//   return true;
-// }
+  setAppData(data, vm) {
+    const {$log, UtilsSvc} = this;
+    $log.debug('setting appData in root component: ');
+    $log.debug(data);
+    if (UtilsSvc.notNullOrEmptyObj(data)) {
+      //vm.appdata = data;
+      //also to pass as props to the application, for forking behavior, etc
+      vm.groupOR = data.group.clientState === 'OR';
+      vm.groupAK = data.group.clientState === 'AK';
+      this.setComputedProps(vm);
+    } else {
+      $log.error('no app data in root component');
+    }
+    return true;
+  }
+}
 
 /*function handleAppDataError(error) {
   const {$log} = this;

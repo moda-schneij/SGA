@@ -7,9 +7,6 @@
  * Root states of the Small Group Application app.
  */
 
-const SER_CONTEXT = __SER_CONTEXT__;
-const PROD = __PROD__ ;
-
 /**
  * This is the parent state for the entire application.
  *
