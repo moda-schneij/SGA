@@ -40,9 +40,10 @@ export default class NavigationSvc {
     }, dummyState);
     const finalAppRouteName = finalAppRoute && finalAppRoute.name ? finalAppRoute.name : null;
     const sgaClientVal = appData.sgaClient ? angular.fromJson(appData.sgaClient) : {};
+    const nextInProgressRouteName = PROGRESS_KEY ? sgaClientVal[PROGRESS_KEY] : null;
     //if this is an in-progress app, go back to last completed or saved step, otherwise to the end of the application form
-    return appData.appStatus === 'P' ? sgaClientVal[PROGRESS_KEY] : angular.isString(finalAppRouteName) ?
-      finalAppRouteName : null; //should be a route name as a string or undefined
+    return appData.appStatus === 'P' ? (nextInProgressRouteName ? nextInProgressRouteName : appRouteEntries[0].name) :
+      (angular.isString(finalAppRouteName) ? finalAppRouteName : null); //should be a route name as a string or undefined
   }
 
   returnToLastStep() {

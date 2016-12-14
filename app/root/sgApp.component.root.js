@@ -35,17 +35,18 @@ export const sgaRoot = {
 };
 
 /*@ngInject*/
-function sgAppCtrl(RootComponentSvc, $transitions, $log, $scope, $rootScope, SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, APP_ROOT, DataSvc, $sce) {
+function sgAppCtrl(RootComponentSvc, $transitions, $log, $scope, $rootScope, SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, StorageSvc, STORAGE_KEYS, APP_ROOT, DataSvc, $sce) {
   const vm = this;
+  const existingFooterContent = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) && StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
   vm.quoteId = quoteId = UrlSvc.getQuoteIdFromUrl() || null;
   vm.ein = ein = UrlSvc.getEINFromUrl() || null;
   vm.appId = appId = ApplicationSvc.getAppID() ? ApplicationSvc.getAppID() :
     UrlSvc.getAppIdFromUrl() ? UrlSvc.getAppIdFromUrl() : null;
   vm.serFrameUrl = $sce.trustAsResourceUrl(ConstantsSvc.SER_ROOT_URL + '/?iframe=true');
-  vm.footerContent = '';
   vm.appRoot = APP_ROOT;
   vm.isLoggedIn = UserSvc.getIsLoggedIn();
   vm.displaySidebar = false;
+  vm.footerContent = vm.footerContent || $sce.trustAsHtml(existingFooterContent);
 
   vm.setRouteReady = () => {
     SpinnerControlSvc.stopSpin();
@@ -151,7 +152,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $log, $scope, $rootScope, Spi
   vm.$onDestroy = function() {
     deregisterLogout();
     deregisterCallLogout();
-  }
+  };
 
   /*
   * TRANSITIONS

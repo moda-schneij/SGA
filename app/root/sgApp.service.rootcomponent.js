@@ -107,17 +107,3 @@ export default class RootComponentSvc {
   $log.error(error);
   return true;
 }*/
-
-// function footerContentSuccess(response, vm) {
-//   const {$log, $sce} = this;
-//   const footerContent = $sce.trustAsHtml(response);
-//   $log.debug(footerContent);
-//   vm.footerContent = footerContent;
-//   return true;
-// }
-//
-// function footerContentError(error) {
-//   const {$log} = this;
-//   $log.error(error);
-//   return true;
-// }

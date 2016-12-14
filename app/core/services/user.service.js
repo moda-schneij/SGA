@@ -59,11 +59,9 @@ export default class UserSvc {
 }
 
 function confirmSuccess() {
-  const NavigationSvc = this.$injector.get('NavigationSvc');
   //this.$rootScope.$emit('loginSuccess');
-  //this.$state.go('RootLoggedIn');
+  this.$state.go('RootLoggedIn');
   //this.$state.go('ApplicationView');
-  NavigationSvc.returnToLastStep();
 }
 
 function confirmError(e) {

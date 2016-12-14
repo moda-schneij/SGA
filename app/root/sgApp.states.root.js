@@ -14,31 +14,37 @@
  * 1) Shows the outermost chrome (including the navigation and logout for authenticated users)
  * 2) Provide a viewport (ui-view) for a substate to plug into
  **/
-
+//foo
 const rootState = {
   name: 'Root',
-  abstract: true,
+  //url: '',
+  //abstract: true, //can't redirect from abstract ... with a url?
   component: 'sgaRoot',
+  // redirectTo: (trans) => {
+  //   const $q = trans.injector().get('$q');
+  //   const footerContent = getFooterContent(trans);
+  //   const nextRoute = rootRedirect(trans);
+  //   return $q.when(footerContent, () => nextRoute);
+  // },
   redirectTo: (trans) => {
-    const UserSvc = trans.injector().get('UserSvc');
-    return rootRedirect(UserSvc);
+    debugger;
+    rootRedirect(trans)
   },
-  url: '',
   resolve: {
     footerContent: getFooterContent
   }
 };
 
-const authState = {
-  name: 'LoggedIn',
-  abstract: true,
-  resolve: {
-    authResolve: getInitialData
-  },
-  data: {
-    requiresAuth: true
-  }
-};
+// const authState = {
+//   name: 'LoggedIn',
+//   abstract: true,
+//   resolve: {
+//     authResolve: getInitialData
+//   },
+//   data: {
+//     requiresAuth: true
+//   }
+// };
 
 const loginState = {
   name: 'LoginView',
@@ -58,7 +64,7 @@ const notFoundState = {
   name: 'NotFoundView',
   parent: 'Root',
   url: '/oops',
-  template: '<p>Sorry, but you\'ve reached an invalid page. <a ui-sref=\'home\'>Return home</a>.</p>',
+  template: '<p>Sorry, but you\'ve reached an invalid page. <a ui-sref="home">Return home</a>.</p>',
   data: {
     title: 'Oops!',
     addToMenu: false,
@@ -71,15 +77,8 @@ const rootLoggedInState = {
   // abstract: true,
   // parent: 'LoggedIn',
   component: 'sgaRoot',
-  // redirectTo: 'ApplicationView',
   url: '',
-  // resolve: {
-  //   appData: (authResolve) => authResolve.appData,
-  //   rules: (authResolve) => authResolve.rules,
-  //   options: (authResolve) => authResolve.options,
-  //   statesArray: (authResolve) => authResolve.statesArray,
-  //   footerContent: (authResolve) => authResolve.footerContent
-  // },
+  redirectTo: 'ApplicationView',
   resolve: {
     appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
       'ngInject';
@@ -117,9 +116,19 @@ const rootLoggedInState = {
 
 const applicationState = {
   name: 'ApplicationView',
-  abstract: true,
+  //abstract: true,
   parent: 'RootLoggedIn',
   url: '/application',
+  resolve: {
+    appData: ['appData', (appData) => appData],
+    rules: ['rules', (rules) => rules],
+    options: ['options', (options) => options],
+    statesArray: ['statesArray', (statesArray) => statesArray],
+  },
+  // redirectTo: (trans) => {
+  //   return rootRedirect(trans);
+  // },
+  //??? go back to having the applicationComponent manage application pagination state?
   //component: 'applicationComponent',
   template: `<application-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"
   states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK">
@@ -130,35 +139,6 @@ const applicationState = {
     linkTitle: 'Home',
     addToMenu: true
   }
-  // resolve: {
-  //   appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
-  //     'ngInject';
-  //     const savedAppData = ApplicationSvc.getApplication();
-  //     if (savedAppData) {
-  //       return savedAppData;
-  //     } else {
-  //       const idObj = {};
-  //       const existingAppId = ApplicationSvc.getAppID();
-  //       idObj.appId = existingAppId ? existingAppId :
-  //         ($stateParams.id ? $stateParams.id : null);
-  //       idObj.quoteId = $stateParams.quote_id || null;
-  //       idObj.ein = $stateParams.ein || null;
-  //       return ApplicationSvc.getInitialApplication(idObj);
-  //     }
-  //   },
-  //   rules: (RulesSvc) => {
-  //     'ngInject';
-  //     return RulesSvc.rulesAsync;
-  //   },
-  //   options: (OptionsSvc) => {
-  //     'ngInject'
-  //     return OptionsSvc.optionsAsync;
-  //   },
-  //   statesArray: (CachingSvc) => {
-  //     'ngInject';
-  //     return CachingSvc.getStates();
-  //   }
-  // }
 };
 
 //TODO - revisit this
@@ -168,15 +148,21 @@ const logoutState = {
   redirectTo: 'NotFoundView'
 };
 
-function rootRedirect(UserSvc) {
+function rootRedirect(trans) {
+  const UserSvc = trans.injector().get('UserSvc');
+  const NavigationSvc = trans.injector().get('NavigationSvc');
   const isLoggedIn = UserSvc.getIsLoggedIn();
+  const nextRoute = NavigationSvc.returnToLastStep();
   const standalone = !(__SER_CONTEXT__);
-  return isLoggedIn ? 'ApplicationView' : (!(__SER_CONTEXT__) ? 'LoginView' : 'Logout');
-  //return isLoggedIn ? 'ApplicationView' : 'LoginView';
+  return isLoggedIn ? nextRoute : (standalone ? 'LoginView' : 'Logout');
 }
 
 function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
   'ngInject';
+  // const $sce = trans.injector().get('$sce');
+  // const StorageSvc = trans.injector().get('StorageSvc');
+  // const ContentSvc = trans.injector().get('ContentSvc');
+  // const STORAGE_KEYS = trans.injector().get('STORAGE_KEYS');
   if (!StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY)) {
     StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, {}); //set to an empty object if there is no key set here
   }
@@ -226,6 +212,6 @@ function getInitialData() {
   return returnObj;
 }
 
-const rootStates = [authState, rootState, loginState, logoutState, rootLoggedInState, notFoundState, applicationState];
+const rootStates = [rootState, loginState, logoutState, rootLoggedInState, notFoundState, applicationState];
 
 export default rootStates;

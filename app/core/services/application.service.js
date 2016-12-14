@@ -42,8 +42,6 @@ export default class ApplicationSvc {
     this.setApplication = this.setApplication.bind(this);
     this.checkin = this.checkin.bind(this);
     this.setManualProcess = this.setManualProcess.bind(this);
-    this.getNextStep = this.getNextStep.bind(this);
-    this.returnToLastStep = this.returnToLastStep.bind(this);
   }
 
   getApplication() {

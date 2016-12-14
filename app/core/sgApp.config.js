@@ -21,7 +21,7 @@ import applicationStates from '../views/application/sgApp.states.application';
 
 const sgaConfig = (CONFIGS, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider, $logProvider, $locationProvider, $sceDelegateProvider, usSpinnerConfigProvider, ngDialogProvider, uiSelectConfig, $provide) => {
   'ngInject';
-  $qProvider.errorOnUnhandledRejections(false);
+  //$qProvider.errorOnUnhandledRejections(false);
   $httpProvider.interceptors.push('AuthInterceptorSvc');
   $logProvider.debugEnabled(!PROD); //disable debug logging in production
   $locationProvider.html5Mode(false);
@@ -40,7 +40,6 @@ const sgaConfig = (CONFIGS, $qProvider, $httpProvider, $urlRouterProvider, $stat
   uiSelectConfig.resetSearchInput = true;
   //decorate the number picker directive
   Object.keys(decorators).forEach((name) => $provide.decorator(name, decorators[name]));
-  //rootStates.concat(applicationStates).forEach((state) => $stateProvider.state(state));
 };
 
 export default sgaConfig;
