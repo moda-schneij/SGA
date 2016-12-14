@@ -126,7 +126,7 @@ export default class ApplicationSvc {
             this.SpinnerControlSvc.stopSpin();
             this.AuthenticationSvc.logout();
           } else {
-          /*if we're in development, use a fake id
+            /*if we're in development, use a fake id
           (but this has mostly been supplanted by the ability to login with an ID during dev)*/
             this.DataSvc.application.get(this.FAKE_APPID).then(
               fetchApplicationSuccess.bind(angular.extend({}, {fakeApp: true}, thisObj)),
@@ -478,6 +478,8 @@ function fetchApplicationSuccess(_response) {
   //the needed objects either are or aren't on a nested "data" object
   let response = angular.isDefined(_response.data) ? _response.data : _response;
   //attempt to normalize the $resource promise response
+  //for some reason, this must be working
+  //eslint-disable-next-line angular/json-functions
   response = JSON.parse(angular.toJson(response));
   const appObj = this.UtilsSvc.checkAndSetToNull(response.application); //the application itself
   const optionsObj = this.UtilsSvc.checkAndSetToNull(response.options); //metadata for the ui (mostly selects)

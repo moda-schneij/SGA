@@ -145,19 +145,19 @@ export default class GroupinfoComponentSvc {
   }
 
   copyBillingAddress(vm) {
-      let primAddrCopy = null;
+    let primAddrCopy = null;
 
-      vm.appData.group.billingName = angular.copy(vm.appData.group.employerLegalName);
+    vm.appData.group.billingName = angular.copy(vm.appData.group.employerLegalName);
 
-      if (!(/2016/).test(vm.appCtrl.effDate.getFullYear())) {
-        primAddrCopy = angular.copy(vm.appData.group.address[1]);
-        primAddrCopy.addressType = 'BILL';
-        vm.appData.group.address[2] = primAddrCopy;
-      } else {
-        primAddrCopy = angular.copy(vm.appData.group.address[0]);
-        primAddrCopy.addressType = 'BILL';
-        vm.appData.group.address[1] = primAddrCopy;
-      }
+    if (!(/2016/).test(vm.appCtrl.effDate.getFullYear())) {
+      primAddrCopy = angular.copy(vm.appData.group.address[1]);
+      primAddrCopy.addressType = 'BILL';
+      vm.appData.group.address[2] = primAddrCopy;
+    } else {
+      primAddrCopy = angular.copy(vm.appData.group.address[0]);
+      primAddrCopy.addressType = 'BILL';
+      vm.appData.group.address[1] = primAddrCopy;
+    }
   }
 
   clearBillingContact(vm) {

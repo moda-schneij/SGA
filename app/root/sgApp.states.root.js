@@ -53,7 +53,6 @@ const loginState = {
     title: 'Login',
     linkTitle: 'Home',
     addToMenu: false,
-    doNotBlock: true,
     overrideDefaultTitle: true
   }
 };
@@ -66,7 +65,6 @@ const notFoundState = {
   data: {
     title: 'Oops!',
     addToMenu: false,
-    doNotBlock: true,
     overrideDefaultTitle: true
   }
 };

@@ -11,8 +11,10 @@ module.exports = {
         "angular"
     ],
     "globals": {
-        "jQuery": 1,
-        "$": 1
+        "jQuery": false, //set to false to disallow overwriting
+        "$": false,
+        "__PROD__": false,
+        "__SER_CONTEXT__": false
     },
     "parserOptions": {
         "sourceType": "module"
@@ -73,7 +75,10 @@ module.exports = {
         "func-names": "off",
         "func-style": [
             "error",
-            "declaration"
+            "declaration",
+            {
+              "allowArrowFunctions": true
+            }
         ],
         "generator-star-spacing": "error",
         "global-require": "error",
@@ -87,7 +92,7 @@ module.exports = {
         "jsx-quotes": "error",
         "key-spacing": "warn",
         "keyword-spacing": "off",
-        "lines-around-comment": "error",
+        "lines-around-comment": "warn",
         "max-depth": "error",
         "max-len": "off",
         "max-nested-callbacks": "error",
