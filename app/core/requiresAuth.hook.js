@@ -31,10 +31,16 @@ export default function authHookRunBlock($transitions) {
     const AuthenticationSvc = transition.injector().get('AuthenticationSvc');
     const UserSvc = transition.injector().get('UserSvc');
     const $state = transition.router.stateService;
-    //TODO - use other services to prompt and return user to SER in that context, instead of dumping to login
+    const $log = transition.injector().get('$log');
+    //$log.debug('redirectedFrom', transition.redirectedFrom());
     if (!UserSvc.getIsLoggedIn()) {
-      // eslint-disable-next-line no-undefined
-      return $state.target('LoginView', undefined, { location: false });
+      if (!__SER_CONTEXT__) {
+        // eslint-disable-next-line no-undefined
+        //return $state.target('LoginView', undefined, { location: false });
+        $state.go('LoginView');
+      } else {
+        AuthenticationSvc.handleUnauth(); //TODO - figure out best call to make here
+      }
     }
   };
 

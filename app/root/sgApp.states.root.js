@@ -22,18 +22,26 @@ const rootState = {
   component: 'sgaRoot',
   // redirectTo: (trans) => {
   //   const $q = trans.injector().get('$q');
-  //   const footerContent = getFooterContent(trans);
+  //   const footerContent = getFooterContent();
   //   const nextRoute = rootRedirect(trans);
   //   return $q.when(footerContent, () => nextRoute);
   // },
-  redirectTo: (trans) => {
-    debugger;
-    rootRedirect(trans)
-  },
+  // redirectTo: (trans) => {
+  //   debugger;
+  //   rootRedirect(trans)
+  // },
   resolve: {
     footerContent: getFooterContent
+    // ,returnTo: ($transition$) => {
+    //   const $state = $transition$.router.stateService;
+    //   const nextStateName = rootRedirect($transition$);
+    //   $state.go(nextStateName);
+    //   return nextStateName;
+    // }
   }
 };
+
+//foo
 
 // const authState = {
 //   name: 'LoggedIn',
@@ -106,8 +114,9 @@ const rootLoggedInState = {
     statesArray: (CachingSvc) => {
       'ngInject';
       return CachingSvc.getStates();
-    },
-    footerContent: getFooterContent
+    }
+    //,
+    //footerContent: getFooterContent
   },
   data: {
     requiresAuth: true
