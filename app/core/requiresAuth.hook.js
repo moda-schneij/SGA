@@ -28,16 +28,18 @@ export default function authHookRunBlock($transitions) {
   // if the user is not currently authenticated (according to the AuthService)
 
   const redirectToLogin = (transition) => {
+    const abort = (/^.{0} | 'LoginView'$/).test(transition.from().name);
     const AuthenticationSvc = transition.injector().get('AuthenticationSvc');
     const UserSvc = transition.injector().get('UserSvc');
-    const $state = transition.router.stateService;
     const $log = transition.injector().get('$log');
-    //$log.debug('redirectedFrom', transition.redirectedFrom());
-    if (!UserSvc.getIsLoggedIn()) {
+    const $state = transition.router.stateService;
+    const isLoggedIn = UserSvc.getIsLoggedIn();
+    $log.debug('Inside requiresAuth hook, is logged in?', isLoggedIn);
+    if (!isLoggedIn && !abort) {
       if (!__SER_CONTEXT__) {
         // eslint-disable-next-line no-undefined
-        //return $state.target('LoginView', undefined, { location: false });
-        $state.go('LoginView');
+        return $state.target('LoginView', undefined, { location: true });
+        //$state.go('LoginView');
       } else {
         AuthenticationSvc.handleUnauth(); //TODO - figure out best call to make here
       }
