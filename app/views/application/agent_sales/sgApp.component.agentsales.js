@@ -31,7 +31,7 @@ function AgentSalesFormCtrl($log, $rootScope, SidebarSvc, OptionsSvc, DataSvc) {
   const vm = this;
   let deregisterAppDataWatch;
   const bindingObj = { vm, $log, $rootScope, SidebarSvc, OptionsSvc, DataSvc };
-  //set this boolean to true by default, then check in onInit against appdata
+  //set this boolean to true by default, then check in onInit against appData
   vm.hasAgentInfo = true;
   vm.sales = {};
   vm.displayEFTInputs = false; //this boolean is changed depending on the selection of payment type
@@ -41,15 +41,15 @@ function AgentSalesFormCtrl($log, $rootScope, SidebarSvc, OptionsSvc, DataSvc) {
     vm.displayEFTInputs = (/eft/i).test(type);
     if (!vm.displayEFTInputs) { //if the user has selected something other than EFT
       //wipe the EFT-specific values
-      vm.appCtrl.appdata.routingNumber =
-        vm.appCtrl.appdata.accountNumber =
-        vm.appCtrl.appdata.paymentTransferDay = '';
+      vm.appCtrl.appData.routingNumber =
+        vm.appCtrl.appData.accountNumber =
+        vm.appCtrl.appData.paymentTransferDay = '';
     }
   };
 
   vm.$onInit = function() {
     deregisterAppDataWatch = $rootScope.$watch(function() {
-      return vm.appCtrl.appdata;
+      return vm.appCtrl.appData;
     }, function(newVal) {
       if (newVal) {
         initView.call(bindingObj, vm);
@@ -91,12 +91,12 @@ function saveAppData() { //call bound to controller binding object
 
 function initView(vm) {
   vm.appCtrl.setRouteReady();
-  vm.hasAgentInfo = vm.appCtrl.appdata.agentLastName && this.vm.appCtrl.appdata.agentLastName !== '';
+  vm.hasAgentInfo = vm.appCtrl.appData.agentLastName && this.vm.appCtrl.appData.agentLastName !== '';
   vm.paymentTypes = this.OptionsSvc.options.paymentVia;
   angular.forEach(this.vm.paymentTypes, (type) => {
     type.id = 'payment' + type.displayName.toLowerCase();
   });
-  vm.displayEFTInputs = (/eft/i).test(this.vm.appCtrl.appdata.paymentVia);
+  vm.displayEFTInputs = (/eft/i).test(this.vm.appCtrl.appData.paymentVia);
   vm.paymentTransferDays = this.OptionsSvc.options && angular.isArray(this.OptionsSvc.options.paymentTransferDays) ?
     this.OptionsSvc.options.paymentTransferDays : [];
 }

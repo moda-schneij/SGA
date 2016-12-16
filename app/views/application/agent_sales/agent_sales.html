@@ -1,11 +1,11 @@
-<ng-form novalidate class="form-styled" name="$ctrl.agentsalesform" disable-all-inputs="$ctrl.appCtrl.appdata.appStatus !== 'P'">
+<ng-form novalidate class="form-styled" name="$ctrl.agentsalesform" disable-all-inputs="$ctrl.appCtrl.appData.appStatus !== 'P'">
   <fieldset>
     <legend>Payment</legend>
     <ul class="form-container">
       <li class="form-row">
         <span class="output-label required">Will the group make payments via eBill or EFT, or by check?</span>
         <div class="container-pretty-checkable">
-          <pretty-radio ng-repeat="payment in $ctrl.paymentTypes track by payment.displayName" name="paymenttype" id="{{payment.id}}" ng-model="$ctrl.appCtrl.appdata.paymentVia" value="payment.value" label="payment.displayName" ng-change="$ctrl.onSelectPaymentType(payment.value)" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+          <pretty-radio ng-repeat="payment in $ctrl.paymentTypes track by payment.displayName" name="paymenttype" id="{{payment.id}}" ng-model="$ctrl.appCtrl.appData.paymentVia" value="payment.value" label="payment.displayName" ng-change="$ctrl.onSelectPaymentType(payment.value)" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
         </div>
       </li>
     </ul>
@@ -13,16 +13,16 @@
       <li class="form-row">
         <span class="output-label required">Select a recurring monthly date for EFT payment</span>
         <div class="container-pretty-checkable">
-          <pretty-radio ng-repeat="transferDay in $ctrl.paymentTransferDays track by $index" name="efttransferdate" id="efttransferdate_{{transferDay.value}}" ng-model="$ctrl.appCtrl.appdata.paymentTransferDay" value="transferDay.value" label="transferDay.displayName" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
+          <pretty-radio ng-repeat="transferDay in $ctrl.paymentTransferDays track by $index" name="efttransferdate" id="efttransferdate_{{transferDay.value}}" ng-model="$ctrl.appCtrl.appData.paymentTransferDay" value="transferDay.value" label="transferDay.displayName" ng-model-options="{updateOn: 'default'}" required></pretty-radio>
         </div>
       </li>
       <li class="form-row">
         <label class="required" for="eftrouting">ABA routing number</label>
-        <input type="text" name="eftrouting" id="eftrouting" ng-model="$ctrl.appCtrl.appdata.routingNumber" routing-number required ui-mask="999999999" ui-mask-placeholder ui-mask-placeholder-char="_" ng-model-options="{debounce: {'default': 0}}">
+        <input type="text" name="eftrouting" id="eftrouting" ng-model="$ctrl.appCtrl.appData.routingNumber" routing-number required ui-mask="999999999" ui-mask-placeholder ui-mask-placeholder-char="_" ng-model-options="{debounce: {'default': 0}}">
       </li>
       <li class="form-row">
         <label class="required" for="eftaccount">Bank account number</label>
-        <input type="text" name="eftaccount" id="eftaccount" ng-model="$ctrl.appCtrl.appdata.accountNumber" required>
+        <input type="text" name="eftaccount" id="eftaccount" ng-model="$ctrl.appCtrl.appData.accountNumber" required>
       </li>
     </ul>
   </fieldset>
@@ -31,26 +31,26 @@
     <ul class="form-container">
       <li class="form-row">
         <label for="directsale">Is this a direct sale?</label>
-        <pretty-checkbox name="directsale" id="directsale" ng-model="$ctrl.appCtrl.appdata.directSaleIndicator" label="false" ng-model-options="{updateOn: 'default'}"></pretty-checkbox>
+        <pretty-checkbox name="directsale" id="directsale" ng-model="$ctrl.appCtrl.appData.directSaleIndicator" label="false" ng-model-options="{updateOn: 'default'}"></pretty-checkbox>
       </li>
     </ul>
   </fieldset>
-  <fieldset ng-if="!$ctrl.appCtrl.appdata.directSaleIndicator">
+  <fieldset ng-if="!$ctrl.appCtrl.appData.directSaleIndicator">
     <legend>Agent information</legend>
     <ul class="form-container">
       <li class="form-row form-row-thirds">
         <label for="agentfirstname" class="required">Agent first name</label>
-        <input type="text" name="agentfirstname" id="agentfirstname" class="input-shared-row" placeholder="First name" required ng-model="$ctrl.appCtrl.appdata.agentFirstName">
+        <input type="text" name="agentfirstname" id="agentfirstname" class="input-shared-row" placeholder="First name" required ng-model="$ctrl.appCtrl.appData.agentFirstName">
         <label for="agentlastname" class="required none">Agent last name</label>
-        <input type="text" name="agentlastname" id="agentlastname" class="input-shared-row" placeholder="Last name" required ng-model="$ctrl.appCtrl.appdata.agentLastName">
+        <input type="text" name="agentlastname" id="agentlastname" class="input-shared-row" placeholder="Last name" required ng-model="$ctrl.appCtrl.appData.agentLastName">
       </li>
       <li class="form-row">
         <label for="agencyname" class="required">Agency name</label>
-        <input type="text" name="agencyname" id="agencyname" required ng-model="$ctrl.appCtrl.appdata.agencyName">
+        <input type="text" name="agencyname" id="agencyname" required ng-model="$ctrl.appCtrl.appData.agencyName">
       </li>
       <li class="form-row">
         <label for="agenttaxid" class="required">Agent tax id</label>
-        <input type="text" name="agenttaxid" id="agenttaxid" required ng-model="$ctrl.appCtrl.appdata.agentTaxId" ui-mask="999-99-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ng-model-options="{debounce: {'default': 0}}">
+        <input type="text" name="agenttaxid" id="agenttaxid" required ng-model="$ctrl.appCtrl.appData.agentTaxId" ui-mask="999-99-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ng-model-options="{debounce: {'default': 0}}">
       </li>
     </ul>
   </fieldset>
@@ -59,7 +59,7 @@
     <ul class="form-container">
       <li class="form-row">
         <label for="sellername">Sales executive</label>
-        <ui-select name="sellername" class="input-styled semi-width" ng-model="$ctrl.appCtrl.appdata.salesRepresent" theme="select2">
+        <ui-select name="sellername" class="input-styled semi-width" ng-model="$ctrl.appCtrl.appData.salesRepresent" theme="select2">
           <ui-select-match placeholder="--Select--">
             {{$select.selected.firstName + ' ' + $select.selected.lastName}}
           </ui-select-match>
@@ -70,7 +70,7 @@
       </li>
       <li class="form-row">
         <label for="techname">Service representative</label>
-        <ui-select name="techname" class="input-styled semi-width" ng-model="$ctrl.appCtrl.appdata.serviceTechnician" theme="select2">
+        <ui-select name="techname" class="input-styled semi-width" ng-model="$ctrl.appCtrl.appData.serviceTechnician" theme="select2">
           <ui-select-match placeholder="--Select--">
             {{$select.selected.firstName + ' ' + $select.selected.lastName}}
           </ui-select-match>
@@ -85,7 +85,7 @@
     <legend>Comments</legend>
     <ul class="form-container">
       <li class="form-row">
-        <textarea name="appcomments" id="appcomments" ng-model="$ctrl.appCtrl.appdata.comments" placeholder="Please enter comments..." maxlength="4000" />
+        <textarea name="appcomments" id="appcomments" ng-model="$ctrl.appCtrl.appData.comments" placeholder="Please enter comments..." maxlength="4000" />
       </li>
     </ul>
   </fieldset>
