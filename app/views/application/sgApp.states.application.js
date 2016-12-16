@@ -97,13 +97,20 @@ const agent_sales = {
     rules: ['rules', (rules) => rules],
     options: ['options', (options) => options],
     statesArray: ['statesArray', (statesArray) => statesArray],
-    salesRepsArray: (DataSvc) => {
-      return DataSvc.getReps().then(
-      (response) => {
-        return response.data.representatives;
-      }, (reason) => {
-        return []; //fail and return empty array
-      });
+    salesRepsArray: (DataSvc, $q) => {
+      'ngInject';
+      return $q(getReps);
+      function getReps(resolve) {
+        DataSvc.getReps()
+          .then((response) => {
+            resolve(response.data.representatives);
+          }, (reason) => {
+            resolve([]); //fail and return empty array
+          })
+          .catch((error) => {
+            resolve([]);
+          });
+      }
     }
   },
   component: 'agentSalesFormComponent',
