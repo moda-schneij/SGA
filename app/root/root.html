@@ -1,9 +1,9 @@
-<div id="container-header-content" class="sga-container container-header-content {{$ctrl.pagePath | lowercase}}" 
-    ng-class="{'is-logged-in': $ctrl.isLoggedIn, 'status-inprogress': $ctrl.inProgress, 'status-not-inprogress': !$ctrl.inProgress}">    
+<div id="container-header-content" class="sga-container container-header-content {{$ctrl.pagePath | lowercase}}"
+    ng-class="{'is-logged-in': $ctrl.isLoggedIn, 'status-inprogress': $ctrl.inProgress, 'status-not-inprogress': !$ctrl.inProgress}">
 
   <sga-header id="header" class="header" route-config="$ctrl.routeConfig" is-logged-in="$ctrl.isLoggedIn" override-title="$ctrl.overrideDefaultTitle" page-title="$ctrl.pageTitle" show-title="$ctrl.showPageTitle" in-progress="$ctrl.inProgress" app-id="$ctrl.appData.applicationId" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK" user="$ctrl.appData.checkedOutBy" on-logout="$ctrl.logout($event)" on-return-ser="$ctrl.returnToSER($event)" on-delete-app="$ctrl.deleteApp($event)" on-view-app="$ctrl.viewApp($event)" on-set-manual="$ctrl.setManualProcess($event)" app-status="$ctrl.appData.appStatus"></sga-header>
 
-  <div class="sga-container container-main container-grid" id="main">
+  <div class="fade sga-container container-main container-grid" id="main">
 
     <!-- layout not-in-progress -->
     <sidebar id="sidebar" class="sidebar" is-logged-in="$ctrl.isLoggedIn" app-data="$ctrl.appData" sidebar-obj="$ctrl.addToSidebarObj" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK" ng-show="$ctrl.displaySidebar" ng-if="!$ctrl.inProgress"></sidebar>
@@ -24,7 +24,7 @@
   </div>
 
   <div id="layout-footer"></div>
-  
+
 </div><!--#header-content-->
 
 <div id="footer" class="footer" ng-bind-html="$ctrl.footerContent">

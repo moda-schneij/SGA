@@ -11,9 +11,6 @@ import loginTemplate from './login.html';
 
 export const loginComponent = {
   templateUrl: loginTemplate,
-  bindings: {
-    setRouteReady: '&'
-  },
   controller: LoginCtrl
 };
 
@@ -22,16 +19,12 @@ function LoginCtrl($transitions, ConstantsSvc, XdMessagingSvc, AuthenticationSvc
   var vm = this;
 
   vm.serContext = ConstantsSvc.SER_CONTEXT;
-  
-  vm.$onInit = () => {
-    vm.setRouteReady();
-  };
 
   if (!vm.serContext) {
     $window.addEventListener('message', XdMessagingSvc.handleXdTokenResponse, false);
 
     vm.serUrl = $sce.trustAsResourceUrl(ConstantsSvc.SER_URL);
-    
+
     vm.fooBar = ConstantsSvc.RANDOM_VAL;
 
     vm.user = {

@@ -30,15 +30,13 @@ export const sgaRoot = {
     rules: '<',
     options: '<',
     statesArray: '<',
-    footerContent: '<',
-    redirectTo: '<'
+    footerContent: '<'
   }
 };
 
 /*@ngInject*/
 function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootScope, SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, StorageSvc, STORAGE_KEYS, APP_ROOT, DataSvc, $sce) {
   const vm = this;
-  const existingFooterContent = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) && StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
   vm.quoteId = quoteId = UrlSvc.getQuoteIdFromUrl() || null;
   vm.ein = ein = UrlSvc.getEINFromUrl() || null;
   vm.appId = appId = ApplicationSvc.getAppID() ? ApplicationSvc.getAppID() :
@@ -47,7 +45,6 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   vm.appRoot = APP_ROOT;
   vm.isLoggedIn = UserSvc.getIsLoggedIn();
   vm.displaySidebar = false;
-  vm.footerContent = vm.footerContent || $sce.trustAsHtml(existingFooterContent);
 
   vm.setRouteReady = () => {
     SpinnerControlSvc.stopSpin();
@@ -66,7 +63,10 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   };
 
   vm.$onInit = function() {
+    $log.debug('transitions and state', $transitions, $state);
+    const existingFooterContent = (StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) && StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer) ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
     vm.isLoggedIn = UserSvc.getIsLoggedIn();
+    //vm.footerContent = existingFooterContent ? $sce.trustAsHtml(existingFooterContent) : vm.footerContent;
     //test injecting vm into the service (instead of passing with every other call)
     RootComponentSvc.init(vm);
     if (!ConstantsSvc.SER_CONTEXT) { //only initialize on login for standalone (dev) version
@@ -93,7 +93,6 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
     if (vm.isLoggedIn) {
       RootComponentSvc.setPageValues(vm);
       RootComponentSvc.resetRootForm(vm);
-      $state.go(vm.redirectTo);
     } else {
       if (ConstantsSvc.SER_CONTEXT) { //not logged in, default to the login route, dev environment
         $log.error('not logged in coming from SER');
@@ -161,12 +160,12 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   */
 
   //ui-router - any successful transition should set route values
-  $transitions.onSuccess({}, () => {
-    RootComponentSvc.setRouteValues(vm);
-  });
-  $transitions.onRetain({}, () => {
-    RootComponentSvc.setRouteValues(vm);
-  });
+  // $transitions.onSuccess({}, () => {
+  //   RootComponentSvc.setRouteValues(vm);
+  // });
+  // $transitions.onRetain({}, () => {
+  //   RootComponentSvc.setRouteValues(vm);
+  // });
 
   // $transitions.onSuccess({}, () => {
   //   $log.debug('STATE TRANSITION SUCCESS');

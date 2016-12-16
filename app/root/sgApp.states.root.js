@@ -14,23 +14,23 @@
  * 1) Shows the outermost chrome (including the navigation and logout for authenticated users)
  * 2) Provide a viewport (ui-view) for a substate to plug into
  **/
-//foo
+
 const rootState = {
   name: 'Root',
   url: '',
   component: 'sgaRoot',
-  redirectTo: (trans) => rootRedirect(trans),
   resolve: {
     footerContent: getFooterContent
-  }
+  },
+  redirectTo: (trans) => trans.injector().getAsync('footerContent').then(() => rootRedirect(trans))
 };
 
 const loginState = {
   name: 'LoginView',
   parent: 'Root',
   url: '/login',
-  //component: 'loginComponent',
-  template: '<login-component></login-component>',
+  component: 'loginComponent',
+  //template: '<login-component></login-component>',
   data: {
     title: 'Login',
     linkTitle: 'Home',
@@ -57,13 +57,18 @@ const rootLoggedInState = {
   // parent: 'LoggedIn',
   component: 'sgaRoot',
   // url: '',
-  // redirectTo: (trans) => {
-  //   const redirectState = rootRedirect(trans);
-  //   return redirectState;
-  // },
+  redirectTo: (trans) => {
+    const dI = trans.injector();
+    const NavigationSvc = dI.get('NavigationSvc');
+    return dI.getAsync('appData').then(() => NavigationSvc.getNextStep());
+  },
   resolve: {
-    redirectTo: ($transition$) => rootRedirect($transition$),
-    appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
+    //redirectTo: ($transition$) => rootRedirect($transition$),
+    statesArray: (CachingSvc) => {
+      'ngInject';
+      return CachingSvc.getStates();
+    },
+    appData: (statesArray, ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
       'ngInject';
       const savedAppData = ApplicationSvc.getApplication();
       if (savedAppData) {
@@ -86,11 +91,10 @@ const rootLoggedInState = {
       'ngInject'
       return OptionsSvc.optionsAsync;
     },
-    statesArray: (CachingSvc) => {
-      'ngInject';
-      return CachingSvc.getStates();
-    },
     footerContent: getFooterContent
+  },
+  data: {
+    requiresAuth: true
   }
 };
 
@@ -126,46 +130,12 @@ function rootRedirect(trans) {
   const dI = trans.injector();
   const NavigationSvc = dI.get('NavigationSvc');
   const ApplicationSvc = dI.get('ApplicationSvc');
-  const SpinnerControlSvc = dI.get('SpinnerControlSvc');
-  const MessagesSvc = dI.get('MessagesSvc');
-  const $interval = dI.get('$interval');
-  const $q = dI.get('$q');
   const UserSvc = dI.get('UserSvc');
   const isLoggedIn = UserSvc.getIsLoggedIn();
   let hasApplication = ApplicationSvc.getApplication();
   const standalone = !(__SER_CONTEXT__);
-  let waitForApp;
-  function checkAppStatus(resolve, reject) {
-    let ticker = 0;
-    function innerFunc() {
-      hasApplication = ApplicationSvc.getApplication();
-      if (!hasApplication && ticker < ((30 * 1000) / 200)) { //total of 30 seconds
-        ++ticker;
-        if (angular.isUndefined(waitForApp)) {
-          waitForApp = $interval(innerFunc, 200);
-        }
-      } else {
-        if (hasApplication) {
-          if (angular.isDefined(waitForApp)) {
-            $interval.cancel(waitForApp);
-            waitForApp = null;
-          }
-          const nextRoute = NavigationSvc.getNextStep();
-          resolve(nextRoute);
-        } else {
-          reject('No application returned');
-          //TODO - pattern for dealing with no application coming back from the server
-          SpinnerControlSvc.stopSpin();
-          MessagesSvc.registerErrors('No application returned');
-        }
-      }
-    }
-    innerFunc();
-  }
   if (isLoggedIn) {
-    if (!hasApplication) {
-      return $q(checkAppStatus);
-    } else {
+    if (hasApplication) {
       return NavigationSvc.returnToLastStep();
     }
   } else {
@@ -173,19 +143,75 @@ function rootRedirect(trans) {
   }
 }
 
-function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
+// function rootRedirect(trans) {
+//   const dI = trans.injector();
+//   const NavigationSvc = dI.get('NavigationSvc');
+//   const ApplicationSvc = dI.get('ApplicationSvc');
+//   const SpinnerControlSvc = dI.get('SpinnerControlSvc');
+//   const MessagesSvc = dI.get('MessagesSvc');
+//   const $interval = dI.get('$interval');
+//   const $q = dI.get('$q');
+//   const UserSvc = dI.get('UserSvc');
+//   const isLoggedIn = UserSvc.getIsLoggedIn();
+//   let hasApplication = ApplicationSvc.getApplication();
+//   const standalone = !(__SER_CONTEXT__);
+//   let waitForApp;
+//   function checkAppStatus(resolve, reject) {
+//     let ticker = 0;
+//     function innerFunc() {
+//       hasApplication = ApplicationSvc.getApplication();
+//       if (!hasApplication && ticker < ((30 * 1000) / 200)) { //total of 30 seconds
+//         ++ticker;
+//         if (angular.isUndefined(waitForApp)) {
+//           waitForApp = $interval(innerFunc, 200);
+//         }
+//       } else {
+//         if (hasApplication) {
+//           if (angular.isDefined(waitForApp)) {
+//             $interval.cancel(waitForApp);
+//             waitForApp = null;
+//           }
+//           const nextRoute = NavigationSvc.getNextStep();
+//           resolve(nextRoute);
+//         } else {
+//           reject('No application returned');
+//           //TODO - pattern for dealing with no application coming back from the server
+//           SpinnerControlSvc.stopSpin();
+//           MessagesSvc.registerErrors('No application returned');
+//         }
+//       }
+//     }
+//     innerFunc();
+//   }
+//   if (isLoggedIn) {
+//     if (!hasApplication) {
+//       return $q(checkAppStatus);
+//     } else {
+//       return NavigationSvc.returnToLastStep();
+//     }
+//   } else {
+//     return (standalone ? 'LoginView' : 'Logout');
+//   }
+// }
+
+function getFooterContent($sce, $q, StorageSvc, ContentSvc, STORAGE_KEYS) {
   'ngInject';
-  if (!StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY)) {
-    StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, {}); //set to an empty object if there is no key set here
-  }
-  const storedFooterContent = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer; //check for existing content
+  const contentObj = angular.isObject(StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY));
+  const storedFooterContent = contentObj ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null; //check for existing content
   if (storedFooterContent) {
     return $sce.trustAsHtml(storedFooterContent);
   } else {
+    return $q(getFooterAsync);
+  }
+  function getFooterAsync(resolve) {
     ContentSvc.getFooterContent().then((response) => {
       if (response.footerContent) {
-        return $sce.trustAsHtml(response.footerContent);
+        resolve($sce.trustAsHtml(response.footerContent));
+      } else {
+        resolve(''); //no footer content for now
       }
+    }).catch((error) => {
+      resolve('');
     });
   }
 }

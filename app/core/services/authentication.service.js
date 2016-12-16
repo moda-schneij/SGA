@@ -257,7 +257,7 @@ function logoutSuccess() {
     this.$window.location.href = this.ConstantsSvc.SER_ROOT_URL;
   } else {
     //eslint-disable-next-line no-undefined
-    this.$state.go('LoginView', undefined, { reload: true });
+    this.$state.go('Root', { hideContents: true }, { reload: true });
   }
 }
 
