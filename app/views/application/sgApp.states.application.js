@@ -4,6 +4,12 @@ const groupsize = {
   url: '/groupsize',
   parent: 'ApplicationView',
   name: 'GroupSize',
+  resolve: {
+    appData: ['appData', (appData) => appData],
+    rules: ['rules', (rules) => rules],
+    options: ['options', (options) => options],
+    statesArray: ['statesArray', (statesArray) => statesArray]
+  },
   //component: 'groupSizeFormComponent',
   template: '<group-size-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></group-size-form-component>',
   data: {
@@ -23,6 +29,12 @@ const planselect = {
   url: '/planselect',
   parent: 'ApplicationView',
   name: 'PlanSelect',
+  resolve: {
+    appData: ['appData', (appData) => appData],
+    rules: ['rules', (rules) => rules],
+    options: ['options', (options) => options],
+    statesArray: ['statesArray', (statesArray) => statesArray]
+  },
   //component: 'planSelectFormComponent',
   template: '<plan-select-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray"></plan-select-form-component>',
   data: {
@@ -38,6 +50,12 @@ const groupinfo = {
   url: '/groupinfo',
   parent: 'ApplicationView',
   name: 'GroupInfo',
+  resolve: {
+    appData: ['appData', (appData) => appData],
+    rules: ['rules', (rules) => rules],
+    options: ['options', (options) => options],
+    statesArray: ['statesArray', (statesArray) => statesArray]
+  },
   //component: 'groupInfoFormComponent',
   template: `<group-info-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId"></group-info-form-component>`,
   data: {
@@ -53,6 +71,12 @@ const cobra = {
   url: '/cobra',
   parent: 'ApplicationView',
   name: 'Cobra',
+  resolve: {
+    appData: ['appData', (appData) => appData],
+    rules: ['rules', (rules) => rules],
+    options: ['options', (options) => options],
+    statesArray: ['statesArray', (statesArray) => statesArray]
+  },
   //component: 'cobraFormComponent',
   template: '<cobra-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></cobra-form-component>',
   data: {
@@ -68,6 +92,12 @@ const agent_sales = {
   url: '/agent_sales',
   parent: 'ApplicationView',
   name: 'AgentSales',
+  resolve: {
+    appData: ['appData', (appData) => appData],
+    rules: ['rules', (rules) => rules],
+    options: ['options', (options) => options],
+    statesArray: ['statesArray', (statesArray) => statesArray]
+  },
   //component: 'agentSalesFormComponent',
   template: '<agent-sales-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></agent-sales-form-component>',
   data: {

@@ -48,14 +48,8 @@ function AgentSalesFormCtrl($log, $rootScope, SidebarSvc, OptionsSvc, DataSvc) {
   };
 
   vm.$onInit = function() {
-    deregisterAppDataWatch = $rootScope.$watch(function() {
-      return vm.appCtrl.appData;
-    }, function(newVal) {
-      if (newVal) {
-        initView.call(bindingObj, vm);
-        vm.appCtrl.resetPristineState();
-      }
-    });
+    initView.call(bindingObj, vm);
+    vm.appCtrl.resetPristineState();
     vm.appCtrl.updateAppData = function() {
       saveAppData.call(bindingObj);
     };
