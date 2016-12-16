@@ -15,32 +15,17 @@
  * 2) Provide a viewport (ui-view) for a substate to plug into
  **/
 //foo
-// const rootState = {
-//   name: 'Root',
-//   component: 'sgaRoot',
-//   // redirectTo: (trans) => {
-//   //   const $q = trans.injector().get('$q');
-//   //   const footerContent = getFooterContent();
-//   //   const nextRoute = rootRedirect(trans);
-//   //   return $q.when(footerContent, () => nextRoute);
-//   // },
-//   redirectTo: (trans) => {
-//     return rootRedirect(trans);
-//   },
-//   resolve: {
-//     footerContent: getFooterContent
-//   }
-//   // ,
-//   // resolve: {
-//   //   footerContent: getFooterContent
-//   //   // ,returnTo: ($transition$) => {
-//   //   //   const $state = $transition$.router.stateService;
-//   //   //   const nextStateName = rootRedirect($transition$);
-//   //   //   $state.go(nextStateName);
-//   //   //   return nextStateName;
-//   //   // }
-//   // }
-// };
+const rootState = {
+  name: 'Root',
+  url: '',
+  component: 'sgaRoot',
+  redirectTo: (trans) => {
+    return rootRedirect(trans);
+  },
+  resolve: {
+    footerContent: getFooterContent
+  }
+};
 
 const loginState = {
   name: 'LoginView',
@@ -68,22 +53,25 @@ const notFoundState = {
   }
 };
 
-const rootState = {
-  name: 'Root',
+const rootLoggedInState = {
+  name: 'RootLoggedIn',
   // abstract: true,
   // parent: 'LoggedIn',
   component: 'sgaRoot',
-  url: '',
-  redirectTo: (trans) => {
-    const redirectState = rootRedirect(trans);
-    return redirectState;
-  },
+  // url: '',
+  // redirectTo: (trans) => {
+  //   const redirectState = rootRedirect(trans);
+  //   return redirectState;
+  // },
   resolve: {
+    redirectTo: ($transition$) => {
+      return rootRedirect($transition$);
+    },
     appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
       'ngInject';
-      if (!UserSvc.getIsLoggedIn()) {
-        return;
-      }
+      // if (!UserSvc.getIsLoggedIn()) {
+      //   return;
+      // }
       const savedAppData = ApplicationSvc.getApplication();
       if (savedAppData) {
         return savedAppData;
@@ -99,23 +87,23 @@ const rootState = {
     },
     rules: (RulesSvc, UserSvc) => {
       'ngInject';
-      if (!UserSvc.getIsLoggedIn()) {
-        return;
-      }
+      // if (!UserSvc.getIsLoggedIn()) {
+      //   return;
+      // }
       return RulesSvc.rulesAsync;
     },
     options: (OptionsSvc, UserSvc) => {
       'ngInject'
-      if (!UserSvc.getIsLoggedIn()) {
-        return;
-      }
+      // if (!UserSvc.getIsLoggedIn()) {
+      //   return;
+      // }
       return OptionsSvc.optionsAsync;
     },
     statesArray: (CachingSvc, UserSvc) => {
       'ngInject';
-      if (!UserSvc.getIsLoggedIn()) {
-        return;
-      }
+      // if (!UserSvc.getIsLoggedIn()) {
+      //   return;
+      // }
       return CachingSvc.getStates();
     },
     footerContent: getFooterContent
@@ -125,16 +113,13 @@ const rootState = {
 const applicationState = {
   name: 'ApplicationView',
   //abstract: true,
-  parent: 'Root',
+  parent: 'RootLoggedIn',
   url: '/application',
   resolve: {
     appData: ['appData', (appData) => appData],
     rules: ['rules', (rules) => rules],
     options: ['options', (options) => options],
     statesArray: ['statesArray', (statesArray) => statesArray],
-  },
-  redirectTo: (trans) => {
-    return rootRedirect(trans);
   },
   //??? go back to having the applicationComponent manage application pagination state?
   component: 'applicationComponent',
@@ -159,10 +144,42 @@ const logoutState = {
 function rootRedirect(trans) {
   const NavigationSvc = trans.injector().get('NavigationSvc');
   const ApplicationSvc = trans.injector().get('ApplicationSvc');
-  const hasApplication = ApplicationSvc.getApplication();
+  const $interval = trans.injector().get('$interval');
+  const $q = trans.injector().get('$q');
+  const UserSvc = trans.injector().get('UserSvc');
+  const isLoggedIn = UserSvc.getIsLoggedIn();
+  let hasApplication = ApplicationSvc.getApplication();
   const standalone = !(__SER_CONTEXT__);
-  const returnTo = hasApplication ? NavigationSvc.returnToLastStep() : (standalone ? 'LoginView' : 'Logout');
-  return returnTo;
+  let waitForApp;
+  function checkAppStatus(resolve, reject) {
+    let ticker = 0;
+    function innerFunc() {
+      hasApplication = ApplicationSvc.getApplication();
+      if (!hasApplication && ticker < 100) {
+        ++ticker;
+        if (angular.isUndefined(waitForApp)) {
+          waitForApp = $interval(innerFunc, 200);
+        }
+      } else {
+        if (angular.isDefined(waitForApp)) {
+          $interval.cancel(waitForApp);
+          waitForApp = undefined;
+        }
+        const nextRoute = NavigationSvc.getNextStep();
+        resolve(nextRoute);
+      }
+    }
+    innerFunc();
+  }
+  if (isLoggedIn) {
+    if (!hasApplication) {
+      return $q(checkAppStatus);
+    } else {
+      return NavigationSvc.returnToLastStep();
+    }
+  } else {
+    return (standalone ? 'LoginView' : 'Logout');
+  }
 }
 
 function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
@@ -223,6 +240,6 @@ function getInitialData() {
   return returnObj;
 }
 
-const rootStates = [rootState, loginState, logoutState, notFoundState, applicationState];
+const rootStates = [rootState, rootLoggedInState, loginState, logoutState, notFoundState, applicationState];
 
 export default rootStates;

@@ -61,12 +61,13 @@ export default class UserSvc {
 function confirmSuccess() {
   //this.$rootScope.$emit('loginSuccess');
   //this.$state.go('Root');
-  this.$state.go('ApplicationView', undefined, {
-    location: true,
-    reload: true
-  }).then((response) => {
-    this.$log.debug('WHAT HAPPENED ON CONFIRM SUCCESS?', response);
-  });
+  // this.$state.go('ApplicationView', undefined, {
+  //   //location: true,
+  //   //reload: true
+  // }).then((response) => {
+  //   this.$log.debug('WHAT HAPPENED ON CONFIRM SUCCESS?', response);
+  // });
+  this.$state.go('RootLoggedIn');
 }
 
 function confirmError(e) {

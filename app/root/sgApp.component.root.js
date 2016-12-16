@@ -30,12 +30,13 @@ export const sgaRoot = {
     rules: '<',
     options: '<',
     statesArray: '<',
-    footerContent: '<'
+    footerContent: '<',
+    redirectTo: '<'
   }
 };
 
 /*@ngInject*/
-function sgAppCtrl(RootComponentSvc, $transitions, $log, $scope, $rootScope, SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, StorageSvc, STORAGE_KEYS, APP_ROOT, DataSvc, $sce) {
+function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootScope, SpinnerControlSvc, AuthenticationSvc, ApplicationSvc, UserSvc, UrlSvc, ConstantsSvc, StorageSvc, STORAGE_KEYS, APP_ROOT, DataSvc, $sce) {
   const vm = this;
   const existingFooterContent = StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) && StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
   vm.quoteId = quoteId = UrlSvc.getQuoteIdFromUrl() || null;
@@ -92,6 +93,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $log, $scope, $rootScope, Spi
     if (vm.isLoggedIn) {
       RootComponentSvc.setPageValues(vm);
       RootComponentSvc.resetRootForm(vm);
+      $state.go(vm.redirectTo);
     } else {
       if (ConstantsSvc.SER_CONTEXT) { //not logged in, default to the login route, dev environment
         $log.error('not logged in coming from SER');
