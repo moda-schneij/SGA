@@ -10,8 +10,8 @@ const groupsize = {
     options: ['options', (options) => options],
     statesArray: ['statesArray', (statesArray) => statesArray]
   },
-  //component: 'groupSizeFormComponent',
-  template: '<group-size-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></group-size-form-component>',
+  component: 'groupSizeFormComponent',
+  // template: '<group-size-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></group-size-form-component>',
   data: {
     order: 1,
     requiresAuth: true,
@@ -35,8 +35,8 @@ const planselect = {
     options: ['options', (options) => options],
     statesArray: ['statesArray', (statesArray) => statesArray]
   },
-  //component: 'planSelectFormComponent',
-  template: '<plan-select-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray"></plan-select-form-component>',
+  component: 'planSelectFormComponent',
+  // template: '<plan-select-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray"></plan-select-form-component>',
   data: {
     order: 2,
     requiresAuth: true,
@@ -56,8 +56,8 @@ const groupinfo = {
     options: ['options', (options) => options],
     statesArray: ['statesArray', (statesArray) => statesArray]
   },
-  //component: 'groupInfoFormComponent',
-  template: `<group-info-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId"></group-info-form-component>`,
+  component: 'groupInfoFormComponent',
+  // template: `<group-info-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"  states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId"></group-info-form-component>`,
   data: {
     order: 3,
     requiresAuth: true,
@@ -77,8 +77,8 @@ const cobra = {
     options: ['options', (options) => options],
     statesArray: ['statesArray', (statesArray) => statesArray]
   },
-  //component: 'cobraFormComponent',
-  template: '<cobra-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></cobra-form-component>',
+  component: 'cobraFormComponent',
+  // template: '<cobra-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></cobra-form-component>',
   data: {
     order: 4,
     requiresAuth: true,
@@ -96,10 +96,18 @@ const agent_sales = {
     appData: ['appData', (appData) => appData],
     rules: ['rules', (rules) => rules],
     options: ['options', (options) => options],
-    statesArray: ['statesArray', (statesArray) => statesArray]
+    statesArray: ['statesArray', (statesArray) => statesArray],
+    salesRepsArray: (DataSvc) => {
+      return DataSvc.getReps().then(
+      (response) => {
+        return response.data.representatives;
+      }, (reason) => {
+        return []; //fail and return empty array
+      });
+    }
   },
-  //component: 'agentSalesFormComponent',
-  template: '<agent-sales-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></agent-sales-form-component>',
+  component: 'agentSalesFormComponent',
+  // template: '<agent-sales-form-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray"></agent-sales-form-component>',
   data: {
     order: 5,
     requiresAuth: true,

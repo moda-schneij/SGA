@@ -18,7 +18,8 @@ export const agentSalesFormComponent = {
     appData: '<',
     rules: '<',
     options: '<',
-    statesArray: '<'
+    statesArray: '<',
+    salesRepsArray: '<'
   },
   require: {
     appCtrl: '^applicationComponent'
@@ -53,30 +54,7 @@ function AgentSalesFormCtrl($log, $rootScope, SidebarSvc, OptionsSvc, DataSvc) {
     vm.appCtrl.updateAppData = function() {
       saveAppData.call(bindingObj);
     };
-
-    DataSvc.getReps().then(
-      (response) => {
-        repsSuccess(response, vm);
-      }, (reason) => {
-        repsFailure(reason);
-      });
   };
-
-  vm.$onDestroy = function() {
-    deregisterAppDataWatch();
-  };
-}
-
-function repsSuccess(response, vm) {
-  vm.salesRepsArray = response.data.representatives;
-  //  vm.salesRepsArray.map((rep) => {
-  //    rep.sales = (/sales/i).test(rep.representative) || (/both/i).test(rep.representative);
-  //    rep.service = (/service/i).test(rep.representative) || (/both/i).test(rep.representative);
-  //  });
-}
-
-function repsFailure(reason) {
-  angular.noop();
 }
 
 function saveAppData() { //call bound to controller binding object
@@ -84,7 +62,6 @@ function saveAppData() { //call bound to controller binding object
 }
 
 function initView(vm) {
-  vm.appCtrl.setRouteReady();
   vm.hasAgentInfo = vm.appCtrl.appData.agentLastName && this.vm.appCtrl.appData.agentLastName !== '';
   vm.paymentTypes = this.OptionsSvc.options.paymentVia;
   angular.forEach(this.vm.paymentTypes, (type) => {
