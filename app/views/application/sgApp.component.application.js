@@ -62,8 +62,8 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
 
   // //attempt to use ui-router
   $transitions.onSuccess({}, () => {
-    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    // vm.navigating = false;
+    ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    vm.navigating = false;
     $log.debug('TRANSITIONS SUCCESS');
     $log.debug('application form', vm.applicationform);
   });
@@ -241,16 +241,6 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
       NavigationSvc.returnToLastStep();
       vm.navigating = false;
     });
-  };
-
-  vm.$postLink = () => {
-    // ApplicationComponentSvc.resetPristineState(vm.applicationform);
-    // const resetPristine = $interval(() => {
-    //   if (this.applicationform && angular.isFunction(this.applicationform.$setPristine)) {
-    //     ApplicationComponentSvc.resetPristineState(vm);
-    //     $interval.cancel(resetPristine);
-    //   }
-    // },50);
   };
 
 }

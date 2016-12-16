@@ -227,17 +227,28 @@ export default class ApplicationComponentSvc {
 
   navigate(vm, config) {
     const {$state} = this;
+    let nextRouteName;
     vm.navigating = true; //this is toggled by $routeChangeSuccess in the component controller
     const forward = config.direction === 'forward';
-    const nextRouteId = $state.current.data.order - (forward ? -1 : 1);
-    const nextRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && route.data.order === nextRouteId);
-    const nextRouteName = nextRoute && nextRoute.length === 1 && nextRoute[0].name ? nextRoute[0].name : null;
+    let nextRouteId = $state.current.data.order - (forward ? -1 : 1);
+    getNameFromRouteId.call(this, nextRouteId);
+    if ((/cobra/i).test(nextRouteName)) {
+      const cobraEligible = checkCobraEligible.call(this, vm);
+      if (!cobraEligible) {
+        nextRouteId = forward ? (nextRouteId + 1) : (nextRouteId - 1);
+        getNameFromRouteId.call(this, nextRouteId);
+      }
+    }
     if (nextRouteName) {
       $state.go(nextRouteName);
       this.MessagesSvc.clearAll();
-      this.configNav(vm);
+      // this.configNav(vm);
     } else {
       vm.navigating = false;
+    }
+    function getNameFromRouteId(id) {
+      const nextRoute = this.appRouteEntries.filter((route) => route.data && route.data.order && route.data.order === id);
+      nextRouteName = (nextRoute && nextRoute.length === 1 && nextRoute[0].name) ? nextRoute[0].name : null;
     }
   }
 
@@ -316,6 +327,22 @@ export default class ApplicationComponentSvc {
       }.bind(this));
   }
 
+}
+
+function checkCobraEligible(vm) {
+  const {UtilsSvc, RulesSvc} = this;
+  const cobraCount = UtilsSvc.isNumberOrNumString(vm.appData.cobraCount) ?
+    parseInt(vm.appData.cobraCount, 10) : 0;
+  const cobraORMin = UtilsSvc.isNumberOrNumString(RulesSvc.rules.groupRules.cobraORMinEmployees) &&
+  RulesSvc.rules && RulesSvc.rules.groupRules && RulesSvc.rules.groupRules.cobraORMinEmployees ?
+    parseInt(RulesSvc.rules.groupRules.cobraORMinEmployees, 10) : null;
+  //logic comment
+  //if group is OR *or* AK with effDate after 2016, then ...
+  //if there's a min number set for OR Cobra elig, return true only if empl count is GTE that minimum, otherwise false ...
+  //otherwise the value of cobraEligible from the rules object
+  return (vm.groupOR || (vm.groupAK && !(/2016/).test(vm.effDate.getFullYear()))) ? (angular.isNumber(cobraORMin) ?
+      (cobraCount >= cobraORMin) : false) :
+    RulesSvc.rules.groupRules.cobraEligible;
 }
 
 function enrollDialog(vm) {

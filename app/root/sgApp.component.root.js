@@ -158,11 +158,11 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   /*
   * TRANSITIONS
   */
-
+  //foo
   //ui-router - any successful transition should set route values
-  // $transitions.onSuccess({}, () => {
-  //   RootComponentSvc.setRouteValues(vm);
-  // });
+  $transitions.onSuccess({}, () => {
+    RootComponentSvc.setRouteValues(vm);
+  });
   // $transitions.onRetain({}, () => {
   //   RootComponentSvc.setRouteValues(vm);
   // });

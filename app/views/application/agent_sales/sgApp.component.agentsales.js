@@ -15,7 +15,10 @@ import agentSalesTemplate from './agent_sales.html';
 export const agentSalesFormComponent = {
   templateUrl: agentSalesTemplate,
   bindings: {
-    $router: '<'
+    appData: '<',
+    rules: '<',
+    options: '<',
+    statesArray: '<'
   },
   require: {
     appCtrl: '^applicationComponent'
@@ -38,8 +41,8 @@ function AgentSalesFormCtrl($log, $rootScope, SidebarSvc, OptionsSvc, DataSvc) {
     vm.displayEFTInputs = (/eft/i).test(type);
     if (!vm.displayEFTInputs) { //if the user has selected something other than EFT
       //wipe the EFT-specific values
-      vm.appCtrl.appdata.routingNumber = 
-        vm.appCtrl.appdata.accountNumber = 
+      vm.appCtrl.appdata.routingNumber =
+        vm.appCtrl.appdata.accountNumber =
         vm.appCtrl.appdata.paymentTransferDay = '';
     }
   };
@@ -94,6 +97,6 @@ function initView(vm) {
     type.id = 'payment' + type.displayName.toLowerCase();
   });
   vm.displayEFTInputs = (/eft/i).test(this.vm.appCtrl.appdata.paymentVia);
-  vm.paymentTransferDays = this.OptionsSvc.options && angular.isArray(this.OptionsSvc.options.paymentTransferDays) ? 
+  vm.paymentTransferDays = this.OptionsSvc.options && angular.isArray(this.OptionsSvc.options.paymentTransferDays) ?
     this.OptionsSvc.options.paymentTransferDays : [];
 }

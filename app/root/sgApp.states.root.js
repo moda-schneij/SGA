@@ -22,7 +22,8 @@ const rootState = {
   resolve: {
     footerContent: getFooterContent
   },
-  redirectTo: (trans) => trans.injector().getAsync('footerContent').then(() => rootRedirect(trans))
+  redirectTo: (trans) => trans.injector().getAsync('footerContent')
+    .then(() => rootRedirect(trans))
 };
 
 const loginState = {
@@ -132,14 +133,17 @@ function rootRedirect(trans) {
   const ApplicationSvc = dI.get('ApplicationSvc');
   const UserSvc = dI.get('UserSvc');
   const isLoggedIn = UserSvc.getIsLoggedIn();
-  let hasApplication = ApplicationSvc.getApplication();
+  const hasApplication = ApplicationSvc.getApplication();
   const standalone = !(__SER_CONTEXT__);
+  const returnState = standalone ? 'LoginView' : 'Logout';
   if (isLoggedIn) {
     if (hasApplication) {
       return NavigationSvc.returnToLastStep();
+    } else {
+      return returnState;
     }
   } else {
-    return (standalone ? 'LoginView' : 'Logout');
+    return returnState;
   }
 }
 
@@ -204,15 +208,17 @@ function getFooterContent($sce, $q, StorageSvc, ContentSvc, STORAGE_KEYS) {
     return $q(getFooterAsync);
   }
   function getFooterAsync(resolve) {
-    ContentSvc.getFooterContent().then((response) => {
-      if (response.footerContent) {
-        resolve($sce.trustAsHtml(response.footerContent));
-      } else {
-        resolve(''); //no footer content for now
-      }
-    }).catch((error) => {
-      resolve('');
-    });
+    ContentSvc.getFooterContent()
+      .then((response) => {
+        if (response.footerContent) {
+          resolve($sce.trustAsHtml(response.footerContent));
+        } else {
+          resolve(''); //no footer content for now
+        }
+      })
+      .catch((error) => {
+        resolve('');
+      });
   }
 }
 
