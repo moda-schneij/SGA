@@ -19,9 +19,7 @@ const rootState = {
   name: 'Root',
   url: '',
   component: 'sgaRoot',
-  redirectTo: (trans) => {
-    return rootRedirect(trans);
-  },
+  redirectTo: (trans) => rootRedirect(trans),
   resolve: {
     footerContent: getFooterContent
   }
@@ -64,14 +62,9 @@ const rootLoggedInState = {
   //   return redirectState;
   // },
   resolve: {
-    redirectTo: ($transition$) => {
-      return rootRedirect($transition$);
-    },
+    redirectTo: ($transition$) => rootRedirect($transition$),
     appData: (ApplicationSvc, StorageSvc, UserSvc, STORAGE_KEYS, $stateParams) => {
       'ngInject';
-      // if (!UserSvc.getIsLoggedIn()) {
-      //   return;
-      // }
       const savedAppData = ApplicationSvc.getApplication();
       if (savedAppData) {
         return savedAppData;
@@ -85,25 +78,16 @@ const rootLoggedInState = {
         return ApplicationSvc.getInitialApplication(idObj);
       }
     },
-    rules: (RulesSvc, UserSvc) => {
+    rules: (RulesSvc) => {
       'ngInject';
-      // if (!UserSvc.getIsLoggedIn()) {
-      //   return;
-      // }
       return RulesSvc.rulesAsync;
     },
-    options: (OptionsSvc, UserSvc) => {
+    options: (OptionsSvc) => {
       'ngInject'
-      // if (!UserSvc.getIsLoggedIn()) {
-      //   return;
-      // }
       return OptionsSvc.optionsAsync;
     },
-    statesArray: (CachingSvc, UserSvc) => {
+    statesArray: (CachingSvc) => {
       'ngInject';
-      // if (!UserSvc.getIsLoggedIn()) {
-      //   return;
-      // }
       return CachingSvc.getStates();
     },
     footerContent: getFooterContent
@@ -119,13 +103,10 @@ const applicationState = {
     appData: ['appData', (appData) => appData],
     rules: ['rules', (rules) => rules],
     options: ['options', (options) => options],
-    statesArray: ['statesArray', (statesArray) => statesArray],
+    statesArray: ['statesArray', (statesArray) => statesArray]
   },
-  //??? go back to having the applicationComponent manage application pagination state?
   component: 'applicationComponent',
-  // template: `<application-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options"
-  // states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK">
-  // </application-component>`,
+  // template: `<application-component app-data="$ctrl.appData" rules="$ctrl.rules" options="$ctrl.options" states-array="$ctrl.statesArray" quote-id="$ctrl.quoteId" app-id="$ctrl.appId" group-o-r="$ctrl.groupOR" group-a-k="$ctrl.groupAK"> </application-component>`,
   data: {
     requiresAuth: true,
     title: 'Welcome to the small group application form',
@@ -142,11 +123,14 @@ const logoutState = {
 };
 
 function rootRedirect(trans) {
-  const NavigationSvc = trans.injector().get('NavigationSvc');
-  const ApplicationSvc = trans.injector().get('ApplicationSvc');
-  const $interval = trans.injector().get('$interval');
-  const $q = trans.injector().get('$q');
-  const UserSvc = trans.injector().get('UserSvc');
+  const dI = trans.injector();
+  const NavigationSvc = dI.get('NavigationSvc');
+  const ApplicationSvc = dI.get('ApplicationSvc');
+  const SpinnerControlSvc = dI.get('SpinnerControlSvc');
+  const MessagesSvc = dI.get('MessagesSvc');
+  const $interval = dI.get('$interval');
+  const $q = dI.get('$q');
+  const UserSvc = dI.get('UserSvc');
   const isLoggedIn = UserSvc.getIsLoggedIn();
   let hasApplication = ApplicationSvc.getApplication();
   const standalone = !(__SER_CONTEXT__);
@@ -155,18 +139,25 @@ function rootRedirect(trans) {
     let ticker = 0;
     function innerFunc() {
       hasApplication = ApplicationSvc.getApplication();
-      if (!hasApplication && ticker < 100) {
+      if (!hasApplication && ticker < ((30 * 1000) / 200)) { //total of 30 seconds
         ++ticker;
         if (angular.isUndefined(waitForApp)) {
           waitForApp = $interval(innerFunc, 200);
         }
       } else {
-        if (angular.isDefined(waitForApp)) {
-          $interval.cancel(waitForApp);
-          waitForApp = undefined;
+        if (hasApplication) {
+          if (angular.isDefined(waitForApp)) {
+            $interval.cancel(waitForApp);
+            waitForApp = null;
+          }
+          const nextRoute = NavigationSvc.getNextStep();
+          resolve(nextRoute);
+        } else {
+          reject('No application returned');
+          //TODO - pattern for dealing with no application coming back from the server
+          SpinnerControlSvc.stopSpin();
+          MessagesSvc.registerErrors('No application returned');
         }
-        const nextRoute = NavigationSvc.getNextStep();
-        resolve(nextRoute);
       }
     }
     innerFunc();
@@ -184,10 +175,6 @@ function rootRedirect(trans) {
 
 function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
   'ngInject';
-  // const $sce = trans.injector().get('$sce');
-  // const StorageSvc = trans.injector().get('StorageSvc');
-  // const ContentSvc = trans.injector().get('ContentSvc');
-  // const STORAGE_KEYS = trans.injector().get('STORAGE_KEYS');
   if (!StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY)) {
     StorageSvc.setSessionStore(STORAGE_KEYS.CONTENT_KEY, {}); //set to an empty object if there is no key set here
   }
@@ -201,43 +188,6 @@ function getFooterContent($sce, StorageSvc, ContentSvc, STORAGE_KEYS) {
       }
     });
   }
-}
-
-function getInitialData() {
-  debugger;
-  const returnObj = {
-    footerContent: getFooterContent
-  };
-  if (UserSvc.getIsLoggedIn()) {
-    returnObj.appData = (ApplicationSvc, $stateParams) => {
-      'ngInject';
-      const savedAppData = ApplicationSvc.getApplication();
-      if (savedAppData) {
-        return savedAppData;
-      } else {
-        const idObj = {};
-        const existingAppId = ApplicationSvc.getAppID();
-        idObj.appId = existingAppId ? existingAppId :
-          ($stateParams.id ? $stateParams.id : null);
-        idObj.quoteId = $stateParams.quote_id || null;
-        idObj.ein = $stateParams.ein || null;
-        return ApplicationSvc.getInitialApplication(idObj);
-      }
-    };
-    returnObj.rules = (RulesSvc) => {
-      'ngInject';
-      return RulesSvc.rulesAsync;
-    };
-    returnObj.options = (OptionsSvc) => {
-      'ngInject';
-      return OptionsSvc.optionsAsync;
-    };
-    returnObj.statesArray = (CachingSvc) => {
-      'ngInject';
-      return CachingSvc.getStates();
-    };
-  }
-  return returnObj;
 }
 
 const rootStates = [rootState, rootLoggedInState, loginState, logoutState, notFoundState, applicationState];

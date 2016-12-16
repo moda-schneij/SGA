@@ -18,11 +18,7 @@ export const applicationComponent = {
     appData: '<',
     rules: '<',
     options: '<',
-    statesArray: '<',
-    quoteId: '<',
-    appId: '<',
-    groupOR: '<',
-    groupAK: '<'
+    statesArray: '<'
   },
   require: {
     rootCtrl: '^sgaRoot'

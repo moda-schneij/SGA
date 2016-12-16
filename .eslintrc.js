@@ -156,7 +156,7 @@ module.exports = {
             }
         ],
         "no-path-concat": "error",
-        "no-plusplus": ["error", {
+        "no-plusplus": ["warn", {
             "allowForLoopAfterthoughts": true
         }],
         "no-process-env": "error",

@@ -94,7 +94,7 @@ export default class AuthenticationSvc {
       logEmOut = loginRequired && (statusLogout || statusCodeLogout || statusTextLogout);
     }
     if (logEmOut) {
-      performLogout.call(this, 
+      performLogout.call(this,
         {
           expired: expired,
           error: !expired
@@ -256,7 +256,8 @@ function logoutSuccess() {
   if (this.ConstantsSvc.SER_CONTEXT) {
     this.$window.location.href = this.ConstantsSvc.SER_ROOT_URL;
   } else {
-    this.$state.go('LoginView');
+    //eslint-disable-next-line no-undefined
+    this.$state.go('LoginView', undefined, { reload: true });
   }
 }
 
