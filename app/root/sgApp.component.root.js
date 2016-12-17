@@ -62,6 +62,14 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
     vm.addToSidebarObj = null;
   };
 
+  const deregisterRouteDataWatch = $scope.$watch(() => {
+      return $state.params.hideContents;
+    },
+    (newVal) => {
+      vm.hideContents = newVal || false;
+    }
+  );
+
   vm.$onInit = function() {
     $log.debug('transitions and state', $transitions, $state);
     const existingFooterContent = (StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) && StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer) ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
@@ -153,6 +161,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   vm.$onDestroy = function() {
     deregisterLogout();
     deregisterCallLogout();
+    deregisterRouteDataWatch();
   };
 
   /*

@@ -14,6 +14,7 @@
  * 1) Shows the outermost chrome (including the navigation and logout for authenticated users)
  * 2) Provide a viewport (ui-view) for a substate to plug into
  **/
+//foo
 
 const rootState = {
   name: 'Root',
@@ -23,7 +24,9 @@ const rootState = {
     footerContent: getFooterContent
   },
   redirectTo: (trans) => trans.injector().getAsync('footerContent')
-    .then(() => rootRedirect(trans))
+    .then(() => {
+      return rootRedirect(trans);
+    })
 };
 
 const loginState = {

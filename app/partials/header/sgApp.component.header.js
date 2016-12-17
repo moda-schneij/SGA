@@ -28,6 +28,7 @@ export default angular
       user: '<',
       appStatus: '<',
       overrideTitle: '<',
+      hideContents: '<',
       onLogout: '&',
       onDeleteApp: '&',
       onReturnSer: '&',
@@ -159,7 +160,7 @@ function HeaderCtrl(SER_CONTEXT, $log, ApplicationSvc, DataSvc, $sce) {
     enumerable: true,
     configurable: true
   });
-  
+
   vm.serContext = SER_CONTEXT;
 }
 
