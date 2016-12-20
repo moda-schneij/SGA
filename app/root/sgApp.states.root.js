@@ -14,19 +14,35 @@
  * 1) Shows the outermost chrome (including the navigation and logout for authenticated users)
  * 2) Provide a viewport (ui-view) for a substate to plug into
  **/
-//foo
 
 const rootState = {
   name: 'Root',
   url: '',
   component: 'sgaRoot',
   resolve: {
-    footerContent: getFooterContent
+    footerContent: (ContentSvc) => {
+      'ngInject';
+      return ContentSvc.getFooterContent();
+    }
   },
-  redirectTo: (trans) => trans.injector().getAsync('footerContent')
-    .then(() => {
-      return rootRedirect(trans);
-    })
+  redirectTo: (trans) => {
+    const dI = trans.injector();
+    const $state = dI.get('$state');
+    const $log = dI.get('$log');
+    const $rootScope = dI.get('$rootScope');
+    const footerContent = dI.getAsync('footerContent');
+    $log.debug('trans in RootState redirectTo', trans);
+    $rootScope.$emit('rootRedirect', {state: $state, trans: trans});
+    //return rootRedirect(trans);
+    //$log.debug('trans in RootState redirectTo', trans);
+    return footerContent
+      .then(() => {
+        return {
+          state: rootRedirect(trans),
+          params: trans.params()
+        };
+      })
+  }
 };
 
 const loginState = {
@@ -89,13 +105,16 @@ const rootLoggedInState = {
     },
     rules: (RulesSvc) => {
       'ngInject';
-      return RulesSvc.rulesAsync;
+      return RulesSvc.rulesAsync; //class getter, no invocation
     },
     options: (OptionsSvc) => {
       'ngInject'
-      return OptionsSvc.optionsAsync;
+      return OptionsSvc.optionsAsync; //class getter, no invocation
     },
-    footerContent: getFooterContent
+    footerContent: (ContentSvc) => {
+      'ngInject';
+      return ContentSvc.getFooterContent();
+    }
   },
   data: {
     requiresAuth: true
@@ -201,29 +220,34 @@ function rootRedirect(trans) {
 //   }
 // }
 
-function getFooterContent($sce, $q, StorageSvc, ContentSvc, STORAGE_KEYS) {
-  'ngInject';
-  const contentObj = angular.isObject(StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY));
-  const storedFooterContent = contentObj ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null; //check for existing content
-  if (storedFooterContent) {
-    return $sce.trustAsHtml(storedFooterContent);
-  } else {
-    return $q(getFooterAsync);
-  }
-  function getFooterAsync(resolve) {
-    ContentSvc.getFooterContent()
-      .then((response) => {
-        if (response.footerContent) {
-          resolve($sce.trustAsHtml(response.footerContent));
-        } else {
-          resolve(''); //no footer content for now
-        }
-      })
-      .catch((error) => {
-        resolve('');
-      });
-  }
-}
+// function getFooterContent($sce, $q, $log, StorageSvc, ContentSvc, STORAGE_KEYS) {
+//   'ngInject';
+//   const contentObj = angular.isObject(StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY));
+//   const storedFooterContent = contentObj ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null; //check for existing content
+//   if (storedFooterContent) {
+//     return $sce.trustAsHtml(storedFooterContent);
+//   } else {
+//     return $q(getFooterAsync);
+//   }
+//   function getFooterAsync(resolve) {
+//     ContentSvc.getFooterContent()
+//       .then((response) => {
+//         if (response) {
+//           if (response.footerContent) {
+//             resolve($sce.trustAsHtml(response.footerContent));
+//           } else {
+//             resolve($sce.trustAsHtml(response));
+//           }
+//         } else {
+//           resolve(''); //no footer content for now
+//         }
+//       })
+//       .catch((error) => {
+//         $log.error('Error retrieving footer content in root state config', error);
+//         resolve('');
+//       });
+//   }
+// }
 
 const rootStates = [rootState, rootLoggedInState, loginState, logoutState, notFoundState, applicationState];
 

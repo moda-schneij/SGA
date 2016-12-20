@@ -119,7 +119,7 @@ export default class DataSvc {
           if ((/4/).test(this.readyState)) {
             if ((/200/).test(this.status)) {
               const blob = new self.Blob([this.response], { type: 'application/octet-stream' });
-              const fileName = contentDisposition && angular.isString(contentDisposition) ? 
+              const fileName = contentDisposition && angular.isString(contentDisposition) ?
                 contentDisposition.split(';') //split this header into its parts
                 .filter((val) => (/filename/i).test(val))[0] //extract the filename part of this header
                 .replace((/"/g), '') //filter out extra quotes if they're there
@@ -217,7 +217,7 @@ export default class DataSvc {
       Health plans in California provided by Moda Health Plan, Inc. dba Moda Health Insurance. 
       Dental insurance products in Oregon provided by Oregon Dental Service. 
       Dental insurance products in Alaska provided by Delta Dental of Alaska.</p>
-    `
+    `;
     this.$timeout(function() {
       deferred.resolve(returnVal);
     }, 0);

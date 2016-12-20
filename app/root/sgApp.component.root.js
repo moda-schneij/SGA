@@ -62,13 +62,14 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
     vm.addToSidebarObj = null;
   };
 
-  const deregisterRouteDataWatch = $scope.$watch(() => {
-      return $state.params.hideContents;
-    },
-    (newVal) => {
-      vm.hideContents = newVal || false;
-    }
-  );
+  // const deregisterRouteDataWatch = $scope.$watch(() => {
+  //     return $state.params.hideContents;
+  //   },
+  //   (newVal) => {
+  //     debugger;
+  //     vm.hideContents = newVal || false;
+  //   }
+  // );
 
   vm.$onInit = function() {
     $log.debug('transitions and state', $transitions, $state);
@@ -161,7 +162,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   vm.$onDestroy = function() {
     deregisterLogout();
     deregisterCallLogout();
-    deregisterRouteDataWatch();
+    // deregisterRouteDataWatch();
   };
 
   /*
@@ -169,12 +170,9 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   */
 
   //ui-router - any successful transition should set route values
-  $transitions.onSuccess({}, () => {
+  $transitions.onSuccess({}, (trans) => {
     RootComponentSvc.setRouteValues(vm);
   });
-  // $transitions.onRetain({}, () => {
-  //   RootComponentSvc.setRouteValues(vm);
-  // });
 
   // $transitions.onSuccess({}, () => {
   //   $log.debug('STATE TRANSITION SUCCESS');
@@ -186,3 +184,4 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   //   RootComponentSvc.resetRootForm(vm);
   // });
 }
+//foo

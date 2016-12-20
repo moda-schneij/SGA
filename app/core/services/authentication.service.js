@@ -227,7 +227,7 @@ function performLogout(logoutParams) {
     continueFn.call(this);
   }
   function continueFn() {
-    this.StorageSvc.clearStores();
+    this.StorageSvc.clearStores({type:'session'});
     clearSession.call(this);
     clearReferrerCookie.call(this);
     this.XdMessagingSvc.postMessage(messageToPost);
@@ -257,7 +257,7 @@ function logoutSuccess() {
     this.$window.location.href = this.ConstantsSvc.SER_ROOT_URL;
   } else {
     //eslint-disable-next-line no-undefined
-    this.$state.go('Root', { hideContents: true }, { reload: true });
+    this.$state.go('LoginView', undefined, { reload: 'Root' });
   }
 }
 

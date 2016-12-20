@@ -28,7 +28,6 @@ export default angular
       user: '<',
       appStatus: '<',
       overrideTitle: '<',
-      hideContents: '<',
       onLogout: '&',
       onDeleteApp: '&',
       onReturnSer: '&',

@@ -161,7 +161,17 @@ function useStore(keyVal, valueVal, sessionVal, getVal) {
   }
 }
 
-function clearAllStores() {
-  this.$window.localStorage.clear();
-  this.$window.sessionStorage.clear();
+function clearAllStores(params) {
+  const {$window} = this;
+  const local = params && params.type && params.type === 'local';
+  const session = params && params.type && params.type === 'session';
+  if (params) {
+    const storageType = params.type + 'Storage';
+    if ($window.hasOwnProperty(storageType)) {
+      $window[storageType].clear();
+    }
+  } else {
+    $window.localStorage.clear();
+    $window.sessionStorage.clear();
+  }
 }
