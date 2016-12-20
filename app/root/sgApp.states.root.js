@@ -146,7 +146,8 @@ function rootRedirect(trans) {
   const isLoggedIn = UserSvc.getIsLoggedIn();
   const hasApplication = ApplicationSvc.getApplication();
   const standalone = !(__SER_CONTEXT__);
-  const returnState = standalone ? 'LoginView' : 'Logout';
+  const returnState = standalone ? 'LoginView' : 'RootLoggedIn'; //TODO - add logic to deal with bad state in SER context
+  debugger;
   if (isLoggedIn) {
     if (hasApplication) {
       return NavigationSvc.returnToLastStep();

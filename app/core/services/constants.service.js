@@ -23,8 +23,8 @@ const BUILD_TARGET = __BUILD_TARGET__ || null;
 const SER_CONTEXT = __SER_CONTEXT__ || false;
 const PROD = __PROD__ || false;
 const hasRemoteHost = !!__REMOTE_HOST__ && __REMOTE_HOST__ !== '' && (/modahealth|odshp/).test(__REMOTE_HOST__);
-const hostForSERAndWS = hasRemoteHost ? __REMOTE_HOST__ : $location.host();
-const hostPlusProtocol = (hasRemoteHost ? 'http' : $location.protocol()) + '://' + hostForSERAndWS;
+const hostForSERAndWS = hasRemoteHost ? __REMOTE_HOST__ : window.location.host();
+const hostPlusProtocol = (hasRemoteHost ? 'http' : window.location.protocol()) + '://' + hostForSERAndWS;
 function portToUse(port) {
   return (!hasRemoteHost ? port : '');
 }
@@ -47,9 +47,9 @@ export default class ConstantsSvc {
     this.SER_CONTEXT = SER_CONTEXT;
     //setting context root with a fallback for a missing cookie or cookie service
     this.SER_CONTEXT_ROOT = $cookies && $cookies.get('ser_app_context') ? '/' + $cookies.get('ser_app_context') : '/SpeedERatesWeb';
-    
+
     //Switching back and forth between paths depending on whether developing against local or STG3, and whether you have a working local SER installed
-    
+
     // this.API_URL = (function(){
     //   return SER_CONTEXT ?
     //     '//' + $location.host() + WS_PORT + API_ROOT_PATH :
@@ -65,7 +65,7 @@ export default class ConstantsSvc {
     //     $location.protocol() + '://' + $location.host() + SER_PORT + SER_LOGIN_PATH :
     //     STG3_URL + SER_LOGIN_PATH;
     // }());
-    
+
     this.API_URL = (!hasRemoteHost ? '//' : 'http://') + hostForSERAndWS + portToUse(WS_PORT) + API_ROOT_PATH;
     this.SER_ROOT_URL = hostPlusProtocol + portToUse(SER_PORT) + '/' + SER_APPNAME;
     this.SER_URL = hostPlusProtocol + portToUse(SER_PORT) + SER_LOGIN_PATH;

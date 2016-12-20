@@ -23,7 +23,7 @@ let ein;
 
 export const sgaRoot = {
   templateUrl: rootTemplate,
-  //transclude: true,
+  transclude: true,
   controller: sgAppCtrl,
   bindings: {
     appData: '<',

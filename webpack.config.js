@@ -23,7 +23,8 @@ const MACHINE_NAME = argv.machine;
 const PORTS = {
   WS: argv.wsport,
   APP: argv.appport,
-  SER: argv.serport
+  SER: argv.serport,
+  PORT: argv.port
 };
 const MODA_ENV = argv.env;
 const hasMachineName = !!MACHINE_NAME;
@@ -31,6 +32,7 @@ const hasWSPort = !!PORTS.WS;
 const hasRemoteHost = !!MODA_ENV;
 const hasAppPort = !!PORTS.APP;
 const hasSERPort = !!PORTS.SER;
+const hasPort = !!PORTS.PORT; //this is just a general port for local SER/WS
 
 const isIpAddress = ipMatch.test(MACHINE_NAME);
 const isLocalhost = localhostMatch.test(MACHINE_NAME);
@@ -47,12 +49,14 @@ _console.log('here be my remote host environment');
 _console.log(MODA_ENV);
 _console.log('here be my SpeedE port number');
 _console.log(PORTS.SER);
-_console.log('I have entered an app port number');
+_console.log('I have entered an app [dev] port number');
 _console.log(hasAppPort);
 _console.log('I have entered a SpeedE port number');
 _console.log(hasSERPort);
 _console.log('I have entered a web service port number');
 _console.log(hasWSPort);
+_console.log('I have entered a port for both SER and the WS');
+_console.log(hasPort);
 _console.log('I have entered a machine name');
 _console.log(hasMachineName);
 
@@ -61,10 +65,14 @@ const prodEnvRegEx = /production/;
 const serEnvRegEx = /(ser|production)/;
 
 const WEB_PORT = hasAppPort ? PORTS.APP : config.get('WEB_PORT') ? config.get('WEB_PORT') : '9090';
-const WS_PORT = hasWSPort && !hasRemoteHost ? PORTS.WS : config.get('WS_PORT') ? config.get('WS_PORT') : '80';
-const SER_PORT = hasSERPort && !hasRemoteHost ? PORTS.SER : config.get('SER_PORT') ? config.get('SER_PORT') : '80';
+const WS_PORT = (hasWSPort && !hasRemoteHost) ? PORTS.WS :
+  ((hasPort && !hasRemoteHost) ? PORTS.PORT :
+  (config.get('WS_PORT') ? config.get('WS_PORT') : '80'));
+const SER_PORT = (hasWSPort && !hasRemoteHost) ? PORTS.SER :
+  ((hasPort && !hasRemoteHost) ? PORTS.PORT :
+  (config.get('SER_PORT') ? config.get('SER_PORT') : '80'));
 const WEB_HOST = hasMachineName && (isIpAddress | isLocalhost) ? MACHINE_NAME : hasMachineName ? MACHINE_NAME + '.pdx.odshp.com' : config.get('WEB_HOST') ? config.get('WEB_HOST') : '0.0.0.0';
-const REMOTE_HOST = hasRemoteHost ? 'wasapp1' + MODA_ENV + '.odshp.com' : WEB_HOST;
+const REMOTE_HOST = hasRemoteHost ? 'wasapp1' + MODA_ENV + '.odshp.com' : undefined; //the fallback s/b undefined
 const WEB_PROTOCOL = config.get('WEB_PROTOCOL') || 'http://';
 const NODE_ENV = config.util.getEnv('NODE_ENV');
 const NODE_ENV_STR = JSON.stringify(NODE_ENV);
@@ -204,7 +212,7 @@ const common = { //set up common dev and build stuff here
       {
         test: /\.css$/,
         loader: extractCSS.extract('style', 'css')
-      }, 
+      },
       { //expose global jQuery
         test: require.resolve('jquery'),
         loader: 'expose?$!expose?jQuery'
@@ -235,7 +243,7 @@ const common = { //set up common dev and build stuff here
   //   }
   // },
   resolveUrlLoader: {
-    silent: true, 
+    silent: true,
     fail: false
   },
   sassLoader: { //specify sass paths that contain styles you want to load into the bundle, including from node-modules
