@@ -127,8 +127,24 @@ function getRootState(params) {
     },
     resolve: {
       //redirectTo: ($transition$) => rootRedirect($transition$),
-      statesArray: (CachingSvc) => {
+      login: (DataSvc, UserSvc, UtilsSvc, $log) => {
         'ngInject';
+        DataSvc.ping((response) => {
+          if (UtilsSvc.isResponseSuccess(response)) {
+            UserSvc.setIsLoggedIn();
+            return response;
+          } else {
+            errorHandler(response);
+          }
+        }, errorHandler);
+        function errorHandler(error) {
+          $log.error('Error issuing ping during rootLoggedIn resolve');
+          return;
+        }
+      },
+      statesArray: (login, CachingSvc) => {
+        'ngInject';
+        angular.noop(login);
         return CachingSvc.getStates();
       },
       appData: (statesArray, footerContent, ApplicationSvc, StorageSvc, UserSvc, UrlSvc) => {
