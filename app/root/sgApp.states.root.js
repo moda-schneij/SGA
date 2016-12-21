@@ -95,31 +95,6 @@ function getRootState(params) {
   const loggedInRoot = {
     name: 'RootLoggedIn',
     component: 'sgaRoot',
-    // url: '',
-    // redirectTo: (trans) => {
-    //   const dI = trans.injector();
-    //   const NavigationSvc = dI.get('NavigationSvc');
-    //   const ApplicationSvc = dI.get('ApplicationSvc');
-    //   const $interval = dI.get('$interval');
-    //   const $q = dI.get('$q');
-    //   return $q(resolveRedirect);
-    //   function resolveRedirect(resolve) {
-    //     dI.getAsync('appData').then(() => {
-    //       let i = 0;
-    //       const checkApp = $interval(() => {
-    //         if (i === 200) {
-    //           $interval.cancel(checkApp);
-    //           resolve('Logout');
-    //         }
-    //         if (ApplicationSvc.getApplication()) {
-    //           $interval.cancel(checkApp);
-    //           resolve(NavigationSvc.getNextStep());
-    //         }
-    //         i += 1;
-    //       }, 100);
-    //     });
-    //   }
-    // },
     redirectTo: (trans) => {
       const dI = trans.injector();
       const NavigationSvc = dI.get('NavigationSvc');
@@ -127,29 +102,18 @@ function getRootState(params) {
     },
     resolve: {
       //redirectTo: ($transition$) => rootRedirect($transition$),
-      login: (DataSvc, UserSvc, UtilsSvc, $log) => {
+      login: (UserSvc) => {
         'ngInject';
-        DataSvc.ping((response) => {
-          if (UtilsSvc.isResponseSuccess(response)) {
-            UserSvc.setIsLoggedIn();
-            return response;
-          } else {
-            errorHandler(response);
-          }
-        }, errorHandler);
-        function errorHandler(error) {
-          $log.error('Error issuing ping during rootLoggedIn resolve');
-          return;
-        }
+        return UserSvc.getIsLoggedIn();
       },
       statesArray: (login, CachingSvc) => {
         'ngInject';
         angular.noop(login);
         return CachingSvc.getStates();
       },
-      appData: (statesArray, footerContent, ApplicationSvc, StorageSvc, UserSvc, UrlSvc) => {
+      appData: (login, statesArray, footerContent, ApplicationSvc, StorageSvc, UserSvc, UrlSvc) => {
         'ngInject';
-        angular.noop(statesArray, footerContent); //hacky way of requiring but doing nothing with other resolves
+        angular.noop(login, statesArray, footerContent); //hacky way of requiring but doing nothing with other resolves
         const savedAppData = ApplicationSvc.getApplication();
         if (savedAppData) {
           return savedAppData;
@@ -193,12 +157,32 @@ function getRootState(params) {
     const loggedInRootClone = Object.assign({}, loggedInRoot);
     const loggedOutRootClone = Object.assign({}, loggedOutRoot);
     loggedInRootClone.url = '/*params'; //update the matcher for loggedInRoot for SER
+    loggedInRootClone.resolve.login = loginResolve;
     delete loggedInRootClone.data.requiresAuth; //allow this state to proceed without initial auth
     delete loggedOutRootClone.url; //remove url matcher and redirect for loggedOutRoot for SER
     delete loggedOutRootClone.redirectTo;
     return getLoggedIn ? loggedInRootClone : loggedOutRootClone;
   } else {
     return getLoggedIn ? loggedInRoot : loggedOutRoot;
+  }
+}
+
+function loginResolve(DataSvc, UserSvc, UtilsSvc, $log, $q) {
+  'ngInject';
+  return $q(getAuthed);
+  function getAuthed(resolve) {
+    DataSvc.ping().then((response) => {
+      if (UtilsSvc.isResponseTwoHundred(response)) {
+        UserSvc.setIsLoggedIn();
+        resolve(response);
+      } else {
+        errorHandler(response);
+      }
+    }, errorHandler);
+    function errorHandler(error) {
+      $log.error('Error issuing ping during rootLoggedIn resolve');
+      resolve(error);
+    }
   }
 }
 

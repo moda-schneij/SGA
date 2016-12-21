@@ -39,8 +39,6 @@ export default class UserSvc {
         confirmSuccess.bind(this), //here is where we navigate from login to the application forms
         confirmError.bind(this)
       );
-    } else {
-      confirmSuccess.call(this);
     }
   }
 

@@ -26,7 +26,6 @@ export default class UtilsSvc {
     this.isStringOrArray = this.isStringOrArray.bind(this);
     this.isArrayOfOneOrMore = this.isArrayOfOneOrMore.bind(this);
     this.safeToString = this.safeToString.bind(this);
-    this.getResponse = this.getResponse.bind(this);
   }
 
   isNonEmptyString(val) {
@@ -70,8 +69,8 @@ export default class UtilsSvc {
 
   parseNums(value, opt) {
     const option = opt || {};
-    const val = !isNaN(value) && angular.isNumber(value) ? 
-      value.toString().replace(/,/g, '') : angular.isString(value) && value !== '' ? 
+    const val = !isNaN(value) && angular.isNumber(value) ?
+      value.toString().replace(/,/g, '') : angular.isString(value) && value !== '' ?
       value.replace(/,/g, '') : false;
     return val ? (option && option.parseFloat ? parseFloat(val) : parseInt(val, 10)) : 0;
   }
@@ -110,13 +109,13 @@ export default class UtilsSvc {
   calculateTotals(option, arr) {
     return arr.reduce((a, b) => {
       const valOpt = angular.isObject(option) && option.value;
-      const aVal = !isNaN(a) && angular.isNumber(a) ? a : 
-        valOpt && angular.isObject(a) && a[valOpt.value] && 
-        !isNaN(a[valOpt.value]) && angular.isNumber(a[valOpt.value]) ? 
+      const aVal = !isNaN(a) && angular.isNumber(a) ? a :
+        valOpt && angular.isObject(a) && a[valOpt.value] &&
+        !isNaN(a[valOpt.value]) && angular.isNumber(a[valOpt.value]) ?
         a[valOpt.value] : 0;
-      const bVal = !isNaN(b) && angular.isNumber(b) ? b : 
-        valOpt && angular.isObject(b) && b[valOpt.value] && 
-        !isNaN(b[valOpt.value]) && angular.isNumber(b[valOpt.value]) ? 
+      const bVal = !isNaN(b) && angular.isNumber(b) ? b :
+        valOpt && angular.isObject(b) && b[valOpt.value] &&
+        !isNaN(b[valOpt.value]) && angular.isNumber(b[valOpt.value]) ?
         b[valOpt.value] : 0;
       const arg1 = parseInt(aVal, 10);
       const arg2 = parseInt(bVal, 10);
@@ -140,17 +139,19 @@ export default class UtilsSvc {
     return val.replace(/,/g, '');
   }
 
-  getResponse(val) {
-    return angular.isObject(val.data) && val.data.hasOwnProperty('responseStatus') ? 
-      val.data : angular.isObject(val) && val.hasOwnProperty('responseStatus') ? val : null;
+  isResponseSuccess(response) {
+    const responseStatus = getResponseStatus(response);
+    return responseStatus && responseStatus.code && (/2\d\d/).test(responseStatus.code);
+    function getResponseStatus(val) {
+      return (angular.isObject(val.data) && val.data.hasOwnProperty('responseStatus')) ?
+        val.data.responseStatus :
+        ((angular.isObject(val) && val.hasOwnProperty('responseStatus')) ?
+          val.responseStatus : null);
+    }
   }
 
-  isResponseSuccess(response) {
-    const _response = this.getResponse(response);
-    if (_response) {
-      return _response.responseStatus && _response.responseStatus.code && (/2\d\d/).test(_response.responseStatus.code);
-    }
-    return false;
+  isResponseTwoHundred(response) {
+    return response.status && (/200/).test(response.status);
   }
 
   isStringOrArray(val) {
@@ -160,5 +161,5 @@ export default class UtilsSvc {
   isErrorMessage(val) {
     return this.notNullOrEmptyObj(val) && this.isStringOrArray(val);
   }
-  
+
 }
