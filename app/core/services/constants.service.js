@@ -12,68 +12,30 @@
 
 import angular from 'angular';
 
-//these are globals defined by webpack DefinePlugin, set by the build type from package.json
-/* eslint-disable no-undef */
-
-const WEB_PORT = (__WEB_PORT__ && __WEB_PORT__.toString() !== '80') ? (':' + __WEB_PORT__) : '';
-const WS_PORT = (__WS_PORT__ && __WS_PORT__.toString() !== '80') ? (':' + __WS_PORT__) : '';
-const SER_PORT = (__SER_PORT__ && __SER_PORT__.toString() !== '80') ? (':' + __SER_PORT__) : '';
-const NODE_ENV = __NODE_ENV__ || null;
-const BUILD_TARGET = __BUILD_TARGET__ || null;
-const SER_CONTEXT = __SER_CONTEXT__ || false;
-const PROD = __PROD__ || false;
-const hasRemoteHost = !!__REMOTE_HOST__ && __REMOTE_HOST__ !== '' && (/modahealth|odshp/).test(__REMOTE_HOST__);
-const hostForSERAndWS = hasRemoteHost ? __REMOTE_HOST__ : window.location.host();
-const hostPlusProtocol = (hasRemoteHost ? 'http' : window.location.protocol()) + '://' + hostForSERAndWS;
-function portToUse(port) {
-  return (!hasRemoteHost ? port : '');
-}
-
-/* eslint-enable no-undef */
-
 export default class ConstantsSvc {
 
   /*@ngInject*/
-  constructor($log, $location, $window, $cookies, StorageSvc, SER_LOGIN_PATH, SER_APPNAME, SGA_PATH, API_ROOT_PATH, STG3_URL, STORAGE_KEYS) {
+  constructor($log, $location, $cookies, StorageSvc, SER_LOGIN_PATH, SER_APPNAME, API_ROOT_PATH, STORAGE_KEYS) {
     this.$log = $log;
-    this.$location = $location;
-    this.$window = $window;
-    this.$cookies = $cookies;
     this.StorageSvc = StorageSvc;
     this.STORAGE_KEYS = STORAGE_KEYS;
     this.SER_LOGIN_PATH = SER_LOGIN_PATH;
-    this.SER_APPNAME = SER_APPNAME;
-    this.API_ROOT_PATH = API_ROOT_PATH;
-    this.SER_CONTEXT = SER_CONTEXT;
+    this.WEB_PORT = (__WEB_PORT__ && __WEB_PORT__.toString() !== '80') ? (':' + __WEB_PORT__) : '';
+    this.WS_PORT = (__WS_PORT__ && __WS_PORT__.toString() !== '80') ? (':' + __WS_PORT__) : '';
+    this.SER_PORT = (__SER_PORT__ && __SER_PORT__.toString() !== '80') ? (':' + __SER_PORT__) : '';
+    this.NODE_ENV = __NODE_ENV__ || null;
+    this.SER_CONTEXT = __SER_CONTEXT__ || false;
+    this.PROD = __PROD__ || false;
+    this.hasRemoteHost = !!__REMOTE_HOST__ && __REMOTE_HOST__ !== '' && (/odshp/).test(__REMOTE_HOST__);
+    this.hostForSERAndWS = this.hasRemoteHost ? __REMOTE_HOST__ : $location.host();
+    this.hostPlusProtocol = (this.hasRemoteHost ? 'http' : $location.protocol()) + '://' + this.hostForSERAndWS;
     //setting context root with a fallback for a missing cookie or cookie service
     this.SER_CONTEXT_ROOT = $cookies && $cookies.get('ser_app_context') ? '/' + $cookies.get('ser_app_context') : '/SpeedERatesWeb';
-
-    //Switching back and forth between paths depending on whether developing against local or STG3, and whether you have a working local SER installed
-
-    // this.API_URL = (function(){
-    //   return SER_CONTEXT ?
-    //     '//' + $location.host() + WS_PORT + API_ROOT_PATH :
-    //     STG3_URL + API_ROOT_PATH;
-    // }());
-    // this.SER_ROOT_URL = (function(){
-    //   return SER_CONTEXT ?
-    //     $location.protocol() + '://' + $location.host() + SER_PORT + '/' + SER_APPNAME :
-    //     STG3_URL + '/' + SER_APPNAME;
-    // }());
-    // this.SER_URL = (function(){
-    //   return SER_CONTEXT ?
-    //     $location.protocol() + '://' + $location.host() + SER_PORT + SER_LOGIN_PATH :
-    //     STG3_URL + SER_LOGIN_PATH;
-    // }());
-
-    this.API_URL = (!hasRemoteHost ? '//' : 'http://') + hostForSERAndWS + portToUse(WS_PORT) + API_ROOT_PATH;
-    this.SER_ROOT_URL = hostPlusProtocol + portToUse(SER_PORT) + '/' + SER_APPNAME;
-    this.SER_URL = hostPlusProtocol + portToUse(SER_PORT) + SER_LOGIN_PATH;
-
-    //this.APP_URL = $location.protocol() + '://' + $location.host() + WEB_PORT + '/' + SER_APPNAME + SGA_PATH;
-    //I think what's commented out above is incorrect. Not sure this is being used anywhere yet, anyway, but seems it should just be an addition to the SpeedE root URL
-    this.APP_URL = this.SER_ROOT_URL + SGA_PATH;
-
+    this.portToUse = (port) => (!this.hasRemoteHost ? port : '');
+    this.API_URL = (!this.hasRemoteHost ? '//' : 'http://') + this.hostForSERAndWS +
+      this.portToUse(this.WS_PORT) + API_ROOT_PATH;
+    this.SER_ROOT_URL = this.hostPlusProtocol + this.portToUse(this.SER_PORT) + '/' + SER_APPNAME;
+    this.SER_URL = this.hostPlusProtocol + this.portToUse(this.SER_PORT) + SER_LOGIN_PATH;
     this.tipsoConfigWidth = 200;
   }
 
