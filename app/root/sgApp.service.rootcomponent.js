@@ -83,7 +83,6 @@ export default class RootComponentSvc {
     $log.debug('setting appData in root component: ');
     $log.debug(data);
     if (UtilsSvc.notNullOrEmptyObj(data)) {
-      //vm.appdata = data;
       //also to pass as props to the application, for forking behavior, etc
       vm.groupOR = data.group.clientState === 'OR';
       vm.groupAK = data.group.clientState === 'AK';

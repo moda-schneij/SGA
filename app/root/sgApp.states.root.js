@@ -99,9 +99,10 @@ function getRootState(params) {
       const dI = trans.injector();
       const NavigationSvc = dI.get('NavigationSvc');
       const ConstantsSvc = dI.get('ConstantsSvc');
-      return dI.getAsync('appData').then(() => {
-        return trans.router.stateService.target(NavigationSvc.getNextStep(), null, { reload: ConstantsSvc.SER_CONTEXT }); //reload states in SER to trigger all of root component's setup (computed vars, etc)
-      });
+      return dI.getAsync('appData').then(() => NavigationSvc.getNextStep());
+      // {
+      //   return trans.router.stateService.target(NavigationSvc.getNextStep(), null, { reload: ConstantsSvc.SER_CONTEXT }); //reload states in SER to trigger all of root component's setup (computed vars, etc)
+      // });
     },
     resolve: {
       //redirectTo: ($transition$) => rootRedirect($transition$),
