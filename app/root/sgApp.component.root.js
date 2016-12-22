@@ -23,7 +23,7 @@ let ein;
 
 export const sgaRoot = {
   templateUrl: rootTemplate,
-  transclude: true,
+  //transclude: true,
   controller: sgAppCtrl,
   bindings: {
     appData: '<',
@@ -78,17 +78,14 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
     //vm.footerContent = existingFooterContent ? $sce.trustAsHtml(existingFooterContent) : vm.footerContent;
     //test injecting vm into the service (instead of passing with every other call)
     RootComponentSvc.init(vm);
-    if (!ConstantsSvc.SER_CONTEXT) { //only initialize on login for standalone (dev) version
-      //coming from SER, the appdata call itself triggers the initialization of the view
-      initView();
+    if (!vm.isLoggedIn) {
+      //TODO - this is supposed to take in the next route and determine whether auth is required
+      //gets logged in state using the ping svc, not just checking session storage
+      AuthenticationSvc.getIsLoggedIn().then(function () {
+        initView(); //the query parameter (quote id or app id) is lost by the time this is called - we have routed
+      });
     } else {
-      if (!vm.isLoggedIn) {
-        //TODO - this is supposed to take in the next route and determine whether auth is required
-        //gets logged in state using the ping svc, not just checking session storage
-        AuthenticationSvc.getIsLoggedIn().then(function () {
-          initView(); //the query parameter (quote id or app id) is lost by the time this is called - we have routed
-        });
-      }
+      initView();
     }
   };
 
@@ -103,9 +100,9 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
       RootComponentSvc.setPageValues(vm);
       RootComponentSvc.resetRootForm(vm);
     } else {
-      if (ConstantsSvc.SER_CONTEXT) { //not logged in, default to the login route, dev environment
+      if (ConstantsSvc.SER_CONTEXT) { //not logged in, default to the login route, dev environment (this is handled by a trans hook)
         $log.error('not logged in coming from SER');
-        //TODO - dialog and logout?
+        //TODO - dialog and logout? (for within SER)
       }
     }
   }

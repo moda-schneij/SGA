@@ -98,7 +98,10 @@ function getRootState(params) {
     redirectTo: (trans) => {
       const dI = trans.injector();
       const NavigationSvc = dI.get('NavigationSvc');
-      return dI.getAsync('appData').then(() => NavigationSvc.getNextStep());
+      const ConstantsSvc = dI.get('ConstantsSvc');
+      return dI.getAsync('appData').then(() => {
+        return trans.router.stateService.target(NavigationSvc.getNextStep(), null, { reload: ConstantsSvc.SER_CONTEXT }); //reload states in SER to trigger all of root component's setup (computed vars, etc)
+      });
     },
     resolve: {
       //redirectTo: ($transition$) => rootRedirect($transition$),
@@ -156,7 +159,7 @@ function getRootState(params) {
   if (__SER_CONTEXT__) {
     const loggedInRootClone = Object.assign({}, loggedInRoot);
     const loggedOutRootClone = Object.assign({}, loggedOutRoot);
-    loggedInRootClone.url = '/*params'; //update the matcher for loggedInRoot for SER
+    loggedInRootClone.url = ''; //update the matcher for loggedInRoot for SER
     loggedInRootClone.resolve.login = loginResolve;
     delete loggedInRootClone.data.requiresAuth; //allow this state to proceed without initial auth
     delete loggedOutRootClone.url; //remove url matcher and redirect for loggedOutRoot for SER
@@ -214,6 +217,7 @@ function rootRedirect(trans, params) {
   const NavigationSvc = dI.get('NavigationSvc');
   const ApplicationSvc = dI.get('ApplicationSvc');
   const UserSvc = dI.get('UserSvc');
+  const ConstantsSvc = dI.get('ConstantsSvc');
   const isLoggedIn = UserSvc.getIsLoggedIn();
   const hasApplication = ApplicationSvc.getApplication();
   const standalone = !(__SER_CONTEXT__);
@@ -225,7 +229,8 @@ function rootRedirect(trans, params) {
   const returnState = standalone ? 'LoginView' : loggedInRedirectObj;
   if (isLoggedIn) {
     if (hasApplication) {
-      return NavigationSvc.returnToLastStep();
+      return NavigationSvc.getNextStep();
+      //return trans.router.stateService.target(NavigationSvc.getNextStep(), null, { reload: ConstantsSvc.SER_CONTEXT });
     } else {
       return returnState;
     }

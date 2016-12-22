@@ -15,6 +15,7 @@ import sgAppCore from './core/sgApp.core';
 import sgAppRoot from './root/sgApp.module.root';
 import sgaConfig from './core/sgApp.config';
 import authHookRunBlock from './core/requiresAuth.hook';
+import spinnerControlHookRunBlock from './core/spinnerControl.hook';
 
 //Imports of components (partials) defined on the root module, in separate files, which are not core application dependencies
 /*I don't like this pattern, but so far I can't figure out another way to structure
@@ -47,6 +48,7 @@ export default angular
     sgAppRoot.name
   ])
   .run(authHookRunBlock)
+  .run(spinnerControlHookRunBlock)
   .config(sgaConfig);
 
 /*@ngInject*/

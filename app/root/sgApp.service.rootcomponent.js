@@ -26,7 +26,6 @@ export default class RootComponentSvc {
     this.STORAGE_KEYS = STORAGE_KEYS;
     this.setComputedProps = this.setComputedProps.bind(this);
     this.setRouteValues = this.setRouteValues.bind(this);
-    this.setRouteValuesAndReady = this.setRouteValuesAndReady.bind(this);
     this.setPageValues = this.setPageValues.bind(this);
     this.resetRootForm = this.resetRootForm.bind(this);
     this.setAppData = this.setAppData.bind(this);
@@ -64,11 +63,6 @@ export default class RootComponentSvc {
     vm.isLoggedIn = UserSvc.getIsLoggedIn();
   }
 
-  setRouteValuesAndReady(vm) {
-    this.setRouteValues(vm);
-    vm.setRouteReady();
-  }
-
   setPageValues(vm) {
     //const {$q, $log, StorageSvc, UtilsSvc, ApplicationSvc, STORAGE_KEYS} = this;
     this.setRouteValues(vm);
@@ -100,10 +94,3 @@ export default class RootComponentSvc {
     return true;
   }
 }
-
-/*function handleAppDataError(error) {
-  const {$log} = this;
-  $log.error('error getting appData in root component on login: ');
-  $log.error(error);
-  return true;
-}*/
