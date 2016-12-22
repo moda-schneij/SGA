@@ -130,13 +130,16 @@ export default class ApplicationComponentSvc {
 
   resetPristineState(formCtrl) {
     this.$log.error('THE APPLICATION FORM', formCtrl);
-    if (formCtrl && angular.isFunction(formCtrl.$setPristine)) {
-      formCtrl.$setPristine();
-    }
+    resetter(formCtrl, ['$setPristine', '$setUntouched']);
     if (formCtrl.modifiedChildFormsCount > 1) {
       formCtrl.modifiedChildForms.forEach((ctrl) => {
-        if (angular.isFunction(ctrl.$setPristine)) {
-          ctrl.$setPristine();
+        resetter(ctrl, ['$setPristine', '$setUntouched']);
+      });
+    }
+    function resetter(obj, methods) {
+      methods.forEach((method) => {
+        if (obj && angular.isFunction(obj[method])) {
+          obj[method]();
         }
       });
     }

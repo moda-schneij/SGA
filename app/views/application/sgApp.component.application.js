@@ -63,23 +63,12 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   // //attempt to use ui-router
   $transitions.onSuccess({}, () => {
     ApplicationComponentSvc.configNav(vm); //set up nav buttons
+    $timeout(() => {
+      ApplicationComponentSvc.resetPristineState(vm.applicationform);
+    }, 200);
     vm.navigating = false;
-    $log.debug('TRANSITIONS SUCCESS');
-    $log.debug('application form', vm.applicationform);
+    $log.error('TRANSITIONS SUCCESS, here\'s the application form', vm.applicationform);
   });
-
-  $transitions.onRetain({}, () => {
-    // ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    // vm.navigating = false;
-    $log.debug('TRANSITIONS RETAIN');
-    $log.debug('application form', vm.applicationform);
-  });
-
-  // const deregisterRouterWatch = $rootScope.$watch(function() {
-  //   return vm.$router.currentInstruction;
-  // }, function(newVal) {
-  //   ApplicationComponentSvc.configNav(vm); //set up nav buttons
-  // });
 
   vm.navigating = false; //toggled during navigate method and on $routeChangeSuccess
   vm.serUrl = ConstantsSvc.SER_URL;
@@ -221,10 +210,9 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   };
 
   vm.resetPristineState = () => {
-    const formCtrl = vm.applicationform;
-    // $rootScope.$evalAsync(() => {
-    //   ApplicationComponentSvc.resetPristineState(applicationform);
-    // });
+    $rootScope.$evalAsync(() => {
+      ApplicationComponentSvc.resetPristineState(vm.applicationform);
+    });
   };
 
   vm.$onInit = () => {

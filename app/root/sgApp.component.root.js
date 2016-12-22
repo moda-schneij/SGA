@@ -62,31 +62,10 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
     vm.addToSidebarObj = null;
   };
 
-  // const deregisterRouteDataWatch = $scope.$watch(() => {
-  //     return $state.params.hideContents;
-  //   },
-  //   (newVal) => {
-  //     debugger;
-  //     vm.hideContents = newVal || false;
-  //   }
-  // );
-
   vm.$onInit = function() {
-    $log.debug('transitions and state', $transitions, $state);
-    const existingFooterContent = (StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY) && StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer) ? StorageSvc.getSessionStore(STORAGE_KEYS.CONTENT_KEY).footer : null;
-    vm.isLoggedIn = UserSvc.getIsLoggedIn();
-    //vm.footerContent = existingFooterContent ? $sce.trustAsHtml(existingFooterContent) : vm.footerContent;
     //test injecting vm into the service (instead of passing with every other call)
     RootComponentSvc.init(vm);
-    if (!vm.isLoggedIn) {
-      //TODO - this is supposed to take in the next route and determine whether auth is required
-      //gets logged in state using the ping svc, not just checking session storage
-      AuthenticationSvc.getIsLoggedIn().then(function () {
-        initView(); //the query parameter (quote id or app id) is lost by the time this is called - we have routed
-      });
-    } else {
-      initView();
-    }
+    initView();
   };
 
   //I will be calling this from the nested application component controller, which has a binding to this controller
@@ -115,7 +94,7 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
     });
   });
 
-  //this is needed to deal with a circular service dependency, and I don't have time to come up with another solution
+  //this pattern (injecting the Auth svc inline within an event callback) is needed to deal with a circular service dependency, and I don't have time to come up with another solution
   const deregisterCallLogout = $rootScope.$on('callLogout', AuthenticationSvc.logout.bind(AuthenticationSvc, {
     dirty: vm.rootform && vm.rootform.$dirty,
     invalid: vm.rootform && vm.rootform.$invalid
@@ -170,15 +149,4 @@ function sgAppCtrl(RootComponentSvc, $transitions, $state, $log, $scope, $rootSc
   $transitions.onSuccess({}, (trans) => {
     RootComponentSvc.setRouteValues(vm);
   });
-
-  // $transitions.onSuccess({}, () => {
-  //   $log.debug('STATE TRANSITION SUCCESS');
-  //   RootComponentSvc.resetRootForm(vm);
-  // });
-  //
-  // $transitions.onRetain({}, () => {
-  //   $log.debug('STATE RETAINED');
-  //   RootComponentSvc.resetRootForm(vm);
-  // });
 }
-//foo
