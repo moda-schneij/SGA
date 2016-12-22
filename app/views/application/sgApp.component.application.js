@@ -63,9 +63,10 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
   // //attempt to use ui-router
   $transitions.onSuccess({}, () => {
     ApplicationComponentSvc.configNav(vm); //set up nav buttons
-    $timeout(() => {
+    $timeout(() => { //$timeout delays this call until the initial digest cycle is completely finished
+      //otherwise, the state of the form ends up dirty on initial load, after each transition
       ApplicationComponentSvc.resetPristineState(vm.applicationform);
-    }, 200);
+    });
     vm.navigating = false;
     $log.error('TRANSITIONS SUCCESS, here\'s the application form', vm.applicationform);
   });
