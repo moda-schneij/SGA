@@ -50,7 +50,6 @@ function AgentSalesFormCtrl($log, $rootScope, SidebarSvc, OptionsSvc, DataSvc) {
 
   vm.$onInit = function() {
     initView.call(bindingObj, vm);
-    vm.appCtrl.resetPristineState();
     vm.appCtrl.updateAppData = function() {
       saveAppData.call(bindingObj);
     };

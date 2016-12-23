@@ -131,10 +131,6 @@ const uglify = new webpack.optimize.UglifyJsPlugin({
 //   inject: true
 // });
 
-//reference NgComponentRouter build we want to use, as the official version's always old (and it's all pre-release)
-//const builtngcomponentrouter = path.join(__dirname, 'vendor/angular/angular_1_router.js');
-const ngcomponentrouter = path.join(__dirname, 'node_modules/ngcomponentrouter/angular_1_router.js');
-
 const common = { //set up common dev and build stuff here
   entry: {
     head: PATHS.app + '/head',
@@ -158,7 +154,6 @@ const common = { //set up common dev and build stuff here
       'angular-ui-router',
       'jquery',
       'ng-dialog',
-      ngcomponentrouter,
       'spin.js',
       'tipso',
       'ui-select'

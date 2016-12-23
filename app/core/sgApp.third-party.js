@@ -20,7 +20,6 @@ export default angular
     'angular-toArrayFilter',
     'duScroll',
     'ngAnimate',
-    'ngComponentRouter',
     'ngCookies',
     'ngFileSaver',
     'ngSanitize',

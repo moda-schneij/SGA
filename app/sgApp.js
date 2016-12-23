@@ -50,9 +50,3 @@ export default angular
   .run(authHookRunBlock)
   .run(spinnerControlHookRunBlock)
   .config(sgaConfig);
-
-/*@ngInject*/
-function runBlock(RouteChangeSvc, $templateCache) {
-  RouteChangeSvc.onStart();
-  RouteChangeSvc.onSuccess();
-}

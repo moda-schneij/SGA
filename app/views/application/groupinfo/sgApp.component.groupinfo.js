@@ -49,7 +49,6 @@ function GroupInfoFormCtrl(GroupinfoComponentSvc, DataSvc, UtilsSvc, $state, $sc
 
   vm.minHoursRequired = _get(RulesSvc, 'rules.eligibilityRules.minHoursRequired', 0);
   vm.serUrl = ConstantsSvc.SER_URL;
-  //vm.quoteId = $rootRouter.currentInstruction.component.routeData.data.quoteId;
 
   /***************
    ** NAICS section

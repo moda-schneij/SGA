@@ -37,8 +37,6 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
   vm.defaultTipsoConfig = angular.copy(ConstantsSvc.TIPSOCONFIG);
   ConstantsSvc.TIPSOCONFIG = {width: 500};
   const TIPSOCONFIG = angular.copy(ConstantsSvc.TIPSOCONFIG);
-  let deregisterAppDataWatch;
-  //let deregisterInitDataWatch;
   const bindingObj = { vm, ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sce, $timeout, ConstantsSvc, GroupsizeComponentSvc };
 
   vm.onInitComplete = false; //use this value to signal to init-val-dependent directives that they can be rendered when onInit completes
@@ -172,52 +170,14 @@ function GroupSizeFormCtrl(ApplicationSvc, UtilsSvc, $log, $compile, $scope, $sc
     vm.onInitComplete = true;
     GroupsizeComponentSvc.setComputedProps(vm);
     checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
-    //deregisterInitDataWatch();
-    vm.appCtrl.resetPristineState();
-
-    // deregisterInitDataWatch = $scope.$watchGroup([
-    //   () => vm.appData, () => vm.appCtrl.statesArray
-    // ], (newVal) => {
-    //   // if (UtilsSvc.notNullOrEmptyObj(newVal[0]) && UtilsSvc.notNullOrEmptyObj(newVal[1])) {
-    //   //   updateViewValues.call(bindingObj);
-    //   //   angular.forEach(vm.appCtrl.statesArray, (value, key) => {
-    //   //     if (value.value !== "HI") {
-    //   //       vm.statesArray.push(value);
-    //   //     }
-    //   //   });
-    //   //   if (!vm.output) {
-    //   //     getOutput.call(bindingObj, {init: true});
-    //   //   }
-    //   //   vm.groupOR = vm.appCtrl.groupOR;
-    //   //   vm.groupAK = vm.appCtrl.groupAK;
-    //   //   // vm.appData.fullTimeEmployees = angular.copy(vm.appData.totalActiveEmpCount);
-    //   //   vm.originalFTCount = angular.copy(vm.appData.totalActiveEmpCount);
-    //   //   vm.onInitComplete = true;
-    //   //   GroupsizeComponentSvc.setComputedProps(vm);
-    //   //   checkEmployeeByStateTotals.call(bindingObj, {updateValidation: true});
-    //   //   deregisterInitDataWatch();
-    //   //   vm.appCtrl.resetPristineState();
-    //   // }
-    // });
-
-    deregisterAppDataWatch = $scope.$watch(
-      () => vm.appData,
-      (newVal) => {
-        if (newVal && UtilsSvc.notNullOrEmptyObj(newVal) && vm.output) {
-          getOutput.call(bindingObj);
-        }
-      },
-      true
-    );
-
+    if (vm.output) {
+      getOutput.call(bindingObj);
+    }
     vm.appCtrl.updateAppData = function() {
       saveAppData.call(bindingObj);
     };
   };
 
-  vm.$onDestroy = function() {
-    deregisterAppDataWatch();
-  };
 }
 
 function updateAppdata() { //call bound to the controller binding object

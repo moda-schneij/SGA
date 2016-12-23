@@ -2,13 +2,11 @@
 
 /**
  * @ngdoc overview
- * @name sgApp.module:ngTiso
+ * @name sgApp.directive:ngTipso
  * @description
  * # ngTipso
- * Module of the Moda Small Group Application app
+ * Directive of the Moda Small Group Application app
  */
-
-import angular from 'angular';
 
 //Angular wrapper for jquery Tipso
 //https://github.com/object505/tipso

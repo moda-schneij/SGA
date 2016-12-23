@@ -129,12 +129,13 @@ export default class ApplicationComponentSvc {
   }
 
   resetPristineState(formCtrl) {
-    this.$log.error('THE APPLICATION FORM', formCtrl);
-    resetter(formCtrl, ['$setPristine', '$setUntouched']);
-    if (formCtrl.modifiedChildFormsCount > 1) {
-      formCtrl.modifiedChildForms.forEach((ctrl) => {
-        resetter(ctrl, ['$setPristine', '$setUntouched']);
-      });
+    if (formCtrl) {
+      resetter(formCtrl, ['$setPristine', '$setUntouched']);
+      if (formCtrl.modifiedChildFormsCount && formCtrl.modifiedChildFormsCount > 1) {
+        formCtrl.modifiedChildForms.forEach((ctrl) => {
+          resetter(ctrl, ['$setPristine', '$setUntouched']);
+        });
+      }
     }
     function resetter(obj, methods) {
       methods.forEach((method) => {
@@ -231,7 +232,7 @@ export default class ApplicationComponentSvc {
   navigate(vm, config) {
     const {$state} = this;
     let nextRouteName;
-    vm.navigating = true; //this is toggled by $routeChangeSuccess in the component controller
+    vm.navigating = true; //toggled also on $transitions start and success
     const forward = config.direction === 'forward';
     let nextRouteId = $state.current.data.order - (forward ? -1 : 1);
     getNameFromRouteId.call(this, nextRouteId);

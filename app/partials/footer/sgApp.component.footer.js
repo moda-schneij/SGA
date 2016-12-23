@@ -25,7 +25,7 @@ export default angular
   });
 
 /*@ngInject*/
-function FooterCtrl(ConstantsSvc, $log, $rootScope, $rootRouter, $location) {
+function FooterCtrl(ConstantsSvc) {
   var vm = this;
   vm.serContext = ConstantsSvc.SER_CONTEXT;
 

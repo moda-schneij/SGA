@@ -1,5 +1,5 @@
 <!-- The plan calculated costs table -->
-<ng-form novalidate class="form-styled form-table grow-down" name="$ctrl.planratesform" ng-show="$ctrl.plans.minPlansSelected && $ctrl.showTable">
+<ng-form novalidate class="form-styled form-table grow-down" name="$ctrl.planratesform" after-show="$ctrl.onRateTableShow()" show-with-cb ng-if="$ctrl.plans.minPlansSelected && $ctrl.showTable">
   <table class="table-sga-rates">
     <caption>Calculated costs</caption>
     <colgroup>

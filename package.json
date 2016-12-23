@@ -138,7 +138,6 @@
     "jquery": "^3.1.0",
     "lodash": "^4.14.0",
     "ng-dialog": "^0.5.9",
-    "ngcomponentrouter": "^2.1.0",
     "spin.js": "^2.3.2",
     "tipso": "^1.0.8",
     "ui-select": "^0.19.4"

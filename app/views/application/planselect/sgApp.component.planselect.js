@@ -154,6 +154,14 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
     });
   };
 
+  /***********************************************************************
+   ** handle rate table show event to update parent form pristine state **
+   ***********************************************************************/
+
+  vm.onRateTableShow = () => {
+    vm.appCtrl.resetPristineState();
+  };
+
   /******************************************************************************************
   ** Two different approaches to getting subtotals - TBD what's better and more extensible **
   ******************************************************************************************/
@@ -222,7 +230,6 @@ function PlanSelectFormCtrl(ConstantsSvc, PlanSelectSvc, RulesSvc, UtilsSvc, Opt
     PlanSelectSvc.populatePlans(vm, vmVars);
     PlanSelectSvc.anyPlansAdded(vm); //also calls setTableValues at the right time
     PlanSelectSvc.setStaticValues(vm);
-    $rootScope.$evalAsync(vm.appCtrl.resetPristineState);
 
     deregisterComputedMedTotals = $scope.$watch(
       () => vm.plans.medical.selected,

@@ -55,7 +55,6 @@ function CobraFormCtrl($log, CobraComponentSvc, ConstantsSvc, RulesSvc, OptionsS
     $log.debug(vm);
     $log.debug('I am in the cobra component controller');
     refreshViewValues(vm);
-    vm.appCtrl.resetPristineState();
     vm.appCtrl.updateAppData = function() {
       saveAppData.call(bindingObj);
     };

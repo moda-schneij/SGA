@@ -27,7 +27,7 @@ export const applicationComponent = {
 };
 
 /*@ngInject*/
-function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, NavigationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootRouter, $rootScope, $window, $timeout, $interval, $scope) {
+function ApplicationCtrl($state, $transitions, SpinnerControlSvc, AuthenticationSvc, DataSvc, $log, ApplicationComponentSvc, UtilsSvc, ConstantsSvc, ApplicationSvc, NavigationSvc, CachingSvc, RulesSvc, OptionsSvc, MessagesSvc, $rootScope, $window, $timeout, $interval, $scope) {
   const vm = this;
   const args = Array.prototype.slice.call(arguments);
   $log.debug('THE ARGS ARRAY');
@@ -48,7 +48,6 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
     RulesSvc,
     OptionsSvc,
     MessagesSvc,
-    $rootRouter,
     $rootScope,
     $window,
     $timeout,
@@ -56,22 +55,21 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
     $scope
   };
 
-  //let deregisterDataWatch;
-  //let deregisterAppCtrlDataWatch;
-  //let deregisterConfigWatch;
-
   // //attempt to use ui-router
   $transitions.onSuccess({}, () => {
     ApplicationComponentSvc.configNav(vm); //set up nav buttons
     $timeout(() => { //$timeout delays this call until the initial digest cycle is completely finished
       //otherwise, the state of the form ends up dirty on initial load, after each transition
       ApplicationComponentSvc.resetPristineState(vm.applicationform);
-    });
+    }, 200);
     vm.navigating = false;
-    $log.error('TRANSITIONS SUCCESS, here\'s the application form', vm.applicationform);
   });
 
-  vm.navigating = false; //toggled during navigate method and on $routeChangeSuccess
+  $transitions.onStart({}, () => {
+    vm.navigating = true;
+  });
+
+  vm.navigating = false; //toggled during navigate method and on $transitions start and success
   vm.serUrl = ConstantsSvc.SER_URL;
   vm.submitView = false;
   vm.confirmEnroll = false; //to be toggled when the application is in status "C" to enable enroll
@@ -218,16 +216,13 @@ function ApplicationCtrl($state, $transitions, SpinnerControlSvc, Authentication
 
   vm.$onInit = () => {
     $rootScope.$evalAsync(() => {
-      $log.debug(vm);
-      $log.debug('APPLICATIONCOMPONENT.$onInit');
-      $log.debug('appformctrl', vm.applicationform);
+      $log.debug('application controller oninit', vm);
       //these values were set on the root component, which grabbed them from the URL query string
       //set application component controller appData object (if it doesn't already exist) from root component
       ApplicationComponentSvc.setRulesAndOptions(vm);
       ApplicationComponentSvc.updateViewValues(vm); //static props
       ApplicationComponentSvc.setComputedProps(vm); //dynamic props, after static
       ApplicationComponentSvc.configNav(vm); //set up nav buttons
-      NavigationSvc.returnToLastStep();
       vm.navigating = false;
     });
   };

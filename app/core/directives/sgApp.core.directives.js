@@ -12,6 +12,7 @@
 
 import angular from 'angular';
 
+import showWithCbDirective from './showwithcb.directive';
 import bindInputValDirective from './bindinputval.directive';
 import bindTrustedHtmlDirective from './bindtrustedhtml.directive';
 import checkFormEmptyDirective from './checkformempty.directive';
@@ -44,4 +45,5 @@ export default angular
   .directive('ngTipso', ngTipsoDirective)
   .directive('prettySelectCheckbox', prettySelectCheckboxDirective)
   .directive('scrollToTop', modaScrollToTopDirective)
+  .directive('showWithCb', showWithCbDirective)
   .directive('textToNumModel', textToNumModelDirective);

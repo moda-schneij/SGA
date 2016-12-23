@@ -23,7 +23,6 @@ import DialogSvc from './dialog.service';
 import MessagesSvc from './messages.service';
 import NavigationSvc from './navigation.service';
 import OptionsSvc from './options.service';
-import RouteChangeSvc from './routechange.service';
 import RulesSvc from './rules.service';
 import SpinnerCtrlSvc from './spinner-control.service';
 import StorageSvc from './storage.service';
@@ -47,7 +46,6 @@ export default angular
     .service(MessagesSvc.name, MessagesSvc)
     .service(NavigationSvc.name, NavigationSvc)
     .service(OptionsSvc.name, OptionsSvc)
-    .service(RouteChangeSvc.name, RouteChangeSvc)
     .service(RulesSvc.name, RulesSvc)
     .service(SpinnerCtrlSvc.name, SpinnerCtrlSvc)
     .service(StorageSvc.name, StorageSvc)
