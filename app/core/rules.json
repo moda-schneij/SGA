@@ -1,0 +1,73 @@
+{
+  "groupRules": {
+    "NAICS": {
+      "maxLength": 6,
+      "minLength": 5,
+      "required": true
+    },
+    "medPremiumEmpContribution": {
+      "minContribPct": 50,
+      "minContribDol": 0.01
+    },
+    "denPremiumEmpContribution": {
+      "minContribPct": 50,
+      "minContribDol": 0.01
+    },
+    "medPremiumDepContribution": {
+      "minContribPct": 0,
+      "minContribDol": 0.00
+    },
+    "denPremiumDepContribution": {
+      "minContribPct": 0,
+      "minContribDol": 0.00
+    },
+    "voldenPremiumEmpContribution": {
+      "minContribPct": 0,
+      "maxContribPct": 49,
+      "minContribDol": 0.00
+    }
+  },
+  "addressRules": {
+    "address1": {
+      "maxLength": 64,
+      "minLength": 1,
+      "required": true
+    },
+    "address2": {
+      "maxLength": 16,
+      "minLength": 0,
+      "required": false
+    },
+    "city": {
+      "maxLength": 19,
+      "minLength": 1,
+      "required": true
+    },
+    "zip": {
+      "maxLength": 5,
+      "minLength": 5,
+      "required": true
+    }
+  },
+  "contactRules": {
+    "firstName": {
+      "maxLength": 15,
+      "minLength": 1,
+      "required": true
+    },
+    "lastName": {
+      "maxLength": 35,
+      "minLength": 1,
+      "required": true
+    },
+    "middleInitial": {
+      "maxLength": 1,
+      "required": false
+    },
+    "email": {
+      "maxLength": 40,
+      "minLength": 6,
+      "required": true
+    }
+  }
+}

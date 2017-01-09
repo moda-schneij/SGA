@@ -1,0 +1,10 @@
+.coverage-type {
+  font-family: $omnes-med-ital;
+}
+
+.container-added-states {
+  text-align: right;
+  + .button {
+    margin-left: 14px;
+  }
+}

@@ -1,0 +1,17 @@
+<ng-form scroll-to-top novalidate name="$ctrl.applicationform" ng-model-options="{updateOn: 'blur default', debounce: {'default': 500}}">
+  <!--<ng-outlet id="form-container" class="sga-container container-form container-form-application"></ng-outlet>-->
+  <div ui-view id="form-container" class="sga-container container-form container-form-application"></div>
+  <div class="container container-buttons">
+    <ng-form novalidate name="$ctrl.confirmform" class="button" ng-if="$ctrl.completedApp">
+      <pretty-checkbox name="confirmenroll" id="confirmenroll" ng-model="$ctrl.confirmEnroll" label="'Is your application verified and ready to enroll?'" ng-model-options="{updateOn: 'default'}"></pretty-checkbox>
+    </ng-form>
+    <input type="button" class="button button-save" name="save" moda-please-wait ng-click="$ctrl.saveAppData()" ng-if="$ctrl.inProgressApp" ng-class="{'disabled': !$ctrl.enableSubmit}" ng-disabled="!$ctrl.enableSubmit" value="Save">
+    <!--do not disable Go back if this form is invalid -->
+    <input type="button" class="button button-next" name="back" moda-please-wait ng-click="$ctrl.prev()" ng-if="$ctrl.hasPrevRoute && $ctrl.inProgressApp" value="Go back">
+    <!--disable Continue if this form is invalid -->
+    <input type="button" class="button button-next" name="forward" moda-please-wait ng-click="$ctrl.next()" ng-class="{'disabled': $ctrl.applicationform.$invalid}" ng-disabled="$ctrl.applicationform.$invalid" ng-if="$ctrl.hasNextRoute && $ctrl.inProgressApp" value="Continue">
+    <input type="submit" class="button button-submit" name="complete" moda-please-wait ng-click="$ctrl.submitApp()" ng-class="{'disabled': $ctrl.applicationform.$invalid}" ng-if="!$ctrl.hasNextRoute && $ctrl.inProgressApp && !$ctrl.navigating" ng-disabled="$ctrl.applicationform.$invalid" value="Submit">
+    <input type="submit" class="button button-submit" name="enroll" moda-please-wait ng-click="$ctrl.enrollApp()" ng-class="{'disabled': $ctrl.applicationform.$invalid || !$ctrl.confirmEnroll}" ng-if="!$ctrl.hasNextRoute && $ctrl.completedApp" ng-disabled="$ctrl.applicationform.$invalid || !$ctrl.confirmEnroll" value="Enroll to Facets">
+  </div>
+</ng-form>
+

@@ -1,0 +1,50 @@
+%sga-table-layout {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-sga-rates {
+  @extend %sga-table-layout;
+  & table {
+    @extend %sga-table-layout;
+    border: 0 none;
+    th {
+      &:first-child {
+        //border-left: 0 none;
+      }
+    }
+    thead {
+      th {
+        //border: 0 none;
+      }
+    }
+  }
+}
+
+.table-heading-plantype {
+  background-color: $zebra-stripe !important;
+  text-align: center !important;
+  > * {
+    background-color: $zebra-stripe !important;
+    text-align: center !important;
+  } 
+}
+
+.table-heading-enrollments {
+  background-color: $zebra-stripe !important;
+  > * {
+    background-color: $zebra-stripe !important;
+  } 
+}
+
+.col-sga-rates {
+  &.col-header {
+    width: 37.5%;
+  }
+  &.col-etype {
+    width: 12.5%;
+  }
+  &.col-total {
+    width: 12.5%;
+  }
+}

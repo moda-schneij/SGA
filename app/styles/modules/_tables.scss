@@ -1,0 +1,143 @@
+//Tables
+table {
+  border: 1px solid $table-borders;
+  thead {
+    background-color: transparent;
+    th {
+      border: 1px solid $table-headers;
+      vertical-align: bottom;
+      &.input-styled {
+        vertical-align: middle;
+      }
+    }
+  }
+  &.table-no-border {
+    border: 0 none !important;
+    th, td, caption {
+      border: 0 none !important;
+      padding: 5px 0;
+    }
+  }
+  &.table-no-wrap {
+    white-space: nowrap;
+  }
+}
+
+.table-fixed {
+  table-layout: fixed;
+}
+
+th,
+td,
+caption {
+  @include rem(font-size, 1em);
+  @include rem(padding, 10px);
+}
+
+td,
+th {
+  text-align: center;
+  &:first-child, &.cell-align-left {
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &.cell-align-right {
+    text-align: right;
+  }
+  input {
+    box-sizing: border-box;
+    width: 100%;
+  }
+}
+
+th {
+  color: $warm-brown;
+  font-family: $omnes-med;
+}
+
+td,
+tbody th {
+  border: 1px solid $table-borders;
+}
+
+td {
+  table & {
+    padding: 0;
+  }
+}
+
+.table-cell-no-border {
+  border: 0 none;
+}
+
+caption {
+  background-color: $modern-aqua;
+  color: #fff;
+  font-family: $omnes-med;
+  &.caption-plain {
+    background: none;
+    color: $warm-brown;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+tr {
+  &.even {
+    th, td {
+      background-color: $zebra-stripe;
+    }
+  }
+}
+
+thead {
+  th {
+    background-color: $table-headers;
+    position: relative;
+    &[class*="sorting"]:after {
+      background-image: url(../assets/images/ui-icons_A50069_256x240.custom.fw.png);
+      background-position: -128px 0;
+      background-repeat: no-repeat;
+      content: '';
+      display: inline;
+      height: 16px;
+      position: absolute;
+      vertical-align: middle;
+      width: 16px;
+    }
+    &.sorting_asc:after {
+      background-position: 0 -16px;
+    }
+    &.sorting_desc:after {
+      background-position: -64px -16px;
+    }
+  }
+}
+
+//jQuery dataTables, with no included CSS and no additional helper classes (eg, jQueryUI)
+%above-components {
+  margin-bottom: 10px;
+}
+
+.dataTables_wrapper {
+  //the parent container class
+  position: relative;
+}
+
+.dataTables_filter {
+  //the optional table filter
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.dataTables_filter,
+.dataTables_length {
+  @extend %above-components;
+}
+
+.table-dynamic.dataTable {
+  //my class hook plus the class added by jQDT, the table itself (minus extras like filters and paginator
+}

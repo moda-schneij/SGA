@@ -1,0 +1,71 @@
+/*=====================================================
+
+  Messages
+
+  ======================================================*/
+.ui-messages {
+  //min-height: 3em;
+  display: block;
+  margin-bottom: 1em;
+  padding: 0.75em 1em;
+  &.ui-messages-error {
+    background-color: $lighter-yellow;
+  }
+  &.ui-messages-info {
+    background-color: $success-bg;
+  }
+}
+.ui-messages-error-content, .ui-messages-info-content {
+  display: table-row;
+}
+.ui-messages-icon-message-type {
+  display: table-cell;
+  //height: 32px;
+  height: 26px;
+  width: 26px;
+}
+.ui-messages-icon-error {
+  background: url('../assets/images/icon_alert.png') top center no-repeat;
+}
+.ui-messages-icon-info {
+  background: url('../assets/images/icon_info.png') top center no-repeat;
+}
+.ui-messages-icon-close {
+  background: url('../assets/images/moda-sprite.svg');
+  background-color: $white;
+  background-position: -4px -280px;
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+  border: 1px solid $button-box-border;
+  border-radius: 3px;
+  display: inline-block;
+  float: right;
+  height: 12px;
+  padding: 2px;
+  top: 3px;
+  visibility: visible;
+  width: 12px;
+  &:hover {
+    cursor: pointer; 
+  }
+}
+.ui-messages-list {
+  display: table-cell;
+  //margin-top: 1em;
+  margin-bottom: 0;
+  margin-left: 0;
+  padding-left: 0.5em;
+  vertical-align: middle;
+}
+.ui-messages-item {
+  list-style-type: none;
+  list-style-image: none !important;
+  padding-bottom: 0;
+  padding-top: 0.5em;
+  &:first-child {
+    padding-top: 0;
+  }
+}
+.ui-messages-detail {
+  font-family: omnes_ods_mediumregular, verdana, sans-serif;
+}

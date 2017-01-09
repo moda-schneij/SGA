@@ -1,0 +1,81 @@
+<ng-form novalidate class="form-styled" name="$ctrl.cobraform">
+  <fieldset>
+  <legend>Group or third party administrator (TPA)</legend>
+    <ul class="form-container">
+      <li class="form-row">
+        <label for="cobratpa">Do you use a COBRA Third Party Administrator (TPA)?</label>
+        <pretty-checkbox name="cobratpa" id="cobratpa" ng-model="$ctrl.cobraThirdParty" label="false" ng-model-options="{updateOn: 'default'}" ng-change="$ctrl.onSelectTPA()"></pretty-checkbox>
+      </li>
+    </ul>
+    <ul class="form-container" ng-if="$ctrl.cobraThirdParty">
+      <li class="form-row"">
+        <span class="output-label">Will you elect COBRA administration through BenefitHelp Solutions or another TPA provider?</span>
+        <div class="container-pretty-checkable">
+          <pretty-radio name="tpaelection" id="electbhs" ng-model="$ctrl.electedTPA" value="'bhs'" label="'BHS'" ng-model-options="{updateOn: 'default'}" ng-change="$ctrl.onChangeTPA()"></pretty-radio>
+          <pretty-radio name="tpaelection" id="electothertpa" ng-model="$ctrl.electedTPA" value="'other'" label="'Other TPA'" ng-model-options="{updateOn: 'default'}" ng-change="$ctrl.onChangeTPA()"></pretty-radio>
+        </div>
+      </li>
+      <li class="form-row" ng-if="$ctrl.tpaElected">
+        <span class="output-label"> Who will be remitting payment to Moda Health and/or Delta Dental of <span ng-if="$ctrl.appCtrl.groupOR"> Oregon </span> <span ng-if="$ctrl.appCtrl.groupAK"> Alaska </span> for COBRA premiums?</span>
+        <div class="container-pretty-checkable">
+          <pretty-radio ng-repeat="payer in $ctrl.remittingPayment track by $index" name="cobrapayer" id="cobrapayertpa" ng-model="$ctrl.appCtrl.appData.cobra.remittingPayment" value="payer.value" label="payer.displayName" ng-model-options="{updateOn: 'default'}"></pretty-radio>
+        </div>
+      </li>
+    </ul>
+    <ng-form novalidate class="form-styles" name="tpaform" check-form-empty ng-if="$ctrl.appCtrl.appData.cobra.cobraThirdParty && $ctrl.cobraThirdParty">
+      <h3 class="section-fieldset">Third-party administrator</h3>
+      <ul class="form-container">
+        <li class="form-row">
+          <label for="tpafname" ng-class="{'required': $ctrl.tpaRemitting}">First name</label>
+          <input type="text" name="tpafname" id="tpafname" ng-model="$ctrl.appCtrl.appData.cobra.contact.firstName" ng-maxlength="$ctrl.appCtrl.contactRules.firstName.maxLength" ng-required="$ctrl.tpaRemitting">
+        </li>
+        <li class="form-row">
+          <label for="tpami">Middle initial</label>
+          <input type="text" name="tpami" id="tpami" ng-model="$ctrl.appCtrl.appData.cobra.contact.middleInitial" maxlength="{{$ctrl.appCtrl.contactRules.middleInitial.maxLength}}">
+        </li>
+        <li class="form-row">
+          <label for="tpalname" ng-class="{'required': $ctrl.tpaRemitting}">Last name</label>
+          <input type="text" name="tpalname" id="tpalname" ng-required="$ctrl.tpaRemitting" ng-model="$ctrl.appCtrl.appData.cobra.contact.lastName">
+        </li>
+        <li class="form-row">
+          <label for="tpaaddress1" ng-class="{'required': $ctrl.eitherRemitting}">Company name</label>
+          <input type="text" name="tpaaddress1" id="tpaaddress1" ng-model="$ctrl.appCtrl.appData.cobra.address.address1" ng-maxlength="$ctrl.appCtrl.addressRules.address1.maxLength" ng-required="$ctrl.eitherRemitting">
+        </li>
+        <li class="form-row">
+          <label for="tpaemail">Email</label>
+          <input type="text" name="tpaemail" id="tpaemail" ng-model="$ctrl.appCtrl.appData.cobra.contact.email" ng-maxlength="$ctrl.appCtrl.contactRules.email.maxLength">
+        </li>
+        <li class="form-row">
+          <label for="tpaphone" ng-class="{'required': $ctrl.eitherRemitting}">Phone</label>
+          <input type="text" name="tpaphone" id="tpaphone" ng-model="$ctrl.appCtrl.appData.cobra.contact.phone" ng-required="$ctrl.eitherRemitting"
+          ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ng-model-options="{debounce: {'default': 0}}">
+        </li>
+      </ul>
+      <ul class="form-container" ng-if="$ctrl.tpaRemitting">
+        <li class="form-row">
+          <label for="tpaaddress2">Address</label>
+          <input type="text" name="tpaaddress2" id="tpaaddress2" ng-model="$ctrl.appCtrl.appData.cobra.address.address2">
+        </li>
+        <li class="form-row">
+          <label for="tpacity">City</label>
+          <input type="text" name="tpacity" id="tpacity" ng-maxlength="$ctrl.appCtrl.addressRules.city.maxLength" ng-model="$ctrl.appCtrl.appData.cobra.address.city">
+        </li>
+        <li class="form-row">
+          <label for="tpastate">State</label>
+          <ui-select name="billingstate" class="input-styled semi-width" search-enabled="true" required ng-model="$ctrl.appCtrl.appData.cobra.address.state" theme="select2" ng-model-options="{debounce: {'default': 0}}">
+            <ui-select-match placeholder="--Select a state--">
+              {{$select.selected.displayName}}
+            </ui-select-match>
+            <ui-select-choices repeat="state.value as state in ($ctrl.appCtrl.statesArray | filter: $select.search) track by state.value">
+              <span ng-bind-html="::state.displayName | highlight: $select.search"></span>
+            </ui-select-choices>
+          </ui-select>
+        </li>
+        <li class="form-row">
+          <label for="tpazip">Zip</label>
+          <input type="text" name="tpazip" id="tpazip" ng-pattern="$ctrl.appCtrl.addressRules.zip.pattern" ng-model="$ctrl.appCtrl.appData.cobra.address.zip">
+        </li>
+      </ul>
+    </ng-form>
+  </fieldset>
+</ng-form>

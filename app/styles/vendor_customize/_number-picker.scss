@@ -1,0 +1,57 @@
+//for hNumber aka ngNumberPicker directive
+
+.numpicker-button {
+  background-image: url(../assets/images/moda-sprite.svg);
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+  border: 1px solid $button-box-border;
+  border-radius: 3px;
+  color: transparent; //hide the text in the span
+  display: inline-block;
+  height: 12px;
+  padding: 2px;
+  position: relative;
+  top: 3px;
+  visibility: visible;
+  width: 12px;
+  &:hover {
+    cursor: pointer; 
+  }
+}
+
+.numpicker-button-text {
+  display: none;
+}
+
+.numpicker-increment {
+  background-position: 3px -199px;
+}
+
+.numpicker-decrement {
+  background-position: 3px -173px;
+}
+
+.numpicker-number {
+  display: inline-block;
+  margin: 0 3px;
+  padding: 0 !important;
+  text-align: center !important;
+  width: 20px !important;
+  .numpicker-wide & {
+    width: 32px !important;
+  }
+}
+
+ //the input (inserted by decorator) is there only for validation and setting state on the form
+.numpicker-value {
+  border: 0 none !important;
+  height: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  width: 0 !important; 
+}
+
+.numpicker {
+  display: block;
+  margin-left: -3px;
+}

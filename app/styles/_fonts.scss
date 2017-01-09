@@ -1,0 +1,128 @@
+/*=====================================================
+
+  Moda @Font-face fonts
+
+  ======================================================*/
+
+// abandoned compass for font-face declarations
+// @include font-face("omnes_ods_mediumregular", 
+//     font-files("assets/fonts/omnesods_medium-roman-webfont.woff",  
+//     "assets/fonts/omnesods_medium-roman-webfont.ttf", 
+//     "assets/fonts/omnesods_medium-roman-webfont.svg"), 
+//     "assets/fonts/omnesods_medium-roman-webfont.eot", normal, normal);
+
+//comment-out all unused font variants
+
+//ROMAN
+
+@font-face {
+    font-family: 'omnes_ods_mediumregular';
+    src: url('../assets/fonts/omnesods_medium-roman-webfont.eot');
+    src: url('../assets/fonts/omnesods_medium-roman-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/omnesods_medium-roman-webfont.woff') format('woff'),
+         url('../assets/fonts/omnesods_medium-roman-webfont.ttf') format('truetype'),
+         url('../assets/fonts/omnesods_medium-roman-webfont.svg') format('svg');
+    font-weight: normal !important;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'omnes_ods_regularregular';
+    src: url('../assets/fonts/omnesods_regular-roman-webfont.eot');
+    src: url('../assets/fonts/omnesods_regular-roman-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/omnesods_regular-roman-webfont.woff') format('woff'),
+         url('../assets/fonts/omnesods_regular-roman-webfont.ttf') format('truetype'),
+         url('../assets/fonts/omnesods_regular-roman-webfont.svg') format('svg');
+    font-weight: normal !important;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'omnes_ods_semiregular';
+    src: url('../assets/fonts/omnesods_semibold-roman-webfont.eot');
+    src: url('../assets/fonts/omnesods_semibold-roman-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/omnesods_semibold-roman-webfont.woff') format('woff'),
+         url('../assets/fonts/omnesods_semibold-roman-webfont.ttf') format('truetype'),
+         url('../assets/fonts/omnesods_semibold-roman-webfont.svg') format('svg');
+    font-weight: normal !important;
+    font-style: normal;
+}
+
+// @font-face {
+//     font-family: 'omnes_ods_boldregular';
+//     src: url('../assets/fonts/omnesods_bold-roman-webfont.eot');
+//     src: url('../assets/fonts/omnesods_bold-roman-webfont.eot?#iefix') format('embedded-opentype'),
+//          url('../assets/fonts/omnesods_bold-roman-webfont.woff') format('woff'),
+//          url('../assets/fonts/omnesods_bold-roman-webfont.ttf') format('truetype'),
+//          url('../assets/fonts/omnesods_bold-roman-webfont.svg') format('svg');
+//     font-weight: normal !important;
+//     font-style: normal;
+// }
+
+// @font-face {
+//     font-family: 'omnes_ods_lightregular';
+//     src: url('../assets/fonts/omnesods_light-roman-webfont.eot');
+//     src: url('../assets/fonts/omnesods_light-roman-webfont.eot?#iefix') format('embedded-opentype'),
+//          url('../assets/fonts/omnesods_light-roman-webfont.woff') format('woff'),
+//          url('../assets/fonts/omnesods_light-roman-webfont.ttf') format('truetype'),
+//          url('../assets/fonts/omnesods_light-roman-webfont.svg') format('svg');
+//     font-weight: normal !important;
+//     font-style: normal;
+// }
+
+//ITALIC
+
+@font-face {
+    font-family: 'omnes_ods_mediumitalic';
+    src: url('../assets/fonts/omnesods_medium-italic-webfont.eot');
+    src: url('../assets/fonts/omnesods_medium-italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/omnesods_medium-italic-webfont.woff') format('woff'),
+         url('../assets/fonts/omnesods_medium-italic-webfont.ttf') format('truetype'),
+         url('../assets/fonts/omnesods_medium-italic-webfont.svg') format('svg');
+    font-weight: normal !important;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'omnes_ods_regularitalic';
+    src: url('../assets/fonts/omnesods_regular-italic-webfont.eot');
+    src: url('../assets/fonts/omnesods_regular-italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/omnesods_regular-italic-webfont.woff') format('woff'),
+         url('../assets/fonts/omnesods_regular-italic-webfont.ttf') format('truetype'),
+         url('../assets/fonts/omnesods_regular-italic-webfont.svg') format('svg');
+    font-weight: normal !important;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'omnes_ods_semiitalic';
+    src: url('../assets/fonts/omnesods_semibold-italic-webfont.eot');
+    src: url('../assets/fonts/omnesods_semibold-italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/omnesods_semibold-italic-webfont.woff') format('woff'),
+         url('../assets/fonts/omnesods_semibold-italic-webfont.ttf') format('truetype'),
+         url('../assets/fonts/omnesods_semibold-italic-webfont.svg') format('svg');
+    font-weight: normal !important;
+    font-style: normal;
+}
+
+// @font-face {
+//     font-family: 'omnes_ods_bolditalic';
+//     src: url('../assets/fonts/omnesods_bold-italic-webfont.eot');
+//     src: url('../assets/fonts/omnesods_bold-italic-webfont.eot?#iefix') format('embedded-opentype'),
+//          url('../assets/fonts/omnesods_bold-italic-webfont.woff') format('woff'),
+//          url('../assets/fonts/omnesods_bold-italic-webfont.ttf') format('truetype'),
+//          url('../assets/fonts/omnesods_bold-italic-webfont.svg') format('svg');
+//     font-weight: normal !important;
+//     font-style: normal;
+// }
+
+// @font-face {
+//     font-family: 'omnes_ods_lightitalic';
+//     src: url('../assets/fonts/omnesods_light-italic-webfont.eot');
+//     src: url('../assets/fonts/omnesods_light-italic-webfont.eot?#iefix') format('embedded-opentype'),
+//          url('../assets/fonts/omnesods_light-italic-webfont.woff') format('woff'),
+//          url('../assets/fonts/omnesods_light-italic-webfont.ttf') format('truetype'),
+//          url('../assets/fonts/omnesods_light-italic-webfont.svg') format('svg');
+//     font-weight: normal !important;
+//     font-style: normal;
+// }
